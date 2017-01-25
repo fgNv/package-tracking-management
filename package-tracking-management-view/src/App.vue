@@ -1,28 +1,32 @@
-<template>
-  <div id="app">
-    <img src="./assets/logo.png">
-    <hello></hello>
-  </div>
+<template>  
+  <dashboard v-if="authenticated"></dashboard>  
+  <login v-else="" v-on:user-authenticated-successfully="grantAccess()"></login>
 </template>
 
 <script>
-import Hello from './components/Hello'
+  import Login from './components/Login'
+  import Dashboard from './components/Dashboard'
 
-export default {
-  name: 'app',
-  components: {
-    Hello
+  export default {
+    name: 'app',
+    components: {
+      Login,
+      Dashboard
+    },
+    data () {
+      return {'authenticated': false}
+    },
+    methods: {
+      grantAccess () {
+        console.log('call grantAccess')
+        this.authenticated = true
+      },
+      huehue () {
+        console.log('BR')
+      }
+    }
   }
-}
 </script>
 
 <style>
-#app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
 </style>
