@@ -12,8 +12,9 @@ module Validation =
                 | true -> Result.Success input
                 | false -> Result.Error (Sentences.Validation.InvalidData, errors)
 
-module CreateUserCommand =
+module CreateUser =
     type Command = { UserName: string
+                     Name: string
                      Email: string
                      Password: string
                      AccessType: AccessType
@@ -34,8 +35,7 @@ module CreateUserCommand =
                      yield Sentences.Validation.ThisEmailIsNotAvailable } 
                      
     let private assignEncryptedPassword (input : Command) =
-        let encrypted = Models.Password.getEncryptedPassword input
-        Success {input with Password = encrypted}
+        Success {input with Password = Models.Password.getEncryptedPassword input}
 
     let handle isCreatorAdministrator isEmailAvailable isUserNameAvailable 
                insertUser command =        
@@ -44,11 +44,12 @@ module CreateUserCommand =
                 >>= assignEncryptedPassword
                 >>= insertUser
 
-module UpdateUserCommand =
+module UpdateUser =
     type Command = { UserName: string
                      Email: string
-                     AccessType: AccessType
                      Id : Guid
+                     Name : String
+                     AccessType : AccessType
                      CurrentUserId: Guid }
                      
     let private getErrors isCreatorAdministrator isEmailAvailable isUserNameAvailable 
@@ -71,7 +72,7 @@ module UpdateUserCommand =
                                                   isUserNameAvailable userExists)
                 >>= updateUser
 
-module UpdateUserPasswordCommand =
+module UpdateUserPassword =
     type Command = { Id : Guid
                      Password: String
                      CurrentUserId: Guid }
@@ -84,10 +85,20 @@ module UpdateUserPasswordCommand =
                      yield Sentences.Validation.PasswordIsRequired } 
     
     let private assignEncryptedPassword (input : Command) =
-        let encrypted = Models.Password.getEncryptedPassword input
-        Success {input with Password = encrypted}
+        Success {input with Password = Models.Password.getEncryptedPassword input}
 
     let handle userExists updateUserPassword command =        
         command |> Validation.validate (getErrors userExists)
                 >>= assignEncryptedPassword
                 >>= updateUserPassword
+
+module DeleteUser =
+    type Command = {Id : Guid}
+
+    let private getErrors userExists parameter =
+            seq { if not (userExists parameter.Id) then
+                     yield Sentences.Validation.IdMustReferToAnExistingUser } 
+    
+    let handle userExists deleteUser command =        
+        command |> Validation.validate (getErrors userExists)
+                >>= deleteUser

@@ -58,6 +58,7 @@
     <None Include="validation.pt-BR.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <Compile Include="Exceptions.fs" />
     <Compile Include="Railroad.fs" />
     <Compile Include="Sentences.fs" />
     <Compile Include="Models.fs" />

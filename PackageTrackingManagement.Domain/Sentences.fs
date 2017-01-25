@@ -2,8 +2,8 @@
 
 open FSharp.Data
 
-type PtBrValidationSentences = JsonProvider<"validation.pt-BR.json">
-type PtBrErrorSentences = JsonProvider<"error.pt-BR.json">
+type PtBrValidationSentences = JsonProvider<"../PackageTrackingManagement.Domain/validation.pt-BR.json">
+type PtBrErrorSentences = JsonProvider<"../PackageTrackingManagement.Domain/error.pt-BR.json">
 
 let Validation = 
     PtBrValidationSentences.Load("validation.pt-BR.json")

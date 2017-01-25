@@ -2,5 +2,6 @@
   "databaseFailure": "Falha no banco de dados",
   "couldNotAccessDatabase": "Não foi possível acessar o banco de dados",
   "invalidInputContent": "Valor de entrada inválido",
-  "errorValidatingCredentials": "Erro ao validar credenciais"
+  "errorValidatingCredentials": "Erro ao validar credenciais",
+  "InvalidAccessType": "Tipo de acesso inválido"
 }

@@ -8,13 +8,13 @@ module ChallengeUserCredentials =
                    Password: string }
         with member this.GetPassword() = this.Password
 
-    type Result = { UserName: string
-                    Name: string
-                    Email: string
-                    Password: string
-                    AccessType: AccessType }
+    type QueryResult = { UserName: string
+                         Name: string
+                         Email: string
+                         Password: string
+                         AccessType: AccessType }
 
-    let handle (getUserByUserName : string -> Result<Result>) 
+    let handle (getUserByUserName : string -> Result<QueryResult>) 
                (query : Query) =
         match getUserByUserName query.UserName with
          | Success response ->            
