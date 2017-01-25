@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
 VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "PackageTrackingManagement", "PackageTrackingManagement\PackageTrackingManagement.fsproj", "{E89FE8DC-2C46-4B28-805A-0E4467514B57}"
-EndProject
 Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "package-tracking-management-view", "package-tracking-management-view\", "{3E37F2C9-F6DD-4EA4-9B66-06863FE4728B}"
 	ProjectSection(WebsiteProperties) = preProject
 		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.5"
@@ -23,10 +21,20 @@ Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "package-tracking-management
 		Release.AspNetCompiler.FixedNames = "false"
 		Release.AspNetCompiler.Debug = "False"
 		VWDPort = "50734"
+		SlnRelativePath = "package-tracking-management-view\"
 		DefaultWebSiteLanguage = "Visual C#"
 	EndProjectSection
 EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "PackageTrackingManagement.Web", "PackageTrackingManagement.Web\PackageTrackingManagement.Web.fsproj", "{11C8AD10-04B6-4AA6-AACB-DDB675A3D736}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Migrations", "Migrations", "{D2D402A5-973E-4B4D-A7E6-BE2FABB67E0C}"
+	ProjectSection(SolutionItems) = preProject
+		Migrations\2017-01-25-19-31__create-user-tables.sql = Migrations\2017-01-25-19-31__create-user-tables.sql
+	EndProjectSection
+EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "PackageTrackingManagement.Persistence", "PackageTrackingManagement.Persistence\PackageTrackingManagement.Persistence.fsproj", "{02B0628F-1C55-4AD7-92BE-1BB6C8ED0E7F}"
+EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "PackageTrackingManagement.Domain", "PackageTrackingManagement.Domain\PackageTrackingManagement.Domain.fsproj", "{5D874A99-3EF8-4434-907F-2725B0A61CA1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -34,10 +42,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{E89FE8DC-2C46-4B28-805A-0E4467514B57}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E89FE8DC-2C46-4B28-805A-0E4467514B57}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E89FE8DC-2C46-4B28-805A-0E4467514B57}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E89FE8DC-2C46-4B28-805A-0E4467514B57}.Release|Any CPU.Build.0 = Release|Any CPU
 		{3E37F2C9-F6DD-4EA4-9B66-06863FE4728B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{3E37F2C9-F6DD-4EA4-9B66-06863FE4728B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3E37F2C9-F6DD-4EA4-9B66-06863FE4728B}.Release|Any CPU.ActiveCfg = Debug|Any CPU
@@ -46,6 +50,14 @@ Global
 		{11C8AD10-04B6-4AA6-AACB-DDB675A3D736}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{11C8AD10-04B6-4AA6-AACB-DDB675A3D736}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{11C8AD10-04B6-4AA6-AACB-DDB675A3D736}.Release|Any CPU.Build.0 = Release|Any CPU
+		{02B0628F-1C55-4AD7-92BE-1BB6C8ED0E7F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{02B0628F-1C55-4AD7-92BE-1BB6C8ED0E7F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{02B0628F-1C55-4AD7-92BE-1BB6C8ED0E7F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{02B0628F-1C55-4AD7-92BE-1BB6C8ED0E7F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5D874A99-3EF8-4434-907F-2725B0A61CA1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5D874A99-3EF8-4434-907F-2725B0A61CA1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5D874A99-3EF8-4434-907F-2725B0A61CA1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5D874A99-3EF8-4434-907F-2725B0A61CA1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
