@@ -1,0 +1,10 @@
+﻿{
+  "countryCodeIsRequired": "Deve-se informar o código do país",
+  "userNameIsRequired": "Deve-se informar o nome",
+  "onlyAdministratorsMayPerformThisAction": "Apenas administradores podem executar essa ação",
+  "invalidData": "Dados inválidos",
+  "thisUserNameIsNotAvailable": "Esse nome de usuário não está disponível",
+  "thisEmailIsNotAvailable": "Esse e-mail não está disponível",
+  "passwordIsRequired": "Deve-se informar a senha",
+  "idMustReferToAnExistingUser":  "Id deve ser referente a um usuário existente"
+}
