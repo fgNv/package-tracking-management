@@ -2,6 +2,7 @@ source https://www.myget.org/F/aspnetvnext/api/v2
 source https://www.nuget.org/api/v2/
 source https://www.myget.org/F/temp-for-inter/api/v2
 
+nuget Chiron
 nuget FSharp.Core 4.0.0.1 framework: >= net461
 nuget FSharp.Data 2.3.2 framework: >= net45
 nuget Npgsql 3.1.9 framework: >= net45

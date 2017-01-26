@@ -21,18 +21,27 @@ module CreateUser =
                      CreatorId: Guid }
         with member this.GetPassword() = this.Password
                      
-    let private getErrors isCreatorAdministrator isEmailAvailable isUserNameAvailable 
-                parameter =
-            seq { if String.IsNullOrWhiteSpace parameter.UserName then
-                     yield Sentences.Validation.UserNameIsRequired 
-                  if String.IsNullOrWhiteSpace parameter.Password then
-                     yield Sentences.Validation.PasswordIsRequired 
-                  if not (isCreatorAdministrator parameter.CreatorId) then
-                     yield Sentences.Validation.OnlyAdministratorsMayPerformThisAction
-                  if not (isUserNameAvailable parameter.UserName) then
-                     yield Sentences.Validation.ThisUserNameIsNotAvailable
-                  if not (isEmailAvailable parameter.Email) then
-                     yield Sentences.Validation.ThisEmailIsNotAvailable } 
+    let private getErrors isCreatorAdministratorFun isEmailAvailableFun 
+                          isUserNameAvailableFun  parameter =
+
+            match isEmailAvailableFun parameter.Email,
+                  isUserNameAvailableFun parameter.UserName,
+                  isCreatorAdministratorFun parameter.CreatorId with
+                | Success isEmailAvailable, Success isUserNameAvailable, 
+                  Success isCreatorAdministrator ->
+                    seq { if String.IsNullOrWhiteSpace parameter.UserName then
+                             yield Sentences.Validation.UserNameIsRequired 
+                          if String.IsNullOrWhiteSpace parameter.Password then
+                             yield Sentences.Validation.PasswordIsRequired 
+                          if not isCreatorAdministrator then
+                             yield Sentences.Validation.OnlyAdministratorsMayPerformThisAction
+                          if not isUserNameAvailable then
+                             yield Sentences.Validation.ThisUserNameIsNotAvailable
+                          if not isEmailAvailable  then
+                             yield Sentences.Validation.ThisEmailIsNotAvailable } 
+                | Error(_,_), _, _ 
+                | _, Error(_,_), _ 
+                | _, _, Error(_,_) -> seq { yield Sentences.Error.DatabaseFailure }
                      
     let private assignEncryptedPassword (input : Command) =
         Success {input with Password = Models.Password.getEncryptedPassword input}
@@ -52,19 +61,29 @@ module UpdateUser =
                      AccessType : AccessType
                      CurrentUserId: Guid }
                      
-    let private getErrors isCreatorAdministrator isEmailAvailable isUserNameAvailable 
-                userExists parameter =
-            seq { if String.IsNullOrWhiteSpace parameter.UserName then
-                     yield Sentences.Validation.UserNameIsRequired 
-                  if not (isCreatorAdministrator parameter.CurrentUserId) &&
-                     parameter.CurrentUserId <> parameter.Id then
-                     yield Sentences.Validation.OnlyAdministratorsMayPerformThisAction
-                  if not (isUserNameAvailable parameter.UserName) then
-                     yield Sentences.Validation.ThisUserNameIsNotAvailable
-                  if not (userExists parameter.Id) then
-                     yield Sentences.Validation.IdMustReferToAnExistingUser                     
-                  if not (isEmailAvailable parameter.Email) then
-                     yield Sentences.Validation.ThisEmailIsNotAvailable } 
+    let private getErrors isCreatorAdministratorFun isEmailAvailableFun isUserNameAvailableFun 
+                userExistsFun parameter =
+
+            match isCreatorAdministratorFun parameter.CurrentUserId,
+                  isEmailAvailableFun (parameter.Email,parameter.Id),
+                  isUserNameAvailableFun (parameter.UserName,parameter.Id),
+                  userExistsFun parameter.Id with
+            | Success isCreatorAdministrator, Success isEmailAvailable,
+              Success isUserNameAvailable, Success userExists ->
+                seq { if String.IsNullOrWhiteSpace parameter.UserName then
+                         yield Sentences.Validation.UserNameIsRequired 
+                      if not isCreatorAdministrator && parameter.CurrentUserId <> parameter.Id then
+                         yield Sentences.Validation.OnlyAdministratorsMayPerformThisAction
+                      if not isUserNameAvailable then
+                         yield Sentences.Validation.ThisUserNameIsNotAvailable
+                      if not userExists then
+                         yield Sentences.Validation.IdMustReferToAnExistingUser                     
+                      if not isEmailAvailable then
+                         yield Sentences.Validation.ThisEmailIsNotAvailable } 
+            | Error(_,_), _, _, _ 
+            | _, Error(_,_), _, _ 
+            | _, _, Error(_,_), _ 
+            | _, _, _, Error(_,_) -> seq { yield Sentences.Error.DatabaseFailure }
                      
     let handle isCreatorAdministrator isEmailAvailable isUserNameAvailable userExists
                updateUser command =        
@@ -78,11 +97,15 @@ module UpdateUserPassword =
                      CurrentUserId: Guid }
         with member this.GetPassword() = this.Password
                      
-    let private getErrors userExists parameter =
-            seq { if not (userExists parameter.Id) then
-                     yield Sentences.Validation.IdMustReferToAnExistingUser
-                  if String.IsNullOrWhiteSpace parameter.Password then
-                     yield Sentences.Validation.PasswordIsRequired } 
+    let private getErrors userExistsFunc parameter =            
+            match userExistsFunc parameter.Id with
+                | Success userExists ->    
+                    seq { if not userExists then
+                             yield Sentences.Validation.IdMustReferToAnExistingUser
+                          if String.IsNullOrWhiteSpace parameter.Password then
+                             yield Sentences.Validation.PasswordIsRequired } 
+                | Error (_,_) -> 
+                    seq { yield Sentences.Error.DatabaseFailure }
     
     let private assignEncryptedPassword (input : Command) =
         Success {input with Password = Models.Password.getEncryptedPassword input}
@@ -95,9 +118,12 @@ module UpdateUserPassword =
 module DeleteUser =
     type Command = {Id : Guid}
 
-    let private getErrors userExists parameter =
-            seq { if not (userExists parameter.Id) then
-                     yield Sentences.Validation.IdMustReferToAnExistingUser } 
+    let private getErrors userExistsFun parameter =
+        match userExistsFun parameter.Id with
+            | Success userExists ->
+                seq { if not userExists then
+                         yield Sentences.Validation.IdMustReferToAnExistingUser } 
+            | Error (_,_) -> seq { yield Sentences.Error.DatabaseFailure }
     
     let handle userExists deleteUser command =        
         command |> Validation.validate (getErrors userExists)

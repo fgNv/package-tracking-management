@@ -53,7 +53,7 @@
   <ItemGroup>
     <Compile Include="AssemblyInfo.fs" />
     <Compile Include="PgSqlPersistence.fs" />
-    <Compile Include="User.fs" />
+    <Compile Include="PgSqlUserPersistence.fs" />
     <Content Include="paket.references" />
   </ItemGroup>
   <ItemGroup>
