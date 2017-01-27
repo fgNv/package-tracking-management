@@ -13,6 +13,8 @@ module Validation =
                 | false -> Result.Error (Sentences.Validation.InvalidData, errors)
 
 module CreateUser =
+    let machineId = Guid.NewGuid()
+
     type Command = { UserName: string
                      Name: string
                      Email: string
@@ -33,7 +35,7 @@ module CreateUser =
                              yield Sentences.Validation.UserNameIsRequired 
                           if String.IsNullOrWhiteSpace parameter.Password then
                              yield Sentences.Validation.PasswordIsRequired 
-                          if not isCreatorAdministrator then
+                          if not isCreatorAdministrator && parameter.CreatorId <> machineId then
                              yield Sentences.Validation.OnlyAdministratorsMayPerformThisAction
                           if not isUserNameAvailable then
                              yield Sentences.Validation.ThisUserNameIsNotAvailable

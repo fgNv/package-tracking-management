@@ -16,9 +16,16 @@ open Suave.Filters
 open JsonParse
 open Application
 
-let apiRoutes() =
-    choose [ (*path "/user" >=> 
-               choose [ POST >=> request 
-                          (executeCommand (CreateUserCommand.deserialize currentUserId) User.Create) ]             
-              *)
+let apiRoutes =
+    let protectResource = 
+        ResourceProtection.protectResource [|Suave.Authentication.UserNameKey; Claims.UserIdKey|]
+
+    choose [ path "/token" >=> AuthorizationServer.authorizationServerMiddleware 
+                               User.ChallengeCredentials
+                               Claims.getCustomClaims
+             path "/user" >=> protectResource(
+               choose [ POST >=> 
+                        context(fun ctx ->      
+                          let userId = Claims.getUserIdFromContext ctx                       
+                          request (executeCommand (CreateUserCommand.deserialize userId) User.Create) ) ] )
              GET >=> NOT_FOUND "no resource matches the request" ]

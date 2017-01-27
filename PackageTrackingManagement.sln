@@ -41,6 +41,8 @@ Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "PackageTrackingManagement.P
 EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "PackageTrackingManagement.Domain", "PackageTrackingManagement.Domain\PackageTrackingManagement.Domain.fsproj", "{5D874A99-3EF8-4434-907F-2725B0A61CA1}"
 EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "PackageTracking.BearerTokenAuthentication", "Suave.BearerTokenAuthentication\PackageTracking.BearerTokenAuthentication.fsproj", "{2E3AC5E3-D146-4CC0-8DD0-A8F8108E3030}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -63,6 +65,10 @@ Global
 		{5D874A99-3EF8-4434-907F-2725B0A61CA1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5D874A99-3EF8-4434-907F-2725B0A61CA1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5D874A99-3EF8-4434-907F-2725B0A61CA1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2E3AC5E3-D146-4CC0-8DD0-A8F8108E3030}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2E3AC5E3-D146-4CC0-8DD0-A8F8108E3030}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2E3AC5E3-D146-4CC0-8DD0-A8F8108E3030}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2E3AC5E3-D146-4CC0-8DD0-A8F8108E3030}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -30,6 +30,7 @@ let getUserByUserName userName =
                                     | Some u -> Some { UserName = u.UserName
                                                        Name = u.Name
                                                        Email = u.Email
+                                                       Id = u.Id
                                                        Password = u.Password
                                                        AccessType = deserializeAccessType u.AccessType  }
                                     | None -> None ) userName

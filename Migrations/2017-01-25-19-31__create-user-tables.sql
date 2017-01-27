@@ -5,11 +5,11 @@
 CREATE TABLE "user"
 (
   id uuid NOT NULL,
-  "userName" character(80),
-  email character(100),
-  password character(150),
-  "accessType" character(100),
-  name character(150),
+  "userName" character(80) NOT NULL,
+  email character(100) NOT NULL,
+  password character(150) NOT NULL,
+  "accessType" character(100) NOT NULL,
+  name character(150) NOT NULL,
   CONSTRAINT "PK" PRIMARY KEY (id),
   CONSTRAINT "unique-email" UNIQUE (email),
   CONSTRAINT "unique-username" UNIQUE ("userName")

@@ -58,12 +58,19 @@
     <Compile Include="AssemblyInfo.fs" />
     <Compile Include="Application.fs" />
     <Compile Include="JsonParse.fs" />
+    <Compile Include="Claims.fs" />
     <Compile Include="Routes.fs" />
     <Compile Include="Program.fs" />
+    <None Include="App.fsx" />
     <None Include="App.config" />
     <None Include="paket.references" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Suave.BearerTokenAuthentication\PackageTracking.BearerTokenAuthentication.fsproj">
+      <Name>PackageTracking.BearerTokenAuthentication</Name>
+      <Project>{2e3ac5e3-d146-4cc0-8dd0-a8f8108e3030}</Project>
+      <Private>True</Private>
+    </ProjectReference>
     <Reference Include="mscorlib" />
     <Reference Include="System" />
     <Reference Include="System.Core" />

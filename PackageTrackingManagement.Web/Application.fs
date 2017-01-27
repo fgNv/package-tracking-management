@@ -25,3 +25,15 @@ module User =
         Commands.DeleteUser.handle
             PgSqlUserPersistence.userExists
             PgSqlUserPersistence.deleteUser
+    
+    open Queries.ChallengeUserCredentials
+
+    let ChallengeCredentials username password =         
+        Queries.ChallengeUserCredentials.handle
+            PgSqlUserPersistence.getUserByUserName
+            {UserName = username; Password = password}
+            
+    let Exists username  =
+        Queries.UserExists.handle
+            PgSqlUserPersistence.getUserByUserName
+            {UserName = username}
