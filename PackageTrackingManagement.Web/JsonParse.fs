@@ -13,7 +13,7 @@ let inline private deserializeJson builder bytes  =
                        | Error e,_ -> Railroad.Error(Sentences.Error.InvalidInputContent, [e])
 
 module CreateUserCommand =
-    open Commands.CreateUser
+    open Commands.User.Create
 
     let deserialize currentUserId = 
         deserializeJson <| json { let! userName = Json.read "userName"

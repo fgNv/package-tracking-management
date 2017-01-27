@@ -70,7 +70,7 @@ let isUserNameAvailable paramaters =
                                     Seq.exists(fun u -> u.UserName = fst paramaters && 
                                                         u.Id <> snd paramaters ) ) ) paramaters
 
-let insertUser (command: CreateUser.Command) =
+let insertUser (command: User.Create.Command) =
     handleDatabaseException
         ( fun id -> let context = getContext()
                     let newUser = context.Public.User.Create()    
@@ -82,9 +82,9 @@ let insertUser (command: CreateUser.Command) =
                     newUser.UserName <- command.UserName
                     context.SubmitUpdates() ) command
     
-let updateUser (command: UpdateUser.Command) =
+let updateUser (command: User.Update.Command) =
     handleDatabaseException
-        ( fun (command' : UpdateUser.Command) -> 
+        ( fun (command' : User.Update.Command) -> 
             let context = getContext()
             let user = context.Public.User |> 
                        Seq.tryFind (fun g -> g.Id = command'.Id)   
@@ -97,9 +97,9 @@ let updateUser (command: UpdateUser.Command) =
                 | None -> 
                     raise (new Exception(Sentences.Validation.IdMustReferToAnExistingUser)) ) command        
 
-let updateUserPassword (command: UpdateUserPassword.Command) =
+let updateUserPassword (command: User.UpdatePassword.Command) =
     handleDatabaseException 
-        ( fun (command : UpdateUserPassword.Command) -> 
+        ( fun (command : User.UpdatePassword.Command) -> 
                          let context = getContext()
                          let user = context.Public.User |> 
                                     Seq.tryFind (fun g -> g.Id = command.Id)   
@@ -108,7 +108,7 @@ let updateUserPassword (command: UpdateUserPassword.Command) =
                                          context.SubmitUpdates()
                              | None -> raise (new Exception(Sentences.Validation.IdMustReferToAnExistingUser)) ) command
         
-let deleteUser (command : DeleteUser.Command) =
+let deleteUser (command : User.Delete.Command) =
     handleDatabaseException 
         ( fun id -> let context = getContext()
                     let user = context.Public.User |> 

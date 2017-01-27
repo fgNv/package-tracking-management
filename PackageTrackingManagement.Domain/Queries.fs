@@ -39,6 +39,6 @@ module UserExists =
         match getUserByUserName query.UserName with
             | Success user ->
                 match user with
-                    | Some u-> true
+                    | Some u -> true
                     | None -> false
             | Error(_,_) -> false

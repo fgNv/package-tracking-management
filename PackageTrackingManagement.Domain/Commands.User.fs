@@ -1,18 +1,11 @@
-﻿module Commands
+﻿module Commands.User
 
 open Models
 open System
 open Railroad
+open Commands.Global
 
-module Validation =
-    let inline validate getErrors input =
-        let errors = getErrors input
-
-        match errors |> Seq.isEmpty with
-                | true -> Result.Success input
-                | false -> Result.Error (Sentences.Validation.InvalidData, errors)
-
-module CreateUser =
+module Create =
     let machineId = Guid.NewGuid()
 
     type Command = { UserName: string
@@ -55,7 +48,7 @@ module CreateUser =
                 >>= assignEncryptedPassword
                 >>= insertUser
 
-module UpdateUser =
+module Update =
     type Command = { UserName: string
                      Email: string
                      Id : Guid
@@ -93,7 +86,7 @@ module UpdateUser =
                                                   isUserNameAvailable userExists)
                 >>= updateUser
 
-module UpdateUserPassword =
+module UpdatePassword =
     type Command = { Id : Guid
                      Password: String
                      CurrentUserId: Guid }
@@ -117,7 +110,7 @@ module UpdateUserPassword =
                 >>= assignEncryptedPassword
                 >>= updateUserPassword
 
-module DeleteUser =
+module Delete =
     type Command = {Id : Guid}
 
     let private getErrors userExistsFun parameter =

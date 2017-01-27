@@ -2,14 +2,14 @@
 
 module User =
     let Create =
-        Commands.CreateUser.handle 
+        Commands.User.Create.handle 
             PgSqlUserPersistence.isUserAdministrator
             PgSqlUserPersistence.isUserEmailUnused
             PgSqlUserPersistence.isUserNameUnused
             PgSqlUserPersistence.insertUser
 
     let Update =
-        Commands.UpdateUser.handle 
+        Commands.User.Update.handle 
             PgSqlUserPersistence.isUserAdministrator
             PgSqlUserPersistence.isUserEmailAvailable
             PgSqlUserPersistence.isUserNameAvailable
@@ -17,12 +17,12 @@ module User =
             PgSqlUserPersistence.updateUser
 
     let UpdatePassword =
-        Commands.UpdateUserPassword.handle 
+        Commands.User.UpdatePassword.handle 
             PgSqlUserPersistence.userExists
             PgSqlUserPersistence.updateUserPassword
 
     let Delete =
-        Commands.DeleteUser.handle
+        Commands.User.Delete.handle
             PgSqlUserPersistence.userExists
             PgSqlUserPersistence.deleteUser
     

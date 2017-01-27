@@ -2,6 +2,8 @@
 
 open Chiron
 
+type PackageStatus = | EnRoute | Received
+
 type AccessType = | Administrator | User
     with
         static member FromJson (_:AccessType) = json {

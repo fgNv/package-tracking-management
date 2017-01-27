@@ -1,6 +1,6 @@
 ﻿open Suave
 open Models
-open Commands.CreateUser
+open Commands.User.Create
 open System
 
 [<EntryPoint>]
@@ -12,7 +12,7 @@ let main argv =
                                   Email = "felipegarcia156@hotmail.com"
                                   Password = "777888"
                                   AccessType = AccessType.Administrator
-                                  CreatorId = Commands.CreateUser.machineId } 
+                                  CreatorId = Commands.User.Create.machineId } 
         |> ignore
 
     let app = Routes.apiRoutes
