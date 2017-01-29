@@ -30,4 +30,3 @@ let internal handleDatabaseException f input =
     with
         | ex -> Error (Sentences.Error.DatabaseFailure, 
                        Error.getExceptionMessages ex)
-

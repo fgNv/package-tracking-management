@@ -1,4 +1,4 @@
-﻿module Queries
+﻿module Queries.User
 
 open Models
 open Railroad

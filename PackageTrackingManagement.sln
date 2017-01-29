@@ -35,6 +35,8 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Migrations", "Migrations", "{D2D402A5-973E-4B4D-A7E6-BE2FABB67E0C}"
 	ProjectSection(SolutionItems) = preProject
 		Migrations\2017-01-25-19-31__create-user-tables.sql = Migrations\2017-01-25-19-31__create-user-tables.sql
+		Migrations\2017-01-28-16-32__create-package-table.sql = Migrations\2017-01-28-16-32__create-package-table.sql
+		Migrations\2017-01-28-17-07__points-and-device-tables-creation.sql = Migrations\2017-01-28-17-07__points-and-device-tables-creation.sql
 	EndProjectSection
 EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "PackageTrackingManagement.Persistence", "PackageTrackingManagement.Persistence\PackageTrackingManagement.Persistence.fsproj", "{02B0628F-1C55-4AD7-92BE-1BB6C8ED0E7F}"

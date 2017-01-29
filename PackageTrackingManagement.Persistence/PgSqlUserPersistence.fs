@@ -4,14 +4,14 @@ open PgSqlPersistence
 open Commands
 open System
 open Models
-open Queries.ChallengeUserCredentials
+open Queries.User.ChallengeUserCredentials
 
-let inline private serializeAccessType input =
+let private serializeAccessType input =
     match input with
         | Administrator -> "admin"
         | User -> "user"
 
-let inline private deserializeAccessType input =
+let private deserializeAccessType input =
     match input with 
         | "admin" -> Administrator
         | "user" -> User
@@ -70,19 +70,20 @@ let isUserNameAvailable paramaters =
                                     Seq.exists(fun u -> u.UserName = fst paramaters && 
                                                         u.Id <> snd paramaters ) ) ) paramaters
 
-let insertUser (command: User.Create.Command) =
+let insertUser =
     handleDatabaseException
-        ( fun id -> let context = getContext()
-                    let newUser = context.Public.User.Create()    
-                    newUser.AccessType <- serializeAccessType command.AccessType
-                    newUser.Email <- command.Email
-                    newUser.Id <- Guid.NewGuid()
-                    newUser.Name <- command.Name
-                    newUser.Password <- command.Password
-                    newUser.UserName <- command.UserName
-                    context.SubmitUpdates() ) command
+        ( fun (cmd : User.Create.Command) -> 
+                     let context = getContext()
+                     let newUser = context.Public.User.Create()    
+                     newUser.AccessType <- serializeAccessType cmd.AccessType
+                     newUser.Email <- cmd.Email
+                     newUser.Id <- Guid.NewGuid()
+                     newUser.Name <- cmd.Name
+                     newUser.Password <- cmd.Password
+                     newUser.UserName <- cmd.UserName
+                     context.SubmitUpdates() ) 
     
-let updateUser (command: User.Update.Command) =
+let updateUser =
     handleDatabaseException
         ( fun (command' : User.Update.Command) -> 
             let context = getContext()
@@ -95,7 +96,7 @@ let updateUser (command: User.Update.Command) =
                             u.UserName <- command'.UserName
                             context.SubmitUpdates()
                 | None -> 
-                    raise (new Exception(Sentences.Validation.IdMustReferToAnExistingUser)) ) command        
+                    raise (new Exception(Sentences.Validation.IdMustReferToAnExistingUser)) )     
 
 let updateUserPassword (command: User.UpdatePassword.Command) =
     handleDatabaseException 

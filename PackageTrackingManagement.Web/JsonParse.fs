@@ -28,3 +28,45 @@ module CreateUserCommand =
                                            Password = password
                                            AccessType = accessType
                                            CreatorId = currentUserId } }
+
+module CreatePackageCommand =
+    open Commands.Package.Create
+    
+    let deserialize currentUserId = 
+        deserializeJson <| json { let! name = Json.read "name"
+                                  let! description = Json.tryRead "description"
+                                  
+                                  return { Name = name
+                                           Description = description
+                                           CreatorId = currentUserId } }
+
+module CreateManualPointCommand =
+    open Commands.Package.AddManualPoint
+    
+    let deserialize currentUserId = 
+        deserializeJson <| json { let! packageId = Json.read "packageId"
+                                  let! latitude = Json.read "latitude"
+                                  let! longitude = Json.read "longitude"
+                                                                    
+                                  return { PackageId = packageId
+                                           Latitude = latitude
+                                           Longitude = longitude
+                                           CreatorId = currentUserId } }
+
+module QueryResult =
+    let inline serializeList (input : 'a list) =
+        input |> Json.serialize
+              |> Json.formatWith JsonFormattingOptions.Compact
+
+    let inline serializeSeq input =
+        input |> Seq.toList
+              |> Json.serialize
+              |> Json.formatWith JsonFormattingOptions.Compact
+
+    let inline serializeOption (input : 'a option) =
+        input |> Json.serialize
+              |> Json.formatWith JsonFormattingOptions.Compact
+
+    let inline serializeObj (input) =
+        input |> Json.serialize
+              |> Json.formatWith JsonFormattingOptions.Compact

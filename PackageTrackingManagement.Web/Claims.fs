@@ -2,7 +2,7 @@
 
 open Suave
 open System
-open Queries.ChallengeUserCredentials
+open Queries.User.ChallengeUserCredentials
 
 let UserIdKey = "userId"
 

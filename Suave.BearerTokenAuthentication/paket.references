@@ -1,0 +1,7 @@
+FSharp.Core
+Microsoft.Owin
+Microsoft.Owin.Security
+Microsoft.Owin.Security.OAuth
+Newtonsoft.Json
+Owin
+Suave

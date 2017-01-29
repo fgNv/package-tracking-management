@@ -15,6 +15,7 @@ open Suave.Operators
 open Suave.Filters
 open JsonParse
 open Application
+open Suave.ServerErrors
 
 let apiRoutes =
     let protectResource = 
@@ -23,9 +24,42 @@ let apiRoutes =
     choose [ path "/token" >=> AuthorizationServer.authorizationServerMiddleware 
                                User.ChallengeCredentials
                                Claims.getCustomClaims
+             protectResource( pathScan "/package/%s" (fun id ->
+                    let parsedId = System.Guid.Parse id
+                    let result = Application.Package.GetDetails {PackageId = parsedId}
+                    match result with 
+                        | Success package ->
+                            match package with 
+                                | Some p -> OK (QueryResult.serializeObj p)
+                                | None -> 
+                                    NOT_FOUND (Sentences.Validation.IdMustReferToExistingPackage)
+                        | Error (_,_) -> INTERNAL_ERROR (Sentences.Error.DatabaseFailure)
+             ) )
+             protectResource(                 
+                path "/package" >=> 
+                 choose [ 
+                    GET >=> context (fun ctx ->
+                        let userId = Claims.getUserIdFromContext ctx    
+                        request(executeCommand (CreatePackageCommand.deserialize userId) 
+                                                Package.Create) ) 
+                    POST >=> context (fun ctx ->
+                        let userId = Claims.getUserIdFromContext ctx    
+                        request(executeCommand (CreatePackageCommand.deserialize userId) 
+                                                Package.Create) ) ]
+             )
+             protectResource( 
+                path "/package/point/manual" >=>
+                    choose [
+                        POST >=> context(fun ctx ->
+                            let userId = Claims.getUserIdFromContext ctx    
+                            request(executeCommand (CreateManualPointCommand.deserialize userId)
+                                                    Package.AddManualPoint )
+                        )
+             ])
              path "/user" >=> protectResource(
                choose [ POST >=> 
-                        context(fun ctx ->      
+                        context (fun ctx ->      
                           let userId = Claims.getUserIdFromContext ctx                       
-                          request (executeCommand (CreateUserCommand.deserialize userId) User.Create) ) ] )
+                          request (executeCommand (CreateUserCommand.deserialize userId) 
+                                                   User.Create) ) ] )
              GET >=> NOT_FOUND "no resource matches the request" ]

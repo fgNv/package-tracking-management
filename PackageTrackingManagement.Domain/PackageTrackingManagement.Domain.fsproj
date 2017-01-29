@@ -65,7 +65,8 @@
     <Compile Include="Commands.Global.fs" />
     <Compile Include="Commands.User.fs" />
     <Compile Include="Commands.Package.fs" />
-    <Compile Include="Queries.fs" />
+    <Compile Include="Queries.User.fs" />
+    <Compile Include="Queries.Package.fs" />
     <Content Include="App.config" />
     <Content Include="paket.references" />
   </ItemGroup>

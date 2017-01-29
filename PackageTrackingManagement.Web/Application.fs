@@ -26,14 +26,52 @@ module User =
             PgSqlUserPersistence.userExists
             PgSqlUserPersistence.deleteUser
     
-    open Queries.ChallengeUserCredentials
+    open Queries.User
 
     let ChallengeCredentials username password =         
-        Queries.ChallengeUserCredentials.handle
+        ChallengeUserCredentials.handle
             PgSqlUserPersistence.getUserByUserName
             {UserName = username; Password = password}
             
-    let Exists username  =
-        Queries.UserExists.handle
+    let Exists username =
+        UserExists.handle
             PgSqlUserPersistence.getUserByUserName
             {UserName = username}
+
+module Package =    
+    let Create =
+        Commands.Package.Create.handle
+            PgSqlUserPersistence.isUserAdministrator
+            PgSqlPackagePersistence.insertPackage
+
+    let Update =
+        Commands.Package.Update.handle
+            PgSqlUserPersistence.isUserAdministrator
+            PgSqlPackagePersistence.packageExists
+            PgSqlPackagePersistence.updatePackage
+
+    let Delete =
+        Commands.Package.Delete.handle
+            PgSqlPackagePersistence.packageExists
+            PgSqlUserPersistence.isUserAdministrator
+            PgSqlPackagePersistence.deletePackage
+    
+    let AddManualPoint =
+        Commands.Package.AddManualPoint.handle
+            PgSqlUserPersistence.isUserAdministrator
+            PgSqlPackagePersistence.packageExists
+            PgSqlPackagePersistence.insertManualPoint
+                
+    let RemoveManualPoint =
+        Commands.Package.RemoveManualPoint.handle
+            PgSqlPackagePersistence.manualPointExists
+            PgSqlUserPersistence.isUserAdministrator
+            PgSqlPackagePersistence.deleteManualPoint
+    
+    let GetList =
+        Queries.Package.List.handle
+            PgSqlPackagePersistence.getPackageList
+
+    let GetDetails =
+        Queries.Package.Details.handle
+            PgSqlPackagePersistence.getPackageDetails
