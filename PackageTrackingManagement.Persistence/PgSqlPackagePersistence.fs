@@ -23,7 +23,7 @@ let getPackageList =
                                                     | Some n -> p.Name = n
                                                     | None -> true )
                             |> Seq.skip((query.Page - 1) * query.ItemsPerPage)
-                            |> Seq.take(query.ItemsPerPage)
+                            |> Seq.truncate(query.ItemsPerPage)
                             |> Seq.map (fun p -> {  Name = p.Name
                                                     Id = p.Id
                                                     Description = Option.ofObj p.Description 

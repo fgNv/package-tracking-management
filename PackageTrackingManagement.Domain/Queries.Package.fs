@@ -1,6 +1,8 @@
 ﻿module Queries.Package
 
 open System
+open Chiron
+open Chiron.Operators
 
 module List =
     open Railroad
@@ -14,17 +16,24 @@ module List =
                      Description: string option
                      CreatedAt : DateTime
                      UpdatedAt : DateTime }
+      with static member ToJson(x : Package) =
+               Json.write "Name" x.Name
+            *> Json.write "id" x.Id
+            *> Json.write "description" x.Description
+            *> Json.write "createdAt" x.CreatedAt
+            *> Json.write "updatedAt" x.UpdatedAt
 
     type QueryResult =  { Items : Package list
                           Total : int }
+        with static member ToJson(x : QueryResult) =
+               Json.write "items" x.Items
+            *> Json.write "total" x.Total
 
     let handle getPackageList (query : Query) : Result<QueryResult> = 
         getPackageList query
 
 module Details =
     open Railroad
-    open Chiron
-    open Chiron.Operators
 
     type Query = { PackageId : Guid}    
 

@@ -1,5 +1,6 @@
 FSharp.Core
 Microsoft.Owin
+Microsoft.Owin.Cors
 Microsoft.Owin.Security
 Microsoft.Owin.Security.OAuth
 Newtonsoft.Json

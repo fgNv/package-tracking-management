@@ -1,7 +1,7 @@
 CREATE TABLE device
 (
   id uuid NOT NULL,
-  name character(100) NOT NULL,
+  name character varying(100) NOT NULL,
   "cretorId" uuid NOT NULL,
   CONSTRAINT "PK_device" PRIMARY KEY (id),
   CONSTRAINT "FK_device_creator" FOREIGN KEY ("cretorId")

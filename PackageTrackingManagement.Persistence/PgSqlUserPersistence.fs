@@ -25,7 +25,7 @@ let getUserByUserName userName =
     handleDatabaseException ( fun id -> 
                                 let context = getContext()
                                 let user = context.Public.User |> 
-                                           Seq.tryFind (fun u -> u.UserName = userName)
+                                           Seq.tryFind (fun a -> a.UserName = userName)
                                 match user with
                                     | Some u -> Some { UserName = u.UserName
                                                        Name = u.Name

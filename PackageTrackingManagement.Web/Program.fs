@@ -2,6 +2,7 @@
 open Models
 open Commands.User.Create
 open System
+open System.Net
 
 [<EntryPoint>]
 let main argv =     
@@ -15,6 +16,9 @@ let main argv =
                                   CreatorId = Commands.User.Create.machineId } 
         |> ignore
 
+    let config = { defaultConfig with 
+                    bindings=[HttpBinding.create HTTP IPAddress.Any 8090us] }
+
     let app = Routes.apiRoutes
-    startWebServer defaultConfig app
+    startWebServer config app
     0 
