@@ -9,8 +9,6 @@ open System
 open Railroad
 open System.Security.Claims
 
-let private hostAppName = "bearerTokenAuthentication"
-
 type private SimpleAuthenticationProvider<'a>(validateUserCredentials, 
                                               getCustomClaims : 'a -> (string * string) list) =
     inherit OAuthAuthorizationServerProvider()
@@ -46,6 +44,6 @@ let authorizationServerMiddleware validateUserCredentials getCustomClaims =
     let builder = new AppBuilder() :> IAppBuilder
     builder.UseOAuthAuthorizationServer(serverOptions) |> ignore
     builder.UseCors(Microsoft.Owin.Cors.CorsOptions.AllowAll) |> ignore
-    builder.Properties.["host.AppName"] <- hostAppName
+    builder.Properties.["host.AppName"] <- Guid.NewGuid().ToString()
     let owinApp = builder.Build()
-    OwinApp.ofAppFunc "/" owinApp
+    OwinApp.ofAppFunc "" owinApp

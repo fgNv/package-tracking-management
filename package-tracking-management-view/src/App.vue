@@ -1,17 +1,19 @@
-<template>  
-  <dashboard v-if="authenticated"></dashboard>  
+<template>
+  <application v-if="authenticated"></application>
   <login v-else="" v-on:user-authenticated-successfully="grantAccess()"></login>
 </template>
 
 <script>
   import Login from './components/Login'
   import Dashboard from './components/Dashboard'
+  import Application from './components/Application'
 
   export default {
     name: 'app',
     components: {
       Login,
-      Dashboard
+      Dashboard,
+      Application
     },
     data () {
       return {'authenticated': false}

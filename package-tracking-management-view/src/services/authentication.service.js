@@ -9,8 +9,7 @@ export default class AuthenticationService {
     data['grant_type'] = 'password'
     return Vue.http
               .post('http://localhost:8090/' + 'token',
-                    data,
-                    {headers: {'Content-Type': 'application/x-www-form-urlencoded'}})
+                    data)
               .then((r) => {
                 console.log('success')
                 return r

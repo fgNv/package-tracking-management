@@ -37,9 +37,13 @@ let apiRoutes =
         ResourceProtection.protectResource [|Suave.Authentication.UserNameKey; Claims.UserIdKey|]
 
     choose [ allow_cors
-             path "/token" >=> AuthorizationServer.authorizationServerMiddleware 
-                               User.ChallengeCredentials
-                               Claims.getCustomClaims
+             path "/token" >=> context(fun ctx ->
+                                let emptyCtx = {ctx with userState = Map.empty}
+                                let middleware = 
+                                        AuthorizationServer.authorizationServerMiddleware 
+                                           User.ChallengeCredentials
+                                           Claims.getCustomClaims
+                                (fun ignore -> middleware(emptyCtx)) )
              protectResource( pathScan "/package/%s" (fun id ->
                     let parsedId = System.Guid.Parse id
                     let result = Application.Package.GetDetails {PackageId = parsedId}
@@ -57,7 +61,7 @@ let apiRoutes =
                     GET >=> request (fun request ->    
                         let page = match request.queryParam "page" with
                                         | Choice1Of2 p -> Int32.Parse(p)
-                                        | Choice2of2 -> 1
+                                        | Choice2of2  -> 1
 
                         let itemsPerPage = match request.queryParam "itemsPerPage" with
                                            | Choice1Of2 p -> Int32.Parse(p)
