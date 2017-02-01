@@ -61,15 +61,15 @@ let apiRoutes =
                     GET >=> request (fun request ->    
                         let page = match request.queryParam "page" with
                                         | Choice1Of2 p -> Int32.Parse(p)
-                                        | Choice2of2  -> 1
+                                        | choice2of2 -> 1
 
                         let itemsPerPage = match request.queryParam "itemsPerPage" with
                                            | Choice1Of2 p -> Int32.Parse(p)
-                                           | Choice2of2 -> 20
+                                           | choice2of2 -> 20
 
                         let nameFilter = match request.queryParam "nameFilter" with
                                            | Choice1Of2 n -> Some n
-                                           | Choice2of2 -> None
+                                           | choice2of2 -> None
 
                         let query = {Page = page 
                                      ItemsPerPage = itemsPerPage

@@ -1,11 +1,5 @@
 <template>
-  <div class="ui segment">
-    <div class="ui dimmer">
-        <div class="ui text loader">
-          Carregando
-        </div>
-    </div>
-    <div class="ui middle aligned center aligned grid">
+    <div class="ui middle aligned center aligned grid login">
       <div class="column">
         <h2 class="ui teal image header">
           <img src="../assets/logo.png" class="image">
@@ -38,14 +32,12 @@
         </div>
       </div>
     </div>
-  </div>
 </template>
 
 <script>
 import $ from 'jquery'
-import AuthenticationService from 'services/authentication.service.js'
-
-var authenticationService = new AuthenticationService()
+import authenticationService from 'services/authentication.service.js'
+import Moment from 'moment'
 
 export default {
   name: 'login',
@@ -60,13 +52,17 @@ export default {
       $('.dimmer').dimmer('show')
       authenticationService.authenticate(this.request)
                            .then((r) => {
-                             this.$emit('user-authenticated-successfully')
+                             var expiresAt = new Moment()
+                             expiresAt.add(r.body.expires_in, 'seconds')
+                             r.body.expiresAt = expiresAt
+                             this.$localStorage.set('access_data', r.body)
+                             this.$router.replace(this.$route.query.redirect || '/')
                            })
                            .catch((err) => {
                              console.log('err on challengeCredentials', err)
                            })
                            .finally(() => {
-                             $('.segment').dimmer('hide')
+                             $('.dimmer').dimmer('hide')
                            })
     }
   }
@@ -74,6 +70,9 @@ export default {
 </script>
 
 <style scoped>
+div {
+      background-color: #DADADA;
+}
 body > .segment, div > .grid {
   height: 100%;
 }
