@@ -3,6 +3,7 @@ open Models
 open Commands.User.Create
 open System
 open System.Net
+open Suave.Successful
 
 [<EntryPoint>]
 let main argv =     
@@ -19,6 +20,5 @@ let main argv =
     let config = { defaultConfig with 
                     bindings=[HttpBinding.create HTTP IPAddress.Any 8090us] }
 
-    let app = Routes.apiRoutes
-    startWebServer config app
+    startWebServer config Routes.apiRoutes
     0 

@@ -2,7 +2,7 @@
   <div class="ui fixed inverted menu">
     <div class="ui container">
       <a href="#" class="header item">
-        <img class="logo" src="../assets/logo.png">
+        <img class="logo" src="../../assets/logo.png">
         Project Name
       </a>
       <router-link class="item" to="/">Home</router-link>
@@ -24,6 +24,7 @@
           <a class="item" href="#">Editar perfil</a>
         </div>
       </div>
+      <router-link class="item" to="/logout">Logout</router-link>
     </div>
   </div>
 </template>

@@ -36,8 +36,7 @@
 
 <script>
 import $ from 'jquery'
-import authenticationService from 'services/authentication.service.js'
-import Moment from 'moment'
+import authenticationService from 'services/Authentication.js'
 
 export default {
   name: 'login',
@@ -51,11 +50,8 @@ export default {
     challengeCredentials: function (ev) {
       $('.dimmer').dimmer('show')
       authenticationService.authenticate(this.request)
-                           .then((r) => {
-                             var expiresAt = new Moment()
-                             expiresAt.add(r.body.expires_in, 'seconds')
-                             r.body.expiresAt = expiresAt
-                             this.$localStorage.set('access_data', r.body)
+                           .then(response => {
+                             this.$localStorage.set('access_data', response)
                              this.$router.replace(this.$route.query.redirect || '/')
                            })
                            .catch((err) => {
@@ -73,7 +69,7 @@ export default {
 div {
       background-color: #DADADA;
 }
-body > .segment, div > .grid {
+body > .segment, div > .grid, .view {
   height: 100%;
 }
 .image {

@@ -17,7 +17,7 @@ module List =
                      CreatedAt : DateTime
                      UpdatedAt : DateTime }
       with static member ToJson(x : Package) =
-               Json.write "Name" x.Name
+               Json.write "name" x.Name
             *> Json.write "id" x.Id
             *> Json.write "description" x.Description
             *> Json.write "createdAt" x.CreatedAt

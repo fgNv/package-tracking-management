@@ -12,9 +12,12 @@ export default {
     data['grant_type'] = 'password'
 
     return Vue.http
-              .post('http://localhost:8090/' + 'token', data)
+              .post('token', data)
               .then((r) => {
-                return r
+                var response = r.body
+                var expiresAt = new Moment().add(response.expires_in, 'seconds')
+                response.expiresAt = expiresAt
+                return response
               })
               .catch((err) => {
                 window.alert('error on authentication')
@@ -23,6 +26,10 @@ export default {
   },
   logout () {
     window.localStorage.removeItem('access_data')
+  },
+  getToken () {
+    var accessData = JSON.parse(window.localStorage.getItem('access_data'))
+    return accessData.access_token
   },
   isLoggedIn () {
     var accessData = JSON.parse(window.localStorage.getItem('access_data'))

@@ -1,0 +1,9 @@
+{
+	"folders":
+	[
+		{
+			"path": ".",
+			"folder_exclude_patterns": [".git", ".paket", ".vs", "node_modules", "packages"]
+		}
+	]
+}
