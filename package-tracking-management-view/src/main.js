@@ -10,8 +10,9 @@ import Login from './components/Login'
 import VueLocalStorage from 'vue-localstorage'
 import authenticationService from 'services/Authentication.js'
 
-require('semantic-ui-css/semantic.css')
-require('semantic-ui-css/semantic.js')
+import 'toastr/build/toastr.css'
+import 'semantic-ui-css/semantic.css'
+import 'semantic-ui-css/semantic.js'
 
 Vue.use(VueRouter)
 Vue.use(VueLocalStorage)
@@ -21,7 +22,6 @@ Vue.http.interceptors.push((request, next) => {
   if (authenticationService.isLoggedIn()) {
     request.headers.set('Authorization', 'bearer ' + authenticationService.getToken())
   }
-  console.log('request', request)
   request.headers.set('Accept', 'application/json')
   next()
 })
@@ -52,6 +52,8 @@ const routes = [
 ]
 
 const router = new VueRouter({
+  history: true,
+  transitionOnLoad: true,
   routes
 })
 

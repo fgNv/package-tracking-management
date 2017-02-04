@@ -15,9 +15,11 @@
          </tr>
       </thead>
       <tbody>
-       <tr v-for="item in items">
+       <tr v-for="(item, index) in items">
          <td>
-          <div class="ui ribbon label"> {{item.name}} </div>
+          <div v-bind:class="{'ui ribbon label': index == 0}">
+            {{item.name}}
+          </div>
          </td>
          <td> {{item.updatedAt}} </td>
          <td>Cell</td>

@@ -491,6 +491,22 @@
 	},
 	"buffers":
 	[
+		{
+			"file": "package-tracking-management-view/src/components/Package/PackagesList.vue",
+			"settings":
+			{
+				"buffer_size": 1820,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "package-tracking-management-view/src/services/Package.js",
+			"settings":
+			{
+				"buffer_size": 377,
+				"line_ending": "Unix"
+			}
+		}
 	],
 	"build_system": "",
 	"build_system_choices":
@@ -604,29 +620,35 @@
 	"expanded_folders":
 	[
 		"/C/Projects/PackageTrackingManagement",
+		"/C/Projects/PackageTrackingManagement/package-tracking-management-view",
 		"/C/Projects/PackageTrackingManagement/package-tracking-management-view/src",
 		"/C/Projects/PackageTrackingManagement/package-tracking-management-view/src/components",
-		"/C/Projects/PackageTrackingManagement/package-tracking-management-view/src/components/Layout",
 		"/C/Projects/PackageTrackingManagement/package-tracking-management-view/src/components/Package",
 		"/C/Projects/PackageTrackingManagement/package-tracking-management-view/src/services"
 	],
 	"file_history":
 	[
+		"/C/Projects/PackageTrackingManagement/package-tracking-management-view/src/main.js",
+		"/C/Projects/PackageTrackingManagement/package-tracking-management-view/src/services/Authentication.js",
+		"/C/Projects/PackageTrackingManagement/package-tracking-management-view/src/components/Login.vue",
+		"/C/Projects/PackageTrackingManagement/package-tracking-management-view/src/services/Package.js",
+		"/C/Projects/PackageTrackingManagement/package-tracking-management-view/build/webpack.base.conf.js",
+		"/C/Projects/PackageTrackingManagement/package-tracking-management-view/src/components/Package/PackageForm.vue",
+		"/C/Projects/PackageTrackingManagement/package-tracking-management-view/src/App.vue",
+		"/C/Projects/PackageTrackingManagement/package-tracking-management-view/node_modules/string-replace-webpack-plugin/loader.js",
+		"/C/Projects/PackageTrackingManagement/package-tracking-management-view/src/components/Package/PackagesList.vue",
+		"/C/Projects/PackageTrackingManagement/package-tracking.sublime-project",
 		"/C/Projects/PackageTrackingManagement/package-tracking-management-view/src/components/Layout/Header.vue",
 		"/C/Projects/PackageTrackingManagement/package-tracking-management-view/src/components/Layout/Footer.vue",
-		"/C/Projects/PackageTrackingManagement/package-tracking-management-view/src/App.vue",
 		"/C/Projects/PackageTrackingManagement/package-tracking-management-view/src/components/Dashboard.vue",
 		"/C/Projects/PackageTrackingManagement/package-tracking-management-view/src/components/PackagesList.vue",
 		"/C/Projects/PackageTrackingManagement/package-tracking-management-view/src/components/Application.vue",
 		"/C/Projects/PackageTrackingManagement/package-tracking-management-view/src/services/authentication.service.js",
 		"/C/Projects/PackageTrackingManagement/package-tracking-management-view/.eslintrc.js",
-		"/C/Projects/PackageTrackingManagement/package-tracking-management-view/src/components/Login.vue",
-		"/C/Projects/PackageTrackingManagement/package-tracking-management-view/src/main.js",
 		"/C/Projects/PackageTrackingManagement/package-tracking-management-view/src/components/Header.vue",
 		"/C/Projects/PackageTrackingManagement/package-tracking-management-view/index.html",
 		"/C/Projects/PackageTrackingManagement/package-tracking-management-view/src/components/Footer.vue",
 		"/C/Projects/PackageTrackingManagement/package-tracking-management-view/node_modules/vue-localstorage/package.json",
-		"/C/Projects/PackageTrackingManagement/package-tracking-management-view/build/webpack.base.conf.js",
 		"/C/Users/Felipe/Desktop/anux.html",
 		"/C/Projects/PackageTrackingManagement/Migrations/2017-01-28-16-32__create-package-table.sql",
 		"/C/Projects/PackageTrackingManagement/Migrations/2017-01-28-17-07__points-and-device-tables-creation.sql",
@@ -733,13 +755,7 @@
 		"/C/Projects/Dataclick/ingresso-de-vantagens-2/app/Globals/Ean13.php",
 		"/C/Projects/Dataclick/ingresso-de-vantagens-2/flyway-3.2.1/sql/201602041338__trigger-venda-ingresso-codigo-verificador.sql",
 		"/C/Projects/Dataclick/ingresso-de-vantagens-2/flyway-3.2.1/sql/201602040945__sequencial-venda-ingresso.sql",
-		"/C/Projects/Dataclick/ingresso-de-vantagens-2/ingressoDump.sql",
-		"/C/Projects/Dataclick/ingresso-de-vantagens-2/resources/views/vendasIngresso/index.blade.php",
-		"/C/Projects/Dataclick/ingresso-de-vantagens-2/resources/assets/js/controllers/vendasIngresso/VendaIngressoEventosController.js",
-		"/C/Projects/Dataclick/ingresso-de-vantagens-2/flyway-3.2.1/sql/201601280928__trigger-verificacao-capacidade-venda-ingresso.sql",
-		"/C/Projects/Dataclick/ingresso-de-vantagens-2/app/Entities/Evento.php",
-		"/C/Projects/Dataclick/ingresso-de-vantagens-2/flyway-3.2.1/sql/201602040834__adicao-apolice-no-evento.sql",
-		"/C/Projects/Dataclick/ingresso-de-vantagens-2/resources/views/eventos/index.blade.php"
+		"/C/Projects/Dataclick/ingresso-de-vantagens-2/ingressoDump.sql"
 	],
 	"find":
 	{
@@ -763,6 +779,11 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			"localhost:8090",
+			"services/authentication.service.js",
+			"StringReplacePlugin",
+			"css",
+			"console.log",
 			"PackagesList",
 			"VueLocalStorage",
 			"logo",
@@ -885,12 +906,7 @@
 			"number_of_persons_to_display_if_more_than_max",
 			"et al",
 			"et ",
-			"filtro",
-			"request",
-			"</option>",
-			"loadmo",
-			"80",
-			"4"
+			"filtro"
 		],
 		"highlight": true,
 		"in_selection": false,
@@ -922,8 +938,76 @@
 	"groups":
 	[
 		{
+			"selected": 0,
 			"sheets":
 			[
+				{
+					"buffer": 0,
+					"file": "package-tracking-management-view/src/components/Package/PackagesList.vue",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 1820,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								513,
+								513
+							]
+						],
+						"settings":
+						{
+							"auto_complete": false,
+							"editorconfig": true,
+							"ensure_newline_at_eof_on_save": true,
+							"syntax": "Packages/Vue Syntax Highlight/vue.tmLanguage",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true,
+							"trim_trailing_white_space_on_save": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 57.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 0,
+					"type": "text"
+				},
+				{
+					"buffer": 1,
+					"file": "package-tracking-management-view/src/services/Package.js",
+					"semi_transient": true,
+					"settings":
+					{
+						"buffer_size": 377,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								217,
+								221
+							]
+						],
+						"settings":
+						{
+							"editorconfig": true,
+							"ensure_newline_at_eof_on_save": true,
+							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true,
+							"trim_trailing_white_space_on_save": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 1,
+					"type": "text"
+				}
 			]
 		}
 	],
@@ -983,6 +1067,10 @@
 		"last_filter": "",
 		"selected_items":
 		[
+			[
+				"authent",
+				"package-tracking-management-view\\src\\services\\Authentication.js"
+			],
 			[
 				"authenticationservice",
 				"package-tracking-management-view\\src\\services\\authentication.service.js"
