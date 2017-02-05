@@ -57,9 +57,17 @@ let getPackageDetails =
     handleDatabaseException
         (fun (q : Queries.Package.Details.Query) ->
             let context = getContext()            
-            query { for p in context.Public.Package do
-                    where (p.Id = q.PackageId)
-                    select ( mapPackageDetails p ) } |> Seq.tryHead
+            //let satanas = context.Public.Package |> Seq.tryFind(fun p -> p.Id = q.PackageId)
+            //match satanas with
+            //    | Some s -> Some (mapPackageDetails s)
+            //    | None -> None
+
+            let result = query { for p in context.Public.Package do
+                                 where (p.Id = q.PackageId)
+                                 select p } |> Seq.tryHead 
+            match result with 
+                | Some r -> Some (mapPackageDetails r)
+                | None -> None
         )    
 
 let insertPackage =

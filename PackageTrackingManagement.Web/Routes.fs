@@ -31,36 +31,46 @@ let apiRoutes =
     let setJsonHeaders = 
         setHeader "Content-type" "application/json"
 
-    let corsConfig = { defaultCORSConfig with allowedUris = InclusiveOption.All }
+    let corsConfig = { defaultCORSConfig with allowedUris = InclusiveOption.All
+                                              allowedMethods = InclusiveOption.Some [HttpMethod.DELETE; HttpMethod.GET; HttpMethod.POST; HttpMethod.PUT; HttpMethod.OPTIONS]  }
+
+    let fromQueryString transformation defaultValue (request : HttpRequest) paramName =
+        match request.queryParam paramName with
+            | Choice1Of2 p -> transformation p
+            | choice2of2 -> defaultValue
+
+    let intFromQueryString = fromQueryString Int32.Parse
+    let optionFromQueryString = fromQueryString Some None
 
     let jsonEndpoints = 
         protectResource (
             choose [             
-                 pathScan "/package/%s" (fun id ->
-                     let parsedId = System.Guid.Parse id
-                     let result = Application.Package.GetDetails {PackageId = parsedId}
+                 pathScan "/package/%s" 
+                   (fun id -> 
+                      let parsedId = System.Guid.Parse id
+                      choose [ 
+                        GET >=> (   
+                            let result = Application.Package.GetDetails {PackageId = parsedId}
 
-                     match result with 
-                         | Success package ->
-                             match package with 
-                                 | Some p -> OK (QueryResult.serializeObj p)
-                                 | None -> 
-                                     NOT_FOUND (Sentences.Validation.IdMustReferToExistingPackage)
-                         | Error (_,_) -> INTERNAL_ERROR (Sentences.Error.DatabaseFailure) )                                           
+                            match result with 
+                                | Success package ->
+                                    match package with 
+                                        | Some p -> OK (QueryResult.serializeObj p)
+                                        | None -> 
+                                           NOT_FOUND (Sentences.Validation.IdMustReferToExistingPackage)
+                                | Error (_,_) -> INTERNAL_ERROR (Sentences.Error.DatabaseFailure) )                              
+                        DELETE >=> context (fun ctx ->
+                                               let userId = Claims.getUserIdFromContext ctx  
+                                               let cmd = {Id = parsedId; UserId = userId} : Commands.Package.Delete.Command
+                                               match Package.Delete cmd with
+                                                | Success _ -> NO_CONTENT
+                                                | Error(title, errs) -> INTERNAL_ERROR(title) ) ])
                  path "/package" >=>
                      choose [ 
                         GET >=> request (fun request ->    
-                            let page = match request.queryParam "page" with
-                                            | Choice1Of2 p -> Int32.Parse(p)
-                                            | choice2of2 -> 1
-
-                            let itemsPerPage = match request.queryParam "itemsPerPage" with
-                                               | Choice1Of2 p -> Int32.Parse(p)
-                                               | choice2of2 -> 20
-
-                            let nameFilter = match request.queryParam "nameFilter" with
-                                               | Choice1Of2 n -> Some n
-                                               | choice2of2 -> None
+                            let page = intFromQueryString 1 request "page" 
+                            let itemsPerPage = intFromQueryString 20 request "itemsPerPage"
+                            let nameFilter = optionFromQueryString request "nameFilter" 
 
                             let query = { Page = page 
                                           ItemsPerPage = itemsPerPage

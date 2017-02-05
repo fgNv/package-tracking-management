@@ -1,8 +1,4 @@
-﻿-- Table: "user"
-
--- DROP TABLE "user";
-
-CREATE TABLE "user"
+﻿CREATE TABLE "user"
 (
   id uuid NOT NULL,
   "userName" character varying(80) NOT NULL,

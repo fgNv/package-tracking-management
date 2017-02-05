@@ -64,4 +64,28 @@
     margin: 5em 0em 0em;
     padding: 5em 0em;
   }
+
+  .tooltip {
+    display: none;
+    opacity: 0;
+    transition: opacity .15s;
+    pointer-events: none;
+    padding: 4px;
+    z-index: 10000;
+  }
+
+  .tooltip .tooltip-content {
+    background: black;
+    color: white;
+    border-radius: 16px;
+    padding: 5px 10px 4px;
+  }
+
+  .tooltip.tooltip-open-transitionend {
+    display: block;
+  }
+
+  .tooltip.tooltip-after-open {
+    opacity: 1;
+  }
 </style>

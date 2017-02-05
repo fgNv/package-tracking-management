@@ -7,6 +7,7 @@ NUGET
     FParsec (1.0.2)
     FSharp.Core (4.0.0.1) - framework: >= net461
     FSharp.Data (2.3.2) - framework: >= net45
+    FSharp.Management (0.4.3)
     Microsoft.AspNet.Cors (5.2.3)
     Microsoft.Owin (3.0.1)
       Owin (>= 1.0)

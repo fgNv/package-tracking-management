@@ -4,20 +4,6 @@
       Cadastrar pacote
     </h1>
 
-    <div class='ui inline success nag'>
-      <span class='title'>
-        Pacote criado com sucesso
-      </span>
-      <i class='close icon'></i>
-    </div>
-
-    <div class='ui inline error nag'>
-      <span class='title'>
-        Falha ao criar pacote
-      </span>
-      <i class='close icon'></i>
-    </div>
-
     <form class='ui form' v-on:submit.prevent='save'>
       <h4 class='ui dividing header'>Dados do pacote</h4>
       <div class='field'>
@@ -35,7 +21,8 @@
       <button class='ui button primary' tabindex='0'>
         Salvar
       </button>
-      <router-link to='/package/list' tag='button' class='ui button secondary' tabindex='1'>
+      <router-link to='/package/list' tag='button'
+                   class='ui button secondary' tabindex='1'>
         Cancelar
       </router-link>
     </form>

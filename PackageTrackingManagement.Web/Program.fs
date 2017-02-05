@@ -7,6 +7,8 @@ open Suave.Successful
 
 [<EntryPoint>]
 let main argv =     
+
+    Migrations.updateDatabase()
     
     if not (Application.User.Exists "master") then
         Application.User.Create { UserName = "master"
