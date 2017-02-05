@@ -38,8 +38,9 @@ Target "Default" (fun _ ->
     trace "Building application..."
 )
 
-"AdaptToEnv"
-  ==> "Clean"
+//"AdaptToEnv"
+//  ==> 
+"Clean"
   ==> "BuildApp"
   ==> "Default"
 

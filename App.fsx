@@ -21,9 +21,13 @@
 #I "packages/Microsoft.Owin/lib/net45"
 #r "packages/Microsoft.Owin/lib/net45/Microsoft.Owin.dll"
 
-#r "fake-dist/PackageTrackingManagement.Domain.dll"
-#r "fake-dist/PackageTrackingManagement.Persistence.dll"
-#r "fake-dist/Suave.BearerTokenAuthentication.dll"
+//#r "fake-dist/PackageTrackingManagement.Domain.dll"
+//#r "fake-dist/PackageTrackingManagement.Persistence.dll"
+//#r "fake-dist/Suave.BearerTokenAuthentication.dll"
+
+#r "ProjectDlls/PackageTrackingManagement.Domain.dll"
+#r "ProjectDlls/PackageTrackingManagement.Persistence.dll"
+#r "ProjectDlls/Suave.BearerTokenAuthentication.dll"
 
 #load "PackageTrackingManagement.Web/Application.fs"
 #load "PackageTrackingManagement.Web/JsonParse.fs"
