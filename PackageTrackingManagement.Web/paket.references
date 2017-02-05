@@ -3,3 +3,4 @@ Suave
 Chiron
 FSharp.Data
 Microsoft.Owin
+Microsoft.Owin.Security.OAuth

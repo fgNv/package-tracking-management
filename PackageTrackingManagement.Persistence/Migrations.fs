@@ -40,7 +40,7 @@ let private getExecutedMigrations conn =
          do yield { Name = reader.GetString(0)
                     ExecutedAt = reader.GetTimeStamp(1).DateTime } ]  |> Seq.toList
 
-type FolderDiscovery = | Absolute | Relative
+type FolderDiscovery = | Absolute | Relative | Fixed of string
 
 let updateDatabase(migrationsAbsolute) =
     let connString = GetConnectionString()
@@ -53,6 +53,7 @@ let updateDatabase(migrationsAbsolute) =
          let migrationsPath = match migrationsAbsolute with
                                 | Absolute -> MigrationsAbsolute.Path 
                                 | Relative -> MigrationsRelative.``..``.Migrations.Path
+                                | Fixed path -> path
          Directory.GetFiles migrationsPath |>
          Seq.map (fun path -> { Name = Path.GetFileName path
                                 Command = File.ReadAllText path })
