@@ -1,6 +1,7 @@
 ﻿module PgSqlPackagePersistence
 
 open PgSqlPersistence
+open PgSqlProvider
 open Commands
 open System
 open Models
@@ -8,6 +9,7 @@ open Queries.User.ChallengeUserCredentials
 open NpgsqlTypes
 open FSharp.Data
 open FSharp.Data.Sql
+open PgSqlProvider
 
 let private optionToNullableString input =
     match input with

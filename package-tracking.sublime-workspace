@@ -4,6 +4,14 @@
 		"selected_items":
 		[
 			[
+				"he",
+				"height"
+			],
+			[
+				"Pa",
+				"PackageService"
+			],
+			[
 				"fun",
 				"function〔keyword〕"
 			],
@@ -492,21 +500,10 @@
 	"buffers":
 	[
 		{
-			"contents": "<template>\n  <div class='ui main text container'>\n    <h1 class='ui header'>\n      Cadastrar pacote\n    </h1>\n\n    <div class='ui inline success nag'>\n      <span class='title'>\n        Pacote criado com sucesso\n      </span>\n      <i class='close icon'></i>\n    </div>\n\n    <div class='ui inline error nag'>\n      <span class='title'>\n        Falha ao criar pacote\n      </span>\n      <i class='close icon'></i>\n    </div>\n\n    <form class='ui form' v-on:submit.prevent='save'>\n      <h4 class='ui dividing header'>Dados do pacote</h4>\n      <div class='field'>\n        <label>Nome</label>\n        <div class='two fields'>\n          <div class='field'>\n            <input type='text' v-model=\"request.name\" >\n          </div>\n        </div>\n      </div>\n      <div class='field'>\n        <label>Descrição</label>\n        <textarea rows='2' v-model=\"request.description\" ></textarea>\n      </div>\n      <button class='ui button primary' tabindex='0'>\n        Salvar\n      </button>\n      <router-link to='/package/list' tag='button'\n                   class='ui button secondary' tabindex='1'>\n        Cancelar\n      </router-link>\n    </form>\n  </div>\n</template>\n\n<script>\n  import toasterService from 'services/Toaster.js'\n  import packageService from 'services/Package.js'\n  import $ from 'jquery'\n\n  export default {\n    name: 'package-form',\n    data () {\n      return {\n        request: {\n          name: '',\n          description: ''\n        }\n      }\n    },\n    methods: {\n      save: function () {\n        $('.dimmer').dimmer('show')\n        packageService.create(this.request)\n                      .then(response => {\n                        toasterService.success('Pacote criado com sucesso')\n                        this.$router.push('/package/list')\n                      })\n                      .catch((err) => {\n                        console.log('err on create package', err)\n                        toasterService.error('Erro ao criar pacote')\n                      })\n                      .finally(() => {\n                        $('.dimmer').dimmer('hide')\n                      })\n      }\n    }\n  }\n</script>\n",
-			"file": "package-tracking-management-view/src/components/Package/PackageForm.vue",
-			"file_size": 2136,
-			"file_write_time": 131307084897783619,
+			"file": "package.json",
 			"settings":
 			{
-				"buffer_size": 2134,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "package-tracking-management-view/src/components/Package/PackagesList.vue",
-			"settings":
-			{
-				"buffer_size": 1874,
+				"buffer_size": 319,
 				"line_ending": "Unix"
 			}
 		}
@@ -624,23 +621,25 @@
 	[
 		"/C/Projects/PackageTrackingManagement",
 		"/C/Projects/PackageTrackingManagement/package-tracking-management-view",
-		"/C/Projects/PackageTrackingManagement/package-tracking-management-view/build",
+		"/C/Projects/PackageTrackingManagement/package-tracking-management-view/config",
 		"/C/Projects/PackageTrackingManagement/package-tracking-management-view/src",
-		"/C/Projects/PackageTrackingManagement/package-tracking-management-view/src/components",
-		"/C/Projects/PackageTrackingManagement/package-tracking-management-view/src/components/Package",
 		"/C/Projects/PackageTrackingManagement/package-tracking-management-view/src/services"
 	],
 	"file_history":
 	[
 		"/C/Projects/PackageTrackingManagement/package-tracking-management-view/src/main.js",
-		"/C/Projects/PackageTrackingManagement/package-tracking-management-view/src/services/Package.js",
-		"/C/Projects/PackageTrackingManagement/package-tracking-management-view/src/services/Toaster.js",
-		"/C/Projects/PackageTrackingManagement/package-tracking-management-view/src/components/Login.vue",
-		"/C/Projects/PackageTrackingManagement/package-tracking-management-view/src/components/Package/PackagesList.vue",
-		"/C/Projects/PackageTrackingManagement/package-tracking-management-view/src/services/Authentication.js",
+		"/C/Projects/PackageTrackingManagement/package-tracking-management-view/src/components/Package/PackageManualRoute.vue",
 		"/C/Projects/PackageTrackingManagement/package-tracking-management-view/build/webpack.base.conf.js",
-		"/C/Projects/PackageTrackingManagement/package-tracking-management-view/src/components/Package/PackageForm.vue",
+		"/C/Projects/PackageTrackingManagement/package-tracking-management-view/src/filters/VueDateFormat.js",
+		"/C/Projects/PackageTrackingManagement/package-tracking-management-view/src/services/Package.js",
+		"/C/Projects/PackageTrackingManagement/package-tracking-management-view/src/components/Package/PackagesList.vue",
+		"/C/Projects/PackageTrackingManagement/package-tracking-management-view/node_modules/ms/index.js",
 		"/C/Projects/PackageTrackingManagement/package-tracking-management-view/src/App.vue",
+		"/C/Projects/PackageTrackingManagement/package-tracking-management-view/src/components/Login.vue",
+		"/C/Projects/PackageTrackingManagement/package-tracking-management-view/src/components/Package/PackageForm.vue",
+		"/C/Projects/PackageTrackingManagement/package-tracking-management-view/src/filters/DateFormat.js",
+		"/C/Projects/PackageTrackingManagement/package-tracking-management-view/src/services/Toaster.js",
+		"/C/Projects/PackageTrackingManagement/package-tracking-management-view/src/services/Authentication.js",
 		"/C/Projects/PackageTrackingManagement/package-tracking-management-view/node_modules/string-replace-webpack-plugin/loader.js",
 		"/C/Projects/PackageTrackingManagement/package-tracking.sublime-project",
 		"/C/Projects/PackageTrackingManagement/package-tracking-management-view/src/components/Layout/Header.vue",
@@ -755,11 +754,7 @@
 		"/C/Projects/Dataclick/ingresso-de-vantagens-2/app/Transactions/Cliente/SaveDadosClienteTransaction.php",
 		"/C/Projects/Dataclick/ingresso-de-vantagens-2/app/Transactions/Cliente/SaveDadosClienteTransactionData.php",
 		"/C/Projects/Dataclick/ingresso-de-vantagens-2/resources/views/vendasIngresso/impressao.blade.php",
-		"/C/Projects/Dataclick/ingresso-de-vantagens-2/resources/views/vendasIngresso/impressaoScript.blade.php",
-		"/C/Projects/Dataclick/ingresso-de-vantagens-2/app/Entities/VendaIngresso.php",
-		"/C/Projects/Dataclick/ingresso-de-vantagens-2/app/Globals/Ean13.php",
-		"/C/Projects/Dataclick/ingresso-de-vantagens-2/flyway-3.2.1/sql/201602041338__trigger-venda-ingresso-codigo-verificador.sql",
-		"/C/Projects/Dataclick/ingresso-de-vantagens-2/flyway-3.2.1/sql/201602040945__sequencial-venda-ingresso.sql"
+		"/C/Projects/Dataclick/ingresso-de-vantagens-2/resources/views/vendasIngresso/impressaoScript.blade.php"
 	],
 	"find":
 	{
@@ -783,6 +778,10 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			"load",
+			"services/package.",
+			"import Moment from 'moment'",
+			"mom",
 			"\"",
 			"localhost:8090",
 			"services/authentication.service.js",
@@ -906,11 +905,7 @@
 			"clube",
 			"root",
 			"ngResource",
-			"'",
-			"{ get; set; }",
-			"number_of_persons_to_display_if_more_than_max",
-			"et al",
-			"et "
+			"'"
 		],
 		"highlight": true,
 		"in_selection": false,
@@ -948,70 +943,32 @@
 			[
 				{
 					"buffer": 0,
-					"file": "package-tracking-management-view/src/components/Package/PackageForm.vue",
+					"file": "package.json",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 2134,
+						"buffer_size": 319,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								1451,
-								1451
+								318,
+								318
 							]
 						],
 						"settings":
 						{
-							"auto_complete": false,
-							"editorconfig": true,
-							"ensure_newline_at_eof_on_save": true,
-							"syntax": "Packages/Vue Syntax Highlight/vue.tmLanguage",
+							"syntax": "Packages/JavaScript/JSON.tmLanguage",
 							"tab_size": 2,
-							"translate_tabs_to_spaces": true,
-							"trim_trailing_white_space_on_save": true
+							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 114.0,
+						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
 					"stack_index": 0,
-					"type": "text"
-				},
-				{
-					"buffer": 1,
-					"file": "package-tracking-management-view/src/components/Package/PackagesList.vue",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 1874,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								1510,
-								1510
-							]
-						],
-						"settings":
-						{
-							"auto_complete": false,
-							"editorconfig": true,
-							"ensure_newline_at_eof_on_save": true,
-							"syntax": "Packages/Vue Syntax Highlight/vue.tmLanguage",
-							"tab_size": 2,
-							"translate_tabs_to_spaces": true,
-							"trim_trailing_white_space_on_save": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 988.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 1,
 					"type": "text"
 				}
 			]
@@ -1334,7 +1291,7 @@
 	"show_open_files": true,
 	"show_tabs": true,
 	"side_bar_visible": true,
-	"side_bar_width": 398.0,
+	"side_bar_width": 289.0,
 	"status_bar_visible": true,
 	"template_settings":
 	{

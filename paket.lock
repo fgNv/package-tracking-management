@@ -4,6 +4,7 @@ NUGET
     Chiron (6.2.1)
       Aether (>= 8.0.2 < 9.0)
       FParsec (>= 1.0 < 2.0)
+    FAKE.Lib (4.50)
     FParsec (1.0.2)
     FSharp.Core (4.0.0.1) - framework: >= net461
     FSharp.Data (2.3.2) - framework: >= net45

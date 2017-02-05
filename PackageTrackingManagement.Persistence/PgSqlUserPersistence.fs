@@ -1,6 +1,7 @@
 ﻿module PgSqlUserPersistence
 
 open PgSqlPersistence
+open PgSqlProvider
 open Commands
 open System
 open Models

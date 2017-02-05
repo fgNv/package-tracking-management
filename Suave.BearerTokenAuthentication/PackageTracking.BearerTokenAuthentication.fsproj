@@ -55,7 +55,6 @@
     <Compile Include="Claims.fs" />
     <Compile Include="AuthorizationServer.fs" />
     <Compile Include="ResourceProtection.fs" />
-    <None Include="Script.fsx" />
     <Content Include="paket.references" />
     <Content Include="packages.config" />
   </ItemGroup>

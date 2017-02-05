@@ -61,7 +61,6 @@
     <Compile Include="Claims.fs" />
     <Compile Include="Routes.fs" />
     <Compile Include="Program.fs" />
-    <None Include="App.fsx" />
     <None Include="App.config" />
     <None Include="paket.references" />
   </ItemGroup>

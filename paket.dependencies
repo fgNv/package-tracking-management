@@ -3,6 +3,7 @@ source https://www.nuget.org/api/v2/
 source https://www.myget.org/F/temp-for-inter/api/v2
 
 nuget Chiron
+nuget FAKE.Lib
 nuget FSharp.Core 4.0.0.1 framework: >= net461
 nuget FSharp.Data 2.3.2 framework: >= net45
 nuget FSharp.Management
