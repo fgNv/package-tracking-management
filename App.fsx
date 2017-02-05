@@ -1,14 +1,28 @@
+#I "packages/FParsec/lib/net40-client"
+#r "packages/FParsec/lib/net40-client/FParsec.dll"
+#r "packages/FParsec/lib/net40-client/FParsecCS.dll"
+
 #I "packages/Owin/lib/net40"
 #r "packages/Owin/lib/net40/Owin.dll"
 
-#I "packages/Suave/lib/net40"
-#r "packages/Suave/lib/net40/Suave.dll"
-
+#r "packages/SQLProvider/lib/FSharp.Data.SqlProvider.dll"
+#r "packages/Npgsql/lib/net451/Npgsql.dll"
 
 #r "packages/Aether/lib/net35/Aether.dll"
 #I "packages/Aether/lib/net35"
 
+#I "packages/Chiron/lib/net40"
 #r "packages/Chiron/lib/net40/Chiron.dll"
+
+#I "packages/FSharp.Management/lib/net40"
+#r "packages/FSharp.Management/lib/net40/FSharp.Management.dll"
+
+#r "packages/Microsoft.Owin.Security/lib/net45/Microsoft.Owin.Security.dll"
+
+#r "packages/Microsoft.Owin.Security.OAuth/lib/net45/Microsoft.Owin.Security.OAuth.dll"
+
+#I "packages/Suave/lib/net40"
+#r "packages/Suave/lib/net40/Suave.dll"
 
 #r "packages/FSharp.Data/lib/net40/FSharp.Data.dll"
 
