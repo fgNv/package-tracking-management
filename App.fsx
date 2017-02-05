@@ -40,7 +40,9 @@ open System
 open System.Net
 open System.IO
 
-let frontEndDirectory = Path.Combine(__SOURCE_DIRECTORY__, "MasterObserverMapPresentation")
+let frontEndDirectory = Path.Combine(__SOURCE_DIRECTORY__, 
+                                     "package-tracking-management-view",
+                                     "dist")
 
 let config = 
     let port = System.Environment.GetEnvironmentVariable("PORT")
