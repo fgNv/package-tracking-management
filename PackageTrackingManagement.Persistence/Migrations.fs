@@ -6,9 +6,6 @@ open System
 open FSharp.Management
 open System.IO
 
-type MigrationsRelative = RelativePath<".", watch = false>
-type MigrationsAbsolute = FileSystem<"C:\Projects\PackageTrackingManagement\Migrations", watch = false>
-
 type private ExecutedMigrationItem = {
     Name : string
     ExecutedAt : DateTime
@@ -42,7 +39,7 @@ let private getExecutedMigrations conn =
 
 type FolderDiscovery = | Absolute | Relative | Fixed of string
 
-let updateDatabase(migrationsAbsolute) =
+let updateDatabase(migrationsPath) =
     let connString = GetConnectionString()
     use conn = new NpgsqlConnection(connString)
     conn.Open()
@@ -50,10 +47,7 @@ let updateDatabase(migrationsAbsolute) =
     let executedMigrations = getExecutedMigrations conn            
 
     let availableMigrations = 
-         let migrationsPath = match migrationsAbsolute with
-                                | Absolute -> MigrationsAbsolute.Path 
-                                | Relative -> MigrationsRelative.``..``.Migrations.Path
-                                | Fixed path -> path
+         
          Directory.GetFiles migrationsPath |>
          Seq.map (fun path -> { Name = Path.GetFileName path
                                 Command = File.ReadAllText path })
