@@ -58,7 +58,7 @@ open System
 open System.Net
 open System.IO
 
-Migrations.updateDatabase(Migrations.FolderDiscovery.Fixed "Migrations")
+Migrations.updateDatabase("Migrations")
 
 let frontEndDirectory = Path.Combine(__SOURCE_DIRECTORY__, 
                                      "package-tracking-management-view",
