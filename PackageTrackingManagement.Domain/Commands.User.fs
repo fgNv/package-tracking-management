@@ -25,18 +25,18 @@ module Create =
                 | Success isEmailAvailable, Success isUserNameAvailable, 
                   Success isCreatorAdministrator ->
                     seq { if String.IsNullOrWhiteSpace parameter.UserName then
-                             yield Sentences.Validation.UserNameIsRequired 
+                             yield "Sentences.Validation.UserNameIsRequired" 
                           if String.IsNullOrWhiteSpace parameter.Password then
-                             yield Sentences.Validation.PasswordIsRequired 
+                             yield "Sentences.Validation.PasswordIsRequired"
                           if not isCreatorAdministrator && parameter.CreatorId <> machineId then
-                             yield Sentences.Validation.OnlyAdministratorsMayPerformThisAction
+                             yield "Sentences.Validation.OnlyAdministratorsMayPerformThisAction"
                           if not isUserNameAvailable then
-                             yield Sentences.Validation.ThisUserNameIsNotAvailable
+                             yield "Sentences.Validation.ThisUserNameIsNotAvailable"
                           if not isEmailAvailable  then
-                             yield Sentences.Validation.ThisEmailIsNotAvailable } 
+                             yield "Sentences.Validation.ThisEmailIsNotAvailable" } 
                 | Error(_,_), _, _ 
                 | _, Error(_,_), _ 
-                | _, _, Error(_,_) -> seq { yield Sentences.Error.DatabaseFailure }
+                | _, _, Error(_,_) -> seq { yield "Sentences.Error.DatabaseFailure" }
                      
     let private assignEncryptedPassword (input : Command) =
         Success {input with Password = Models.Password.getEncryptedPassword input}
@@ -66,19 +66,19 @@ module Update =
             | Success isCreatorAdministrator, Success isEmailAvailable,
               Success isUserNameAvailable, Success userExists ->
                 seq { if String.IsNullOrWhiteSpace parameter.UserName then
-                         yield Sentences.Validation.UserNameIsRequired 
+                         yield "Sentences.Validation.UserNameIsRequired"
                       if not isCreatorAdministrator && parameter.CurrentUserId <> parameter.Id then
-                         yield Sentences.Validation.OnlyAdministratorsMayPerformThisAction
+                         yield "Sentences.Validation.OnlyAdministratorsMayPerformThisAction"
                       if not isUserNameAvailable then
-                         yield Sentences.Validation.ThisUserNameIsNotAvailable
+                         yield "Sentences.Validation.ThisUserNameIsNotAvailable"
                       if not userExists then
-                         yield Sentences.Validation.IdMustReferToAnExistingUser                     
+                         yield "Sentences.Validation.IdMustReferToAnExistingUser"
                       if not isEmailAvailable then
-                         yield Sentences.Validation.ThisEmailIsNotAvailable } 
+                         yield "Sentences.Validation.ThisEmailIsNotAvailable" } 
             | Error(_,_), _, _, _ 
             | _, Error(_,_), _, _ 
             | _, _, Error(_,_), _ 
-            | _, _, _, Error(_,_) -> seq { yield Sentences.Error.DatabaseFailure }
+            | _, _, _, Error(_,_) -> seq { yield "Sentences.Error.DatabaseFailure" }
                      
     let handle isCreatorAdministrator isEmailAvailable isUserNameAvailable userExists
                updateUser command =        
@@ -96,11 +96,11 @@ module UpdatePassword =
             match userExistsFunc parameter.Id with
                 | Success userExists ->    
                     seq { if not userExists then
-                             yield Sentences.Validation.IdMustReferToAnExistingUser
+                             yield "Sentences.Validation.IdMustReferToAnExistingUser"
                           if String.IsNullOrWhiteSpace parameter.Password then
-                             yield Sentences.Validation.PasswordIsRequired } 
+                             yield "Sentences.Validation.PasswordIsRequired" } 
                 | Error (_,_) -> 
-                    seq { yield Sentences.Error.DatabaseFailure }
+                    seq { yield "Sentences.Error.DatabaseFailure" }
     
     let private assignEncryptedPassword (input : Command) =
         Success {input with Password = Models.Password.getEncryptedPassword input}
@@ -117,8 +117,8 @@ module Delete =
         match userExistsFun parameter.Id with
             | Success userExists ->
                 seq { if not userExists then
-                         yield Sentences.Validation.IdMustReferToAnExistingUser } 
-            | Error (_,_) -> seq { yield Sentences.Error.DatabaseFailure }
+                         yield "Sentences.Validation.IdMustReferToAnExistingUser" } 
+            | Error (_,_) -> seq { yield "Sentences.Error.DatabaseFailure" }
     
     let handle userExists deleteUser command =        
         command |> Validation.validate (getErrors userExists)

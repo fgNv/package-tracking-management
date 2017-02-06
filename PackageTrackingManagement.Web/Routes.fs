@@ -57,8 +57,8 @@ let apiRoutes =
                                     match package with 
                                         | Some p -> OK (QueryResult.serializeObj p)
                                         | None -> 
-                                           NOT_FOUND (Sentences.Validation.IdMustReferToExistingPackage)
-                                | Error (_,_) -> INTERNAL_ERROR (Sentences.Error.DatabaseFailure) )                              
+                                           NOT_FOUND ("Sentences.Validation.IdMustReferToExistingPackage")
+                                | Error (_,_) -> INTERNAL_ERROR ("Sentences.Error.DatabaseFailure") )                              
                         DELETE >=> context (fun ctx ->
                                                let userId = Claims.getUserIdFromContext ctx  
                                                let cmd = {Id = parsedId; UserId = userId} : Commands.Package.Delete.Command

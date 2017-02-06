@@ -98,7 +98,7 @@ let updatePackage =
                                  p.UpdatedAt <- DateTime.Now
                                  context.SubmitUpdates()
                      | None -> 
-                        raise (new Exception(Sentences.Validation.IdMustReferToExistingPackage)) ) 
+                        raise (new Exception("Sentences.Validation.IdMustReferToExistingPackage")) ) 
 
 let deletePackage =
     handleDatabaseException 
@@ -110,7 +110,7 @@ let deletePackage =
                       | Some p -> p.Delete()
                                   context.SubmitUpdates()
                       | None -> 
-                        raise (new Exception(Sentences.Validation.IdMustReferToExistingPackage)) ) 
+                        raise (new Exception("Sentences.Validation.IdMustReferToExistingPackage")) ) 
 
 let packageExists =
     handleDatabaseException 
@@ -145,7 +145,7 @@ let deleteManualPoint =
             match point with 
                 | Some p -> p.Delete()
                             context.SubmitUpdates()
-                | None -> raise (new Exception(Sentences.Validation.IdMustReferToExistingPoint)) )
+                | None -> raise (new Exception("Sentences.Validation.IdMustReferToExistingPoint")) )
             
 let insertDevicePoint =
     handleDatabaseException
@@ -161,6 +161,6 @@ let insertDevicePoint =
             let package = context.Public.Package |> Seq.tryFind(fun p -> p.Id = cmd.PackageId)
             match package with | Some p -> p.UpdatedAt <- DateTime.Now 
                                | None -> 
-                                  raise (new Exception(Sentences.Validation.IdMustReferToExistingPackage))
+                                  raise (new Exception("Sentences.Validation.IdMustReferToExistingPackage"))
 
             context.SubmitUpdates() )

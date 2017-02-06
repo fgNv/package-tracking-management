@@ -10,7 +10,7 @@ let inline private deserializeJson builder bytes  =
            |> Json.parse
            |> builder
            |> function | Value r,_ -> Railroad.Success r 
-                       | Error e,_ -> Railroad.Error(Sentences.Error.InvalidInputContent, [e])
+                       | Error e,_ -> Railroad.Error("Sentences.Error.InvalidInputContent", [e])
 
 module CreateUserCommand =
     open Commands.User.Create

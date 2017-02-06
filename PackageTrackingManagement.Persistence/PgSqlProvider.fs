@@ -25,5 +25,5 @@ let internal handleDatabaseException f input =
         let result = f input
         Success result
     with
-        | ex -> Error (Sentences.Error.DatabaseFailure, 
+        | ex -> Error ("Sentences.Error.DatabaseFailure", 
                        Error.getExceptionMessages ex)

@@ -16,7 +16,7 @@ let private deserializeAccessType input =
     match input with 
         | "admin" -> Administrator
         | "user" -> User
-        | _ -> raise (new Exception(Sentences.Error.InvalidAccessType))
+        | _ -> raise (new Exception("Sentences.Error.InvalidAccessType"))
         
 let userExists id =
     handleDatabaseException ( fun id -> let context = getContext()
@@ -97,7 +97,7 @@ let updateUser =
                             u.UserName <- command'.UserName
                             context.SubmitUpdates()
                 | None -> 
-                    raise (new Exception(Sentences.Validation.IdMustReferToAnExistingUser)) )     
+                    raise (new Exception("Sentences.Validation.IdMustReferToAnExistingUser")) )     
 
 let updateUserPassword (command: User.UpdatePassword.Command) =
     handleDatabaseException 
@@ -108,7 +108,7 @@ let updateUserPassword (command: User.UpdatePassword.Command) =
                          match user with
                              | Some u -> u.Password <- command.Password
                                          context.SubmitUpdates()
-                             | None -> raise (new Exception(Sentences.Validation.IdMustReferToAnExistingUser)) ) command
+                             | None -> raise (new Exception("Sentences.Validation.IdMustReferToAnExistingUser")) ) command
         
 let deleteUser (command : User.Delete.Command) =
     handleDatabaseException 
@@ -118,6 +118,6 @@ let deleteUser (command : User.Delete.Command) =
                     match user with
                       | Some u -> u.Delete()
                                   context.SubmitUpdates()
-                      | None -> raise (new Exception(Sentences.Validation.IdMustReferToAnExistingUser))
+                      | None -> raise (new Exception("Sentences.Validation.IdMustReferToAnExistingUser"))
                     context.SubmitUpdates() ) command
 
