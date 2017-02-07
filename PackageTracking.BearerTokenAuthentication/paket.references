@@ -7,3 +7,4 @@ Newtonsoft.Json
 Owin
 Suave
 Microsoft.AspNet.Cors
+Owin.Security.AesDataProtectorProvider

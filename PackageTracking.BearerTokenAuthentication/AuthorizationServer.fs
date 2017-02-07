@@ -10,6 +10,7 @@ open Railroad
 open System.Security.Claims
 open Owin.Security.AesDataProtectorProvider
 open Microsoft.Owin.Security.DataProtection
+open Owin.Security.AesDataProtectorProvider.CrypticProviders
 
 let private hostAppName = "bearerTokenAuthentication"
 
@@ -47,7 +48,7 @@ let authorizationServerMiddleware validateUserCredentials getCustomClaims =
     
     let builder = new AppBuilder() :> IAppBuilder
 
-    builder.SetDataProtectionProvider(new AesDataProtectorProvider());
+    builder.SetDataProtectionProvider(new AesDataProtectorProvider(new Sha512ManagedFactory(), new Sha256ManagedFactory(), new AesManagedFactory()))
     builder.UseOAuthAuthorizationServer(serverOptions) |> ignore
     builder.UseCors(Microsoft.Owin.Cors.CorsOptions.AllowAll) |> ignore
     builder.UseAesDataProtectorProvider() |> ignore
