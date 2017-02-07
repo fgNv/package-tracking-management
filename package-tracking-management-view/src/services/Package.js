@@ -15,7 +15,7 @@ export default {
   },
   create (data) {
     return Vue.http
-              .post('package', data)
+              .post('package', data, { emulateJSON: false })
               .then((r) => {
                 return r.body
               })

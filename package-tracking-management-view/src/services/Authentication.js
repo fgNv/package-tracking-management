@@ -8,11 +8,10 @@ Vue.use(VueLocalStorage)
 
 export default {
   authenticate (data) {
-    Vue.http.options.emulateJSON = true
     data['grant_type'] = 'password'
 
     return Vue.http
-              .post('token', data)
+              .post('token', data, { emulateJSON: true })
               .then((r) => {
                 var response = r.body
                 var expiresAt = new Moment().add(response.expires_in, 'seconds')
