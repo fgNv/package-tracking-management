@@ -5,7 +5,15 @@
 #I "packages/Owin/lib/net40"
 #r "packages/Owin/lib/net40/Owin.dll"
 
+#I "packages/Microsoft.AspNet.Cors/lib/net45"
+#r "packages/Microsoft.AspNet.Cors/lib/net45/System.Web.Cors.dll"
+
+#I "packages/Microsoft.Owin.Cors/lib/net45"
+#r "packages/Microsoft.Owin.Cors/lib/net45/Microsoft.Owin.Cors.dll"
+
 #r "packages/SQLProvider/lib/FSharp.Data.SqlProvider.dll"
+
+#I "packages/Npgsql/lib/net451"
 #r "packages/Npgsql/lib/net451/Npgsql.dll"
 
 #r "packages/Aether/lib/net35/Aether.dll"
@@ -14,12 +22,18 @@
 #I "packages/Chiron/lib/net40"
 #r "packages/Chiron/lib/net40/Chiron.dll"
 
+#I "packages/Owin.Security.AesDataProtectorProvider/lib/net45"
+#r "packages/Owin.Security.AesDataProtectorProvider/lib/net45/Owin.Security.AesDataProtectorProvider.dll"
+
 #I "packages/FSharp.Management/lib/net40"
 #r "packages/FSharp.Management/lib/net40/FSharp.Management.dll"
 
+#I "packages/Microsoft.Owin.Security/lib/net45"
 #r "packages/Microsoft.Owin.Security/lib/net45/Microsoft.Owin.Security.dll"
 
+#I "packages/Microsoft.Owin.Security.OAuth/lib/net45"
 #r "packages/Microsoft.Owin.Security.OAuth/lib/net45/Microsoft.Owin.Security.OAuth.dll"
+
 
 #I "packages/Suave/lib/net40"
 #r "packages/Suave/lib/net40/Suave.dll"
@@ -58,7 +72,7 @@ open System
 open System.Net
 open System.IO
 
-Migrations.updateDatabase(__SOURCE_DIRECTORY__ + "\Migrations")
+Migrations.updateDatabase(__SOURCE_DIRECTORY__ + "/Migrations")
 
 let frontEndDirectory = Path.Combine(__SOURCE_DIRECTORY__, 
                                      "package-tracking-management-view",
@@ -67,7 +81,7 @@ let frontEndDirectory = Path.Combine(__SOURCE_DIRECTORY__,
 let config = 
     let port = System.Environment.GetEnvironmentVariable("PORT")
     let ip127  = IPAddress.Parse("127.0.0.1")
-    let ipZero = IPAddress.Parse("0.0.0.0")
+    let ipZero = IPAddress.Parse("0.0.0.0")  
 
     { defaultConfig with 
         bindings=[ (if port = null then HttpBinding.create HTTP ip127 (uint16 8080)
@@ -75,4 +89,3 @@ let config =
         homeFolder = Some(frontEndDirectory) }
         
 startWebServer config Routes.apiRoutes
-

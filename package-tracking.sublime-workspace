@@ -500,10 +500,26 @@
 	"buffers":
 	[
 		{
-			"file": "package.json",
+			"file": "App.fsx",
 			"settings":
 			{
-				"buffer_size": 319,
+				"buffer_size": 3166,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "PackageTracking.BearerTokenAuthentication/AuthorizationServer.fs",
+			"settings":
+			{
+				"buffer_size": 2511,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "PackageTrackingManagement.Web/Program.fs",
+			"settings":
+			{
+				"buffer_size": 806,
 				"line_ending": "Unix"
 			}
 		}
@@ -619,14 +635,13 @@
 	},
 	"expanded_folders":
 	[
-		"/C/Projects/PackageTrackingManagement",
-		"/C/Projects/PackageTrackingManagement/package-tracking-management-view",
-		"/C/Projects/PackageTrackingManagement/package-tracking-management-view/config",
-		"/C/Projects/PackageTrackingManagement/package-tracking-management-view/src",
-		"/C/Projects/PackageTrackingManagement/package-tracking-management-view/src/services"
+		"/home/underlost/Documents/Projects/package-tracking-management",
+		"/home/underlost/Documents/Projects/package-tracking-management/PackageTracking.BearerTokenAuthentication",
+		"/home/underlost/Documents/Projects/package-tracking-management/PackageTrackingManagement.Web"
 	],
 	"file_history":
 	[
+		"/home/underlost/Documents/Projects/package-tracking-management/package.json",
 		"/C/Projects/PackageTrackingManagement/package-tracking-management-view/src/main.js",
 		"/C/Projects/PackageTrackingManagement/package-tracking-management-view/src/components/Package/PackageManualRoute.vue",
 		"/C/Projects/PackageTrackingManagement/package-tracking-management-view/build/webpack.base.conf.js",
@@ -753,12 +768,11 @@
 		"/C/Projects/Dataclick/ingresso-de-vantagens-2/flyway-3.2.1/sql/201602051611__cliente-imagem-patrocinador.sql",
 		"/C/Projects/Dataclick/ingresso-de-vantagens-2/app/Transactions/Cliente/SaveDadosClienteTransaction.php",
 		"/C/Projects/Dataclick/ingresso-de-vantagens-2/app/Transactions/Cliente/SaveDadosClienteTransactionData.php",
-		"/C/Projects/Dataclick/ingresso-de-vantagens-2/resources/views/vendasIngresso/impressao.blade.php",
-		"/C/Projects/Dataclick/ingresso-de-vantagens-2/resources/views/vendasIngresso/impressaoScript.blade.php"
+		"/C/Projects/Dataclick/ingresso-de-vantagens-2/resources/views/vendasIngresso/impressao.blade.php"
 	],
 	"find":
 	{
-		"height": 35.0
+		"height": 23.0
 	},
 	"find_in_files":
 	{
@@ -938,30 +952,58 @@
 	"groups":
 	[
 		{
-			"selected": 0,
+			"selected": 1,
 			"sheets":
 			[
 				{
 					"buffer": 0,
-					"file": "package.json",
+					"file": "App.fsx",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 319,
+						"buffer_size": 3166,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								318,
-								318
+								211,
+								211
 							]
 						],
 						"settings":
 						{
-							"syntax": "Packages/JavaScript/JSON.tmLanguage",
-							"tab_size": 2,
+							"syntax": "Packages/Text/Plain text.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 855.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 1,
+					"type": "text"
+				},
+				{
+					"buffer": 1,
+					"file": "PackageTracking.BearerTokenAuthentication/AuthorizationServer.fs",
+					"semi_transient": true,
+					"settings":
+					{
+						"buffer_size": 2511,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Text/Plain text.tmLanguage",
+							"tab_size": 4,
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
@@ -970,13 +1012,43 @@
 					},
 					"stack_index": 0,
 					"type": "text"
+				},
+				{
+					"buffer": 2,
+					"file": "PackageTrackingManagement.Web/Program.fs",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 806,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								223,
+								223
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Text/Plain text.tmLanguage",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 2,
+					"type": "text"
 				}
 			]
 		}
 	],
 	"incremental_find":
 	{
-		"height": 27.0
+		"height": 23.0
 	},
 	"input":
 	{
@@ -1021,7 +1093,7 @@
 	"project": "package-tracking.sublime-project",
 	"replace":
 	{
-		"height": 64.0
+		"height": 42.0
 	},
 	"save_all_on_build": true,
 	"select_file":
@@ -1291,7 +1363,7 @@
 	"show_open_files": true,
 	"show_tabs": true,
 	"side_bar_visible": true,
-	"side_bar_width": 289.0,
+	"side_bar_width": 434.0,
 	"status_bar_visible": true,
 	"template_settings":
 	{

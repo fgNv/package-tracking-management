@@ -8,6 +8,8 @@ open Microsoft.Owin
 open System
 open Railroad
 open System.Security.Claims
+open Owin.Security.AesDataProtectorProvider
+open Microsoft.Owin.Security.DataProtection
 
 let private hostAppName = "bearerTokenAuthentication"
 
@@ -44,8 +46,11 @@ let authorizationServerMiddleware validateUserCredentials getCustomClaims =
                             Provider = new SimpleAuthenticationProvider<'a>(validateUserCredentials, getCustomClaims) )
     
     let builder = new AppBuilder() :> IAppBuilder
+
+    builder.SetDataProtectionProvider(new AesDataProtectorProvider());
     builder.UseOAuthAuthorizationServer(serverOptions) |> ignore
     builder.UseCors(Microsoft.Owin.Cors.CorsOptions.AllowAll) |> ignore
+    builder.UseAesDataProtectorProvider() |> ignore
     builder.Properties.["host.AppName"] <- hostAppName
     let owinApp = builder.Build()
     OwinApp.ofAppFunc "/" owinApp

@@ -58,7 +58,7 @@ let apiRoutes =
                                         | Some p -> OK (QueryResult.serializeObj p)
                                         | None -> 
                                            NOT_FOUND ("Sentences.Validation.IdMustReferToExistingPackage")
-                                | Error (_,_) -> INTERNAL_ERROR ("Sentences.Error.DatabaseFailure") )                              
+                                | Error (_,_) -> INTERNAL_ERROR ("Sentences.Error.DatabaseFailure") )
                         DELETE >=> context (fun ctx ->
                                                let userId = Claims.getUserIdFromContext ctx  
                                                let cmd = {Id = parsedId; UserId = userId} : Commands.Package.Delete.Command
@@ -98,7 +98,9 @@ let apiRoutes =
                                                                User.Create) ) ] 
         ] )
         
-    choose [ OPTIONS >=> cors corsConfig  
+    choose [ OPTIONS >=> cors corsConfig
+             GET >=> path "/" >=> 
+                Files.browseFileHome "index.html"
              path "/token" >=> context(fun ctx ->
                                     let emptyCtx = {ctx with userState = Map.empty}
                                     let middleware = 
@@ -106,5 +108,7 @@ let apiRoutes =
                                                User.ChallengeCredentials
                                                Claims.getCustomClaims
                                     (fun ignore -> middleware(emptyCtx)) )
-             jsonEndpoints >=> setCORSHeaders >=> setJsonHeaders
-             NOT_FOUND "no resource matches the request" ]
+             Files.browseHome
+             jsonEndpoints >=> setCORSHeaders >=> setJsonHeaders   
+             NOT_FOUND ("no resource matches this path")
+          ]
