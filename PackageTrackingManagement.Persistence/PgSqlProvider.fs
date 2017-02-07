@@ -8,7 +8,7 @@ open System
 
 
 [<Literal>]
-let private ResolutionPath = @"..\..\..\packages\Npgsql\lib\net451\Npgsql.dll"
+let private ResolutionPath = @"..\packages\Npgsql\lib\net451\Npgsql.dll"
 
 type internal PgsqlAccess = SqlDataProvider<Common.DatabaseProviderTypes.POSTGRESQL,
                                             ConnectionString,
