@@ -26,8 +26,11 @@ NUGET
       Owin (>= 1.0)
     Npgsql (3.1.9) - framework: >= net45
     Owin (1.0)
+    Owin.Security.AesDataProtectorProvider (1.1)
+      Microsoft.Owin.Security (>= 3.0.1)
     SQLProvider (1.0.41) - framework: >= net45
     Suave (2.0.2) - framework: >= net461
+      FSharp.Core (>= 4.0.0.1) - framework: >= net10, netstandard10, netstandard11, netstandard12, netstandard13, netstandard14, netstandard15
   remote: https://www.myget.org/F/aspnetvnext/api/v2
     Microsoft.CSharp (4.3.0) - framework: >= netstandard10
       System.Collections (>= 4.3) - framework: dnxcore50, >= netstandard13
