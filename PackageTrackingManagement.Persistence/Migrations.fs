@@ -3,7 +3,6 @@
 open PgSqlPersistence
 open Npgsql
 open System
-open FSharp.Management
 open System.IO
 
 type private ExecutedMigrationItem = {

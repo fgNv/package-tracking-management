@@ -9,6 +9,8 @@ open Microsoft.Owin.Builder
 open Microsoft.Owin.Security.OAuth
 open Microsoft.Owin.Security.Infrastructure
 open Railroad
+open Owin.Security.AesDataProtectorProvider
+open Owin.Security.AesDataProtectorProvider.CrypticProviders
 
 let private hostAppName = "bearerTokenAuthentication"
 
@@ -16,6 +18,12 @@ let private buildDefaultBearerOptions ()=
     let app = new AppBuilder() :> IAppBuilder        
     app.Properties.["host.AppName"] <- hostAppName
 
+    app.SetDataProtectionProvider(new AesDataProtectorProvider(
+                                        new Sha512ManagedFactory(), 
+                                        new Sha256ManagedFactory(), 
+                                        new AesManagedFactory()))
+    app.UseAesDataProtectorProvider() |> ignore      
+    
     let typeDef = typedefof<OAuthAuthorizationServerMiddleware>
     let defaultDataProtector = app.CreateDataProtector(typeDef.Namespace, "Access_Token", "v1")
     
@@ -23,7 +31,8 @@ let private buildDefaultBearerOptions ()=
     let defaultOptions = new OAuthBearerAuthenticationOptions(
                                         AccessTokenProvider = new AuthenticationTokenProvider(),
                                         AccessTokenFormat = defaultAccessTokenFormat,
-                                        Provider = new OAuthBearerAuthenticationProvider() )        
+                                        Provider = new OAuthBearerAuthenticationProvider() )  
+
     app.UseOAuthBearerAuthentication(defaultOptions) |> ignore
     defaultOptions
 

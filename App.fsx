@@ -74,6 +74,15 @@ open System.IO
 
 Migrations.updateDatabase(__SOURCE_DIRECTORY__ + "/Migrations")
 
+if not (Application.User.Exists "master") then
+        Application.User.Create { UserName = "master"
+                                  Name = "Master"
+                                  Email = "felipegarcia156@hotmail.com"
+                                  Password = "777888"
+                                  AccessType = Models.AccessType.Administrator
+                                  CreatorId = Commands.User.Create.machineId } 
+        |> ignore
+
 let frontEndDirectory = Path.Combine(__SOURCE_DIRECTORY__, 
                                      "package-tracking-management-view",
                                      "dist")
