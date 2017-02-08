@@ -20,12 +20,12 @@ let internal getContext() =
         | true ->  System.Console.WriteLine("mano ):")
                    PgsqlAccess.GetDataContext()
         | false ->  let pathSeparator = Path.PathSeparator.ToString()
-                    let resolutionPath = __SOURCE_DIRECTORY__ + pathSeparator +
-                                              "packages" + pathSeparator +
-                                              "Npgsql" + pathSeparator +
-                                              "lib" + pathSeparator +
-                                              "net451" + pathSeparator +
-                                              "Npgsql.dll"
+                    let resolutionPath = Path.Combine(Environment.CurrentDirectory, 
+                                                        "packages",
+                                                        "Npgsql",
+                                                        "lib",
+                                                        "net451", 
+                                                        "Npgsql.dll")
                     System.Console.WriteLine("relative path : =>" + resolutionPath)
                     PgsqlAccess.GetDataContext(connString, resolutionPath )
         
