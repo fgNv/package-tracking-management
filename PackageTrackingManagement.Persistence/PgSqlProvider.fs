@@ -7,27 +7,16 @@ open FSharp.Data.Sql
 open System
 open System.IO
 
-[<Literal>]
-let private ResolutionPath = @"/app/packages/Npgsql/lib/net451/Npgsql.dll"
 
 type internal PgsqlAccess = SqlDataProvider<Common.DatabaseProviderTypes.POSTGRESQL,
-                                            ConnectionString,
-                                            ResolutionPath = ResolutionPath>
+                                            ConnectionString>
                                                
 let internal getContext() =
     let connString = Environment.GetEnvironmentVariable("package_tracking_management_conn")
     match String.IsNullOrWhiteSpace connString with
         | true ->  System.Console.WriteLine("mano ):")
                    PgsqlAccess.GetDataContext()
-        | false ->  let pathSeparator = Path.PathSeparator.ToString()
-                    let resolutionPath = Path.Combine(Environment.CurrentDirectory, 
-                                                        "packages",
-                                                        "Npgsql",
-                                                        "lib",
-                                                        "net451", 
-                                                        "Npgsql.dll")
-                    System.Console.WriteLine("relative path : =>" + resolutionPath)
-                    PgsqlAccess.GetDataContext(connString, resolutionPath )
+        | false -> PgsqlAccess.GetDataContext(connString )
         
 let internal handleDatabaseException f input =
     try
