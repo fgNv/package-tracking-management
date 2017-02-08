@@ -12,11 +12,13 @@ type internal PgsqlAccess = SqlDataProvider<Common.DatabaseProviderTypes.POSTGRE
                                             ConnectionString>
                                                
 let internal getContext() =
+    let resolutionPath = Environment.GetEnvironmentVariable("npgsql_resolution_path")
+    System.Console.WriteLine("resolution path -> " + resolutionPath)
     let connString = Environment.GetEnvironmentVariable("package_tracking_management_conn")
     match String.IsNullOrWhiteSpace connString with
         | true ->  System.Console.WriteLine("mano ):")
                    PgsqlAccess.GetDataContext()
-        | false -> PgsqlAccess.GetDataContext(connString )
+        | false -> PgsqlAccess.GetDataContext(connString, resolutionPath)
         
 let internal handleDatabaseException f input =
     try
