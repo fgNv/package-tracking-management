@@ -13,6 +13,17 @@ export default {
                 throw err
               })
   },
+  update (data) {
+    return Vue.http
+              .put('package', data, { emulateJSON: false })
+              .then((r) => {
+                return r.body
+              })
+              .catch((err) => {
+                window.alert('Erro ao atualizar pacote')
+                throw err
+              })
+  },
   create (data) {
     return Vue.http
               .post('package', data, { emulateJSON: false })

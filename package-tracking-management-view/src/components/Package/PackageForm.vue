@@ -34,31 +34,68 @@
   import packageService from 'services/Package.js'
   import $ from 'jquery'
 
+  function create (request) {
+    return packageService.create(request)
+                         .then(response => {
+                           toasterService.success('Pacote criado com sucesso')
+                           this.$router.push('/package/list')
+                         })
+                         .catch((err) => {
+                           console.log('err on create package', err)
+                           toasterService.error('Erro ao criar pacote')
+                         })
+                         .finally(() => {
+                           $('.dimmer').dimmer('hide')
+                         })
+  }
+
+  function update (request) {
+    return packageService.update(request)
+                         .then(response => {
+                           toasterService.success('Pacote atualizado com sucesso')
+                         })
+                         .catch((err) => {
+                           console.log('err on create package', err)
+                           toasterService.error('Erro ao atualizar pacote')
+                         })
+                         .finally(() => {
+                           $('.dimmer').dimmer('hide')
+                         })
+  }
+
   export default {
     name: 'package-form',
     data () {
       return {
         request: {
           name: '',
-          description: ''
+          description: '',
+          id: null
         }
       }
     },
+    props: ['id'],
+    mounted () {
+      if (!this.id) {
+        return
+      }
+      packageService.get(this.id)
+                    .then(response => {
+                      this.request = response
+                      console.log('response', response)
+                    })
+    },
     methods: {
       save: function () {
+        var promise = this.request.id
+                      ? update(this.request)
+                      : create(this.request)
         $('.dimmer').dimmer('show')
-        packageService.create(this.request)
-                      .then(response => {
-                        toasterService.success('Pacote criado com sucesso')
-                        this.$router.push('/package/list')
-                      })
-                      .catch((err) => {
-                        console.log('err on create package', err)
-                        toasterService.error('Erro ao criar pacote')
-                      })
-                      .finally(() => {
-                        $('.dimmer').dimmer('hide')
-                      })
+        promise.then(() => {
+          this.$router.push('/package/list')
+        }).finally(() => {
+          $('.dimmer').dimmer('hide')
+        })
       }
     }
   }

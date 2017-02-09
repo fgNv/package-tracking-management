@@ -82,7 +82,11 @@ let apiRoutes =
                         POST >=> context (fun ctx ->
                             let userId = Claims.getUserIdFromContext ctx    
                             request(executeCommand (CreatePackageCommand.deserialize userId) 
-                                                    Package.Create) ) ]                 
+                                                    Package.Create) ) 
+                        PUT >=> context (fun ctx ->
+                            let userId = Claims.getUserIdFromContext ctx    
+                            request(executeCommand (UpdatePackageCommand.deserialize userId) 
+                                                    Package.Update) ) ]                  
                  path "/package/point/manual" >=> 
                         choose [
                             POST >=> context(fun ctx ->

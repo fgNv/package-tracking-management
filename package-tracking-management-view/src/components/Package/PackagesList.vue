@@ -33,10 +33,11 @@
                   v-tooltip="'Deletar pacote'">
             <i class="fa fa-trash"></i>
           </button>
-          <button class="ui secondary button"
-                  v-tooltip="'Editar pacote'">
+          <router-link tag="button" class="ui secondary button"
+                       :to="{name: 'package-edit', params: {id: item.id} }"
+                       v-tooltip="'Editar pacote'">
             <i class="fa fa-edit"></i>
-          </button>
+          </router-link>
           <router-link tag="button" class="ui secondary button"
                        :to="{name: 'package-manual-route', params: {id: item.id} }"
                        v-tooltip="'Atualizar rota manual do pacote'">
@@ -80,6 +81,9 @@ export default {
     }
   },
   methods: {
+    edit (id) {
+      this.$router.push({ name: 'package-edit', parameters: {id} })
+    },
     loadPackages () {
       $('.dimmer').dimmer('show')
       PackageService.query()

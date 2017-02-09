@@ -62,6 +62,13 @@ const routes = [
   },
   { path: '/package/list', component: PackagesList, beforeEnter: requireAuth },
   { path: '/package/create', component: PackageForm, beforeEnter: requireAuth },
+  {
+    path: '/package/edit/:id',
+    component: PackageForm,
+    beforeEnter: requireAuth,
+    props: true,
+    name: 'package-edit'
+  },
   { path: '/login', component: Login },
   { path: '/logout',
     beforeEnter (to, from, next) {

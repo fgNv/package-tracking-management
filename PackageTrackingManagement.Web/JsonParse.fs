@@ -29,6 +29,19 @@ module CreateUserCommand =
                                            AccessType = accessType
                                            CreatorId = currentUserId } }
 
+module UpdatePackageCommand =
+    open Commands.Package.Update
+        
+    let deserialize currentUserId = 
+        deserializeJson <| json { let! name = Json.read "name"
+                                  let! description = Json.tryRead "description"
+                                  let! id = Json.read "id"
+                                  
+                                  return { Name = name
+                                           Description = description
+                                           CreatorId = currentUserId
+                                           Id = id } }
+
 module CreatePackageCommand =
     open Commands.Package.Create
     
