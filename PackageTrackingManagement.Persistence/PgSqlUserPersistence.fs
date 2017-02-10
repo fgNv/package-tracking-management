@@ -21,7 +21,39 @@ let private deserializeAccessType input =
 let userExists id =
     handleDatabaseException ( fun id -> let context = getContext()
                                         context.Public.User |> Seq.exists (fun g -> g.Id = id) ) id
-       
+                                        
+let getUserList q' =
+    handleDatabaseException ( 
+        fun (query' : Queries.User.List.Query) ->
+            let context = getContext()
+            let users =  context.Public.User
+                            |> Seq.filter(fun p -> match query'.NameFilter with 
+                                                    | Some n -> p.Name = n
+                                                    | None -> true )
+                            |> Seq.skip((query'.Page - 1) * query'.ItemsPerPage)
+                            |> Seq.truncate(query'.ItemsPerPage)
+                            |> Seq.map (fun p -> {  Name = p.Name
+                                                    Id = p.Id
+                                                    Email = p.Email
+                                                    AccessType = deserializeAccessType p.AccessType
+                                                 } : Queries.User.List.User)
+                            |> Seq.toList
+            let packagesTotalCount = context.Public.Package |> Seq.length
+            { Items = users; Total = packagesTotalCount} : Queries.User.List.QueryResult 
+    ) q'
+let getUserById id =
+    handleDatabaseException ( fun id -> 
+                                let context = getContext()
+                                let user = context.Public.User |> 
+                                           Seq.tryFind (fun a -> a.Id = id)
+                                match user with
+                                    | Some u -> Some ({ Name = u.Name
+                                                        UserName = u.UserName
+                                                        Email = u.Email
+                                                        Id = u.Id
+                                                        AccessType = deserializeAccessType u.AccessType  } 
+                                                        : Queries.User.Get.User)
+                                    | None -> None ) id
 let getUserByUserName userName =
     handleDatabaseException ( fun id -> 
                                 let context = getContext()

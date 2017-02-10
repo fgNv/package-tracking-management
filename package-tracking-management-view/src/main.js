@@ -6,6 +6,8 @@ import VueRouter from 'vue-router'
 import PackagesList from './components/Package/PackagesList'
 import PackageForm from './components/Package/PackageForm'
 import PackageManualRoute from './components/Package/PackageManualRoute'
+import UsersList from './components/User/UserList'
+import UserForm from './components/User/UserForm'
 import Dashboard from './components/Dashboard'
 import Login from './components/Login'
 import VueLocalStorage from 'vue-localstorage'
@@ -13,7 +15,6 @@ import authenticationService from 'services/Authentication.js'
 import vueDateFilter from 'filters/VueDateFormat.js'
 import VTooltip from 'v-tooltip'
 import * as VueGoogleMaps from 'vue2-google-maps'
-// import {load} from 'vue-google-maps'
 
 import 'toastr/build/toastr.css'
 import 'semantic-ui-css/semantic.css'
@@ -59,6 +60,15 @@ const routes = [
     component: PackageManualRoute,
     beforeEnter: requireAuth,
     name: 'package-manual-route'
+  },
+  { path: '/user/list', component: UsersList, beforeEnter: requireAuth },
+  { path: '/user/create', component: UserForm, beforeEnter: requireAuth },
+  {
+    path: '/user/edit/:id',
+    component: UserForm,
+    beforeEnter: requireAuth,
+    props: true,
+    name: 'user-edit'
   },
   { path: '/package/list', component: PackagesList, beforeEnter: requireAuth },
   { path: '/package/create', component: PackageForm, beforeEnter: requireAuth },

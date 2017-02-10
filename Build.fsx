@@ -49,24 +49,6 @@
 #I "packages/Microsoft.Owin/lib/net45"
 #r "packages/Microsoft.Owin/lib/net45/Microsoft.Owin.dll"
 
-//#r "fake-dist/PackageTrackingManagement.Domain.dll"
-//#r "fake-dist/PackageTrackingManagement.Persistence.dll"
-//#r "fake-dist/Suave.BearerTokenAuthentication.dll"
-
-#r "ProjectDlls/PackageTrackingManagement.Domain.dll"
-#r "ProjectDlls/PackageTrackingManagement.Persistence.dll"
-#r "ProjectDlls/Suave.BearerTokenAuthentication.dll"
-
-#load "PackageTrackingManagement.Web/Application.fs"
-#load "PackageTrackingManagement.Web/JsonParse.fs"
-#load "PackageTrackingManagement.Web/Claims.fs"
-#load "PackageTrackingManagement.Web/Application.fs"
-
-//#load "PackageTrackingManagement.Web/Hubs.fs"
-//#load "PackageTrackingManagement.Web/SignalRConfiguration.fs"
-
-#load "PackageTrackingManagement.Web/Routes.fs"
-
 #I "packages/FSharp.Core/lib/net40"
 
 #I "packages/FSharp.Compiler.Service/lib/net45"
@@ -80,6 +62,11 @@
 open Fake
 open System.IO
 
+#load "PackageTrackingManagement.Persistence/PgSqlPersistence.fs"
+#load "PackageTrackingManagement.Persistence/Migrations.fs"
+
+Migrations.updateDatabase(Path.Combine(__SOURCE_DIRECTORY__ ,"Migrations"))
+
 let buildDir = __SOURCE_DIRECTORY__ + "/fake-dist/"
 
 let projectsSearchPattern = __SOURCE_DIRECTORY__ + "/**/*.fsproj"
@@ -91,13 +78,13 @@ let replaceConnString () =
         (fun content -> 
             if not isWindows then
                 content.Replace("User ID=homestead;Password=secret;Host=192.168.36.36;Port=5432;Database=package_tracking_management;",
-                                @"User ID=qouqfyqvryymys;Password=3c24dfa6b67ec6f4fe0f5ce974d92db99aca53c4c37c92c7f73e92d0be176526;Host=ec2-184-72-252-69.compute-1.amazonaws.com;Port=5432;Database=df7djtoqireah4;")
+                                PgSqlPersistence.GetConnectionString())
             else
                 content
         ) 
-        (System.IO.Path.Combine(__SOURCE_DIRECTORY__, 
-                                "PackageTrackingManagement.Persistence", 
-                                "PgSqlPersistence.fs"))
+        (Path.Combine(__SOURCE_DIRECTORY__, 
+                      "PackageTrackingManagement.Persistence", 
+                      "PgSqlPersistence.fs"))
 
 Target "BuildApp" (fun _ ->
    !! projectsSearchPattern
@@ -111,7 +98,6 @@ Target "Clean" (fun _ ->
 Target "AdaptToEnv" (fun _ ->
     replaceConnString ()
 )
-
 
 Target "CopyDlls" (fun _ ->
     let dlls = [|"PackageTrackingManagement.Domain.dll"

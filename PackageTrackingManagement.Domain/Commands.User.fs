@@ -111,15 +111,22 @@ module UpdatePassword =
                 >>= updateUserPassword
 
 module Delete =
-    type Command = {Id : Guid}
+    type Command = {Id : Guid
+                    CurrentUserId : Guid}
 
-    let private getErrors userExistsFun parameter =
-        match userExistsFun parameter.Id with
-            | Success userExists ->
+    let private getErrors userExistsFun isCurrentUserAdministratorFun parameter =
+        match userExistsFun parameter.Id,
+              isCurrentUserAdministratorFun parameter.CurrentUserId with
+            | Success userExists, Success isCurrentUserAdministrator ->
                 seq { if not userExists then
-                         yield "Sentences.Validation.IdMustReferToAnExistingUser" } 
-            | Error (_,_) -> seq { yield "Sentences.Error.DatabaseFailure" }
+                         yield "Sentences.Validation.IdMustReferToAnExistingUser"
+                      if not isCurrentUserAdministrator then
+                         yield Sentences.Validation.OnlyAdministratorsMayPerformThisAction
+                      if parameter.Id = parameter.CurrentUserId then
+                         yield Sentences.Validation.UserMayNotDeleteHimself } 
+            | Error (_,_), _
+            | _, Error (_,_) -> seq { yield "Sentences.Error.DatabaseFailure" }
     
-    let handle userExists deleteUser command =        
-        command |> Validation.validate (getErrors userExists)
+    let handle userExists isCurrentUserAdministrator deleteUser command =        
+        command |> Validation.validate (getErrors userExists isCurrentUserAdministrator)
                 >>= deleteUser

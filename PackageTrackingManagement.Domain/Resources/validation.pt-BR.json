@@ -11,5 +11,7 @@
   "idMustReferToExistingManualPoint": "Id deve ser referente a um ponto manual existente",
   "latitudeMustBeBetweenMinusNinetyAndNinety": "Latitude deve estar entre -90 e 90",
   "longitudeMustBeBetweenMinusOneHundredEightyAndOneHundredEighty": "Longitude deve estar entre -180 e 180",
-  "idMustReferToExistingPoint":  "Id deve ser referente a um ponto existente"
+  "idMustReferToExistingPoint": "Id deve ser referente a um ponto existente",
+  "idMustReferToExistingUser": "Id deve ser referente a um usuário existente",
+  "userMayNotDeleteHimself": "Usuário não pode se deletar"
 }

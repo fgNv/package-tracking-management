@@ -42,3 +42,48 @@ module UserExists =
                     | Some u -> true
                     | None -> false
             | Error(_,_) -> false
+
+open Chiron
+open Chiron.Operators
+
+module Get = 
+    type Query = { Id : Guid }
+    type User = { Name: string
+                  Id : Guid
+                  UserName : string
+                  Email : string
+                  AccessType : Models.AccessType }
+      with static member ToJson(x : User) =
+               Json.write "name" x.Name
+            *> Json.write "userName" x.UserName
+            *> Json.write "id" x.Id
+            *> Json.write "email" x.Email
+            *> Json.write "accessType" x.AccessType
+
+    let handle getUserById (query : Query) : Result<User option> = 
+        getUserById query.Id
+
+
+module List =
+    type Query = { ItemsPerPage : int; 
+                   Page : int
+                   NameFilter : string option }
+    
+    type User = { Name: string
+                  Id : Guid
+                  Email : string
+                  AccessType : Models.AccessType }
+      with static member ToJson(x : User) =
+               Json.write "name" x.Name
+            *> Json.write "id" x.Id
+            *> Json.write "email" x.Email
+            *> Json.write "accessType" x.AccessType
+
+    type QueryResult =  { Items : User list
+                          Total : int }
+        with static member ToJson(x : QueryResult) =
+               Json.write "items" x.Items
+            *> Json.write "total" x.Total
+
+    let handle getUserList (query : Query) : Result<QueryResult> = 
+        getUserList query

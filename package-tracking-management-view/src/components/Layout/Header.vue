@@ -9,7 +9,7 @@
       <div class="ui simple dropdown item">
         Gerenciamento <i class="dropdown icon"></i>
         <div class="menu">
-          <router-link class="item"  to="/package/list">Pacotes</router-link>
+          <router-link class="item" to="/package/list">Pacotes</router-link>
           <a class="item" href="#">Dispositivos</a>
           <div class="divider"></div>
           <div class="header">Acesso</div>
@@ -17,7 +17,7 @@
             <i class="dropdown icon"></i>
             Usuários
             <div class="menu">
-              <a class="item" href="#">Gerenciar usuários</a>
+              <router-link class="item" to="/user/list">Gerenciar usuários</router-link>
               <a class="item" href="#">Permissões</a>
             </div>
           </div>

@@ -4,12 +4,17 @@ open Railroad
 open Suave
 open Suave.Successful
 open Suave.RequestErrors
+open Suave.ServerErrors
 
-let inline private executeCommand deserializeCommand handleCommand (request : HttpRequest) =    
-    let result = request.rawForm |> deserializeCommand >>= handleCommand
-    match result with
-          | Success i -> OK "done"
-          | Error (title, errors) -> BAD_REQUEST (title + " - errors")
+let inline private executeCommand deserializeCommand handleCommand (request : HttpRequest) =   
+    try 
+        let result = request.rawForm |> deserializeCommand >>= handleCommand
+        match result with
+              | Success i -> OK "done"
+              | Error (title, errors) -> 
+                    BAD_REQUEST (title + " - errors: ")
+    with
+        | ex -> INTERNAL_ERROR(ex.Message)
 
 open Suave.Operators
 open Suave.Filters
@@ -19,6 +24,89 @@ open Suave.ServerErrors
 open System
 open Suave.Writers
 open Suave.CORS
+
+module private Actions =
+    let fromQueryString transformation defaultValue (request : HttpRequest) paramName =
+        match request.queryParam paramName with
+            | Choice1Of2 p -> transformation p
+            | choice2of2 -> defaultValue
+    let intFromQueryString = fromQueryString Int32.Parse
+    let optionFromQueryString = fromQueryString Some None
+    let getUserById id =
+        let result = Application.User.GetById {Id = id}
+        match result with  
+            | Success user ->
+                match user with
+                    | Some u -> OK (QueryResult.serializeObj u)
+                    | None -> NOT_FOUND(Sentences.Validation.IdMustReferToExistingUser) 
+            | Error(_,_) -> INTERNAL_ERROR ("Sentences.Error.DatabaseFailure") 
+
+    let getPackageById id =
+        let result = Application.Package.GetDetails {PackageId = id}
+        match result with 
+            | Success package ->
+                match package with 
+                    | Some p -> OK (QueryResult.serializeObj p)
+                    | None -> 
+                       NOT_FOUND ("Sentences.Validation.IdMustReferToExistingPackage")
+            | Error (_,_) -> INTERNAL_ERROR ("Sentences.Error.DatabaseFailure") 
+    
+    let updatePackage ctx =
+        let userId = Claims.getUserIdFromContext ctx    
+        request(executeCommand (UpdatePackageCommand.deserialize userId) 
+                                Package.Update)
+    let deletePackage id ctx  =
+        let userId = Claims.getUserIdFromContext ctx  
+        let cmd = {Id = id; UserId = userId} : Commands.Package.Delete.Command
+        match Package.Delete cmd with | Success _ -> NO_CONTENT
+                                      | Error(title, errs) -> INTERNAL_ERROR(title) 
+
+    let getPackages request =
+        let page = intFromQueryString 1 request "page" 
+        let itemsPerPage = intFromQueryString 20 request "itemsPerPage"
+        let nameFilter = optionFromQueryString request "nameFilter" 
+        let query = { Page = page 
+                      ItemsPerPage = itemsPerPage
+                      NameFilter = nameFilter } : Queries.Package.List.Query
+        match Application.Package.GetList query with
+            | Success r -> OK (QueryResult.serializeObj r)
+            | Error(e,_) -> INTERNAL_ERROR(e) 
+
+    let createPackage ctx =
+        let userId = Claims.getUserIdFromContext ctx    
+        request(executeCommand (CreatePackageCommand.deserialize userId) 
+                                Package.Create)    
+
+    let createManualPoint ctx =
+        let userId = Claims.getUserIdFromContext ctx    
+        request(executeCommand (CreateManualPointCommand.deserialize userId)
+                                Package.AddManualPoint )
+
+    let updateUser ctx =
+        let userId = Claims.getUserIdFromContext ctx    
+        request(executeCommand (UpdateUserCommand.deserialize userId) User.Update)
+
+    let getUsers request =
+        let page = intFromQueryString 1 request "page" 
+        let itemsPerPage = intFromQueryString 20 request "itemsPerPage"
+        let nameFilter = optionFromQueryString request "nameFilter" 
+        let query = { Page = page 
+                      ItemsPerPage = itemsPerPage
+                      NameFilter = nameFilter } : Queries.User.List.Query
+        match Application.User.GetList query with
+            | Success r -> OK (QueryResult.serializeObj r)
+            | Error(e,_) -> INTERNAL_ERROR(e) 
+
+    let deleteUser id ctx =
+        let userId = Claims.getUserIdFromContext ctx  
+        let cmd = {Id = id; CurrentUserId = userId} : Commands.User.Delete.Command
+        match User.Delete cmd with | Success _ -> NO_CONTENT
+                                   | Error(title, errs) -> INTERNAL_ERROR(title)
+
+    let createUser ctx =
+        let userId = Claims.getUserIdFromContext ctx                       
+        request (executeCommand (CreateUserCommand.deserialize userId) 
+                                 User.Create)
 
 let apiRoutes =
     let protectResource = 
@@ -33,15 +121,7 @@ let apiRoutes =
 
     let corsConfig = { defaultCORSConfig with allowedUris = InclusiveOption.All
                                               allowedMethods = InclusiveOption.Some [HttpMethod.DELETE; HttpMethod.GET; HttpMethod.POST; HttpMethod.PUT; HttpMethod.OPTIONS]  }
-
-    let fromQueryString transformation defaultValue (request : HttpRequest) paramName =
-        match request.queryParam paramName with
-            | Choice1Of2 p -> transformation p
-            | choice2of2 -> defaultValue
-
-    let intFromQueryString = fromQueryString Int32.Parse
-    let optionFromQueryString = fromQueryString Some None
-
+    
     let jsonEndpoints = 
         protectResource (
             choose [             
@@ -49,62 +129,28 @@ let apiRoutes =
                    (fun id -> 
                       let parsedId = System.Guid.Parse id
                       choose [ 
-                        GET >=> (   
-                            let result = Application.Package.GetDetails {PackageId = parsedId}
-
-                            match result with 
-                                | Success package ->
-                                    match package with 
-                                        | Some p -> OK (QueryResult.serializeObj p)
-                                        | None -> 
-                                           NOT_FOUND ("Sentences.Validation.IdMustReferToExistingPackage")
-                                | Error (_,_) -> INTERNAL_ERROR ("Sentences.Error.DatabaseFailure") )
-                        DELETE >=> context (fun ctx ->
-                                               let userId = Claims.getUserIdFromContext ctx  
-                                               let cmd = {Id = parsedId; UserId = userId} : Commands.Package.Delete.Command
-                                               match Package.Delete cmd with
-                                                | Success _ -> NO_CONTENT
-                                                | Error(title, errs) -> INTERNAL_ERROR(title) ) ])
+                        GET >=> Actions.getPackageById parsedId
+                        DELETE >=> context (Actions.deletePackage parsedId) ])
                  path "/package" >=>
                      choose [ 
-                        GET >=> request (fun request ->    
-                            let page = intFromQueryString 1 request "page" 
-                            let itemsPerPage = intFromQueryString 20 request "itemsPerPage"
-                            let nameFilter = optionFromQueryString request "nameFilter" 
-
-                            let query = { Page = page 
-                                          ItemsPerPage = itemsPerPage
-                                          NameFilter = nameFilter } : Queries.Package.List.Query
-
-                            match Application.Package.GetList query with
-                                | Success r -> OK (QueryResult.serializeObj r)
-                                | Error(e,_) -> INTERNAL_ERROR(e) )
-                        POST >=> context (fun ctx ->
-                            let userId = Claims.getUserIdFromContext ctx    
-                            request(executeCommand (CreatePackageCommand.deserialize userId) 
-                                                    Package.Create) ) 
-                        PUT >=> context (fun ctx ->
-                            let userId = Claims.getUserIdFromContext ctx    
-                            request(executeCommand (UpdatePackageCommand.deserialize userId) 
-                                                    Package.Update) ) ]                  
+                        GET >=> request(Actions.getPackages)
+                        POST >=> context (Actions.createPackage) 
+                        PUT >=> context (Actions.updatePackage) ]                  
                  path "/package/point/manual" >=> 
-                        choose [
-                            POST >=> context(fun ctx ->
-                                let userId = Claims.getUserIdFromContext ctx    
-                                request(executeCommand (CreateManualPointCommand.deserialize userId)
-                                                        Package.AddManualPoint )
-                            ) ]
+                        choose [ POST >=> context(Actions.createManualPoint) ]
+                 pathScan "/user/%s" 
+                   (fun id -> 
+                      let parsedId = System.Guid.Parse id
+                      choose [ DELETE >=> context (Actions.deleteUser parsedId)
+                               GET >=> Actions.getUserById parsedId ])
                  path "/user" >=>
-                        choose [ POST >=> 
-                                    context (fun ctx ->      
-                                      let userId = Claims.getUserIdFromContext ctx                       
-                                      request (executeCommand (CreateUserCommand.deserialize userId) 
-                                                               User.Create) ) ] 
+                        choose [ POST >=> context (Actions.createUser)
+                                 PUT >=> context (Actions.updateUser)
+                                 GET >=> request(Actions.getUsers) ] 
         ] )
         
     choose [ OPTIONS >=> cors corsConfig
-             GET >=> path "/" >=> 
-                Files.browseFileHome "index.html"
+             GET >=> path "/" >=> Files.browseFileHome "index.html"
              path "/token" >=> context(fun ctx ->
                                     let emptyCtx = {ctx with userState = Map.empty}
                                     let middleware = 

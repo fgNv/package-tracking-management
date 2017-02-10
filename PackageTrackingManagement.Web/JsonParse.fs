@@ -6,11 +6,14 @@ open Chiron.Mapping
 open Chiron.Operators
 
 let inline private deserializeJson builder bytes  =
-     bytes |> Encoding.ASCII.GetString 
-           |> Json.parse
-           |> builder
-           |> function | Value r,_ -> Railroad.Success r 
-                       | Error e,_ -> Railroad.Error("Sentences.Error.InvalidInputContent", [e])
+    try
+        bytes |> Encoding.ASCII.GetString 
+            |> Json.parse
+            |> builder
+            |> function | Value r,_ -> Railroad.Success r 
+                        | Error e,_ -> Railroad.Error("Sentences.Error.InvalidInputContent", [e])
+    with
+        | ex -> Railroad.Error("Sentences.Error.InvalidInputContent", [ex.Message])
 
 module CreateUserCommand =
     open Commands.User.Create
@@ -28,6 +31,23 @@ module CreateUserCommand =
                                            Password = password
                                            AccessType = accessType
                                            CreatorId = currentUserId } }
+
+module UpdateUserCommand=
+    open Commands.User.Update
+
+    let deserialize currentUserId = 
+        deserializeJson <| json { let! userName = Json.read "userName"
+                                  let! name = Json.read "name"
+                                  let! email = Json.read "email"
+                                  let! accessType = Json.read "accessType"
+                                  let! id = Json.read "id"
+                                  
+                                  return { UserName = userName
+                                           Name = name
+                                           Email = email
+                                           Id = id
+                                           AccessType = accessType
+                                           CurrentUserId = currentUserId } }
 
 module UpdatePackageCommand =
     open Commands.Package.Update

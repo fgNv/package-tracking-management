@@ -1,7 +1,6 @@
 module PgSqlPersistence
 
 open System.IO
-open Railroad
 open FSharp.Data.Sql
 open System
 

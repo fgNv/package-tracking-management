@@ -1,7 +1,10 @@
 <template>
   <div class='ui main text container'>
-    <h1 class='ui header'>
+    <h1 class='ui header' v-if="!request.id">
       Cadastrar pacote
+    </h1>
+    <h1 class='ui header' v-if="request.id">
+      Editar pacote
     </h1>
 
     <form class='ui form' v-on:submit.prevent='save'>
@@ -38,11 +41,11 @@
     return packageService.create(request)
                          .then(response => {
                            toasterService.success('Pacote criado com sucesso')
-                           this.$router.push('/package/list')
                          })
                          .catch((err) => {
                            console.log('err on create package', err)
                            toasterService.error('Erro ao criar pacote')
+                           throw err
                          })
                          .finally(() => {
                            $('.dimmer').dimmer('hide')
@@ -57,6 +60,7 @@
                          .catch((err) => {
                            console.log('err on create package', err)
                            toasterService.error('Erro ao atualizar pacote')
+                           throw err
                          })
                          .finally(() => {
                            $('.dimmer').dimmer('hide')
