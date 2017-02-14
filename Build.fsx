@@ -98,11 +98,11 @@ Target "CopyDlls" (fun _ ->
                  "Suave.BearerTokenAuthentication.dll"
                  "PackageTrackingManagement.Persistence.dll"|]
 
+    CreateDir ( Path.Combine(__SOURCE_DIRECTORY__, "ProjectDlls") )
+
     dlls |> Seq.iter (fun d ->
-                        CopyFile ( Path.Combine(__SOURCE_DIRECTORY__,
-                                                "ProjectDlls",
-                                                d) )
-                                 ( Path.Combine(buildDir, d) ) )
+                        CopyFile ( Path.Combine(__SOURCE_DIRECTORY__, "ProjectDlls", d) ) 
+                                 ( Path.Combine(__SOURCE_DIRECTORY__, buildDir, d) ))
 )
 
 Target "UndoChanges" (fun _ ->
