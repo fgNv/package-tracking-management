@@ -105,7 +105,7 @@ Target "CopyDlls" (fun _ ->
                                  ( Path.Combine(__SOURCE_DIRECTORY__, buildDir, d) ))
 )
 
-Target "UndoChanges" (fun _ ->
+Target "UndoChanges" (fun _ -> 
     let gitCmd  = tryFindFileOnPath "git"
     let modifiedFile = tryFindFileOnPath(
                              Path.Combine(__SOURCE_DIRECTORY__,
