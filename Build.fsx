@@ -106,10 +106,16 @@ Target "CopyDlls" (fun _ ->
 )
 
 Target "UndoChanges" (fun _ ->
-    let modifiedFile = Path.Combine(__SOURCE_DIRECTORY__,
+    let gitCmd  = tryFindFileOnPath "git"
+    let modifiedFile = tryFindFileOnPath(
+                             Path.Combine(__SOURCE_DIRECTORY__,
                                     "PackageTrackingManagement.Persistence",
-                                    "PgSqlPersistence.fs")
-    Shell.Exec(sprintf "git checkout %s" modifiedFile) |> ignore
+                                    "PgSqlPersistence.fs"))
+    match gitCmd, modifiedFile with 
+        | None, _ 
+        | _, None -> trace ("could not") 
+        | Some f, Some g -> 
+            Shell.Exec(g, "checkout",  f) |> ignore
 )
 
 Target "Default" (fun _ ->
