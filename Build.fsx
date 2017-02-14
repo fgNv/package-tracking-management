@@ -50,9 +50,6 @@
 
 #I "packages/FSharp.Core/lib/net40"
 
-#I "packages/Microsoft.Web.Xdt/lib/net40"
-#I "packages/NuGet.Core/lib/net40-Client"
-
 #I "packages/FAKE.Lib/lib/net451"
 #r "packages/FAKE.Lib/lib/net451/FakeLib.dll"
 
@@ -108,15 +105,22 @@ Target "CopyDlls" (fun _ ->
                                  ( Path.Combine(buildDir, d) ) )
 )
 
+Target "UndoChanges" (fun _ ->
+    let modifiedFile = Path.Combine(__SOURCE_DIRECTORY__,
+                                    "PackageTrackingManagement.Persistence",
+                                    "PgSqlPersistence.fs")
+    Shell.Exec(sprintf "git checkout %s" modifiedFile) |> ignore
+)
+
 Target "Default" (fun _ ->
     trace "Building application..."
 )
 
-//"AdaptToEnv"
-//  ==> 
-"Clean"
+"AdaptToEnv"
+  ==> "Clean"
   ==> "BuildApp"
   ==> "CopyDlls"
+  ==> "UndoChanges"
   ==> "Default"
 
 RunTargetOrDefault "Default"
