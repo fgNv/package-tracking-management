@@ -37,13 +37,19 @@ module Details =
 
     type Query = { PackageId : Guid}    
 
+    type Position = {Latitude : double      
+                     Longitude : double}
+        with static member ToJson(x : Position) =
+               Json.write "lat" x.Latitude
+            *> Json.write "lng" x.Longitude
+
     type ManualPoint = { CreatedAt : DateTime
-                         Latitude : double
-                         Longitude : double }
+                         Position : Position
+                         Id : Guid }
         with static member ToJson(x : ManualPoint) =
                Json.write "createdAt" x.CreatedAt
-            *> Json.write "latitude" x.Latitude
-            *> Json.write "longitude" x.Longitude
+            *> Json.write "position" x.Position
+            *> Json.write "id" x.Id
 
     type DevicePoint = { CreatedAt : DateTime
                          Latitude : double

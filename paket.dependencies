@@ -1,19 +1,12 @@
-source https://www.myget.org/F/aspnetvnext/api/v2
 source https://www.nuget.org/api/v2/
-source https://www.myget.org/F/temp-for-inter/api/v2
 
 nuget Chiron
 nuget FAKE.Lib
-nuget FSharp.Compiler.Service
 nuget FSharp.Core 4.0.0.1 framework: >= net461
 nuget FSharp.Data 2.3.2 framework: >= net45
 nuget FSharp.Management
-nuget Microsoft.AspNet.WebApi.Cors
-nuget Microsoft.Owin
 nuget Microsoft.Owin.Cors
-nuget Microsoft.Owin.Security
 nuget Microsoft.Owin.Security.OAuth
-nuget Microsoft.Web.Xdt
 nuget Npgsql 3.1.9 framework: >= net45
 nuget NuGet.Core
 nuget Owin.Security.AesDataProtectorProvider

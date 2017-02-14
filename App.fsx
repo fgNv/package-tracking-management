@@ -34,7 +34,6 @@
 #I "packages/Microsoft.Owin.Security.OAuth/lib/net45"
 #r "packages/Microsoft.Owin.Security.OAuth/lib/net45/Microsoft.Owin.Security.OAuth.dll"
 
-
 #I "packages/Suave/lib/net40"
 #r "packages/Suave/lib/net40/Suave.dll"
 
@@ -48,10 +47,6 @@
 
 #I "packages/Microsoft.Owin/lib/net45"
 #r "packages/Microsoft.Owin/lib/net45/Microsoft.Owin.dll"
-
-//#r "fake-dist/PackageTrackingManagement.Domain.dll"
-//#r "fake-dist/PackageTrackingManagement.Persistence.dll"
-//#r "fake-dist/Suave.BearerTokenAuthentication.dll"
 
 #r "ProjectDlls/PackageTrackingManagement.Domain.dll"
 #r "ProjectDlls/PackageTrackingManagement.Persistence.dll"

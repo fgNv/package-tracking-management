@@ -34,7 +34,6 @@
 #I "packages/Microsoft.Owin.Security.OAuth/lib/net45"
 #r "packages/Microsoft.Owin.Security.OAuth/lib/net45/Microsoft.Owin.Security.OAuth.dll"
 
-
 #I "packages/Suave/lib/net40"
 #r "packages/Suave/lib/net40/Suave.dll"
 
@@ -51,8 +50,6 @@
 
 #I "packages/FSharp.Core/lib/net40"
 
-#I "packages/FSharp.Compiler.Service/lib/net45"
-#I "packages/System.Reflection.Metadata/lib/portable-net45+win8"
 #I "packages/Microsoft.Web.Xdt/lib/net40"
 #I "packages/NuGet.Core/lib/net40-Client"
 

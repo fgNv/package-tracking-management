@@ -45,8 +45,7 @@ let updateDatabase(migrationsPath) =
 
     let executedMigrations = getExecutedMigrations conn            
 
-    let availableMigrations = 
-         
+    let availableMigrations =          
          Directory.GetFiles migrationsPath |>
          Seq.map (fun path -> { Name = Path.GetFileName path
                                 Command = File.ReadAllText path })
@@ -72,4 +71,5 @@ let updateDatabase(migrationsPath) =
 
                   insertMigrationCmd.CommandText <- m.Command
                   insertMigrationCmd.ExecuteNonQuery() |> ignore )
+    conn.Close()
     

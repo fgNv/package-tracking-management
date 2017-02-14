@@ -44,8 +44,9 @@ let private mapPackageDetails (package : PgsqlAccess.dataContext.``public.packag
       UpdatedAt = package.UpdatedAt
       ManualPoints = package.``public.manual_point by id`` |> 
                      Seq.map(fun mp -> { CreatedAt = mp.CreatedAt
-                                         Latitude = mp.Coordinates.X
-                                         Longitude = mp.Coordinates.Y 
+                                         Position = { Latitude = mp.Coordinates.X
+                                                      Longitude = mp.Coordinates.Y }                                         
+                                         Id = mp.Id
                                        } : Queries.Package.Details.ManualPoint )
       DevicePoints = package.``public.device_point by id`` |> 
                      Seq.map(fun dp -> { CreatedAt = dp.CreatedAt
@@ -58,11 +59,7 @@ let private mapPackageDetails (package : PgsqlAccess.dataContext.``public.packag
 let getPackageDetails =
     handleDatabaseException
         (fun (q : Queries.Package.Details.Query) ->
-            let context = getContext()            
-            //let satanas = context.Public.Package |> Seq.tryFind(fun p -> p.Id = q.PackageId)
-            //match satanas with
-            //    | Some s -> Some (mapPackageDetails s)
-            //    | None -> None
+            let context = getContext()
 
             let result = query { for p in context.Public.Package do
                                  where (p.Id = q.PackageId)

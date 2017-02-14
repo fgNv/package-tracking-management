@@ -17,7 +17,7 @@ module Create =
                              yield "Sentences.Validation.UserNameIsRequired"
                           if not isCreatorAdministrator then
                              yield "Sentences.Validation.OnlyAdministratorsMayPerformThisAction" } 
-                | Error(_,_) -> seq { yield "Sentences.Error.DatabaseFailure" }
+                | Error(_) -> seq { yield "Sentences.Error.DatabaseFailure" }
 
     let handle isCreatorAdministrator insertPackage command =        
         command |> Validation.validate (getErrors isCreatorAdministrator)
@@ -40,8 +40,8 @@ module Update =
                              yield "Sentences.Validation.IdMustReferToExistingPackage"
                           if not isCreatorAdministrator then
                              yield "Sentences.Validation.OnlyAdministratorsMayPerformThisAction" } 
-                | Error(_,_), _
-                | _, Error(_,_) -> seq { yield "Sentences.Error.DatabaseFailure" }
+                | Error(_), _
+                | _, Error(_) -> seq { yield "Sentences.Error.DatabaseFailure" }
 
     let handle isCreatorAdministrator packageExists updatePackage command =        
         command |> Validation.validate (getErrors isCreatorAdministrator packageExists)
@@ -58,8 +58,8 @@ module Delete =
                              yield "Sentences.Validation.IdMustReferToExistingPackage"
                           if not isUserAdministrator then
                              yield "Sentences.Validation.OnlyAdministratorsMayPerformThisAction" } 
-                | Error(_,_), _ 
-                | _, Error(_,_) -> seq { yield "Sentences.Error.DatabaseFailure" }
+                | Error(_), _ 
+                | _, Error(_) -> seq { yield "Sentences.Error.DatabaseFailure" }
 
     let handle packageExists isUserAdministrator deletePackage command =        
         command |> Validation.validate (getErrors packageExists isUserAdministrator)
@@ -84,8 +84,8 @@ module AddManualPoint =
                             yield "Sentences.Validation.LongitudeMustBeBetweenMinusOneHundredEightyAndOneHundredEighty"
                           if not isCreatorAdministrator then
                             yield "Sentences.Validation.OnlyAdministratorsMayPerformThisAction" } 
-                | Error(_,_), _
-                | _, Error(_,_) -> seq { yield "Sentences.Error.DatabaseFailure" }
+                | Error(_), _
+                | _, Error(_) -> seq { yield "Sentences.Error.DatabaseFailure" }
 
     let handle isCreatorAdministrator packageExists insertManualPoint command =        
         command |> Validation.validate (getErrors isCreatorAdministrator packageExists)
@@ -110,8 +110,8 @@ module AddDevicePoint =
                             yield "Sentences.Validation.LongitudeMustBeBetweenMinusOneHundredEightyAndOneHundredEighty"
                           if not isCreatorAdministrator then
                              yield "Sentences.Validation.OnlyAdministratorsMayPerformThisAction" } 
-                | Error(_,_), _
-                | _, Error(_,_) -> seq { yield "Sentences.Error.DatabaseFailure" }
+                | Error(_), _
+                | _, Error(_) -> seq { yield "Sentences.Error.DatabaseFailure" }
 
     let handle deviceExists packageExists insertDevicePoint command =        
         command |> Validation.validate (getErrors deviceExists packageExists)
@@ -130,8 +130,8 @@ module RemoveManualPoint =
                             yield "Sentences.Validation.IdMustReferToExistingManualPoint"
                           if not isUserAdministrator then
                             yield "Sentences.Validation.OnlyAdministratorsMayPerformThisAction" } 
-                | Error(_,_), _
-                | _, Error(_,_) -> seq { yield "Sentences.Error.DatabaseFailure" }
+                | Error(_), _
+                | _, Error(_) -> seq { yield "Sentences.Error.DatabaseFailure" }
 
     let handle manualPointExists isUserAdministrator deleteManualPoint command =        
         command |> Validation.validate (getErrors manualPointExists isUserAdministrator)

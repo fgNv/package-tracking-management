@@ -32,6 +32,15 @@ module CreateUserCommand =
                                            AccessType = accessType
                                            CreatorId = currentUserId } }
 
+module RemoveManualPoint =
+    open Commands.Package.RemoveManualPoint
+
+    let deserialize currentUserId =
+        deserializeJson <| json { let! pointId = Json.read "pointId"
+
+                                  return { PointId = pointId
+                                           UserId  = currentUserId  } }
+
 module UpdateUserCommand=
     open Commands.User.Update
 

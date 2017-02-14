@@ -39,7 +39,7 @@ module private Actions =
                 match user with
                     | Some u -> OK (QueryResult.serializeObj u)
                     | None -> NOT_FOUND(Sentences.Validation.IdMustReferToExistingUser) 
-            | Error(_,_) -> INTERNAL_ERROR ("Sentences.Error.DatabaseFailure") 
+            | Error(_) -> INTERNAL_ERROR ("Sentences.Error.DatabaseFailure") 
 
     let getPackageById id =
         let result = Application.Package.GetDetails {PackageId = id}
@@ -49,7 +49,7 @@ module private Actions =
                     | Some p -> OK (QueryResult.serializeObj p)
                     | None -> 
                        NOT_FOUND ("Sentences.Validation.IdMustReferToExistingPackage")
-            | Error (_,_) -> INTERNAL_ERROR ("Sentences.Error.DatabaseFailure") 
+            | Error (_) -> INTERNAL_ERROR ("Sentences.Error.DatabaseFailure") 
     
     let updatePackage ctx =
         let userId = Claims.getUserIdFromContext ctx    
@@ -80,7 +80,12 @@ module private Actions =
     let createManualPoint ctx =
         let userId = Claims.getUserIdFromContext ctx    
         request(executeCommand (CreateManualPointCommand.deserialize userId)
-                                Package.AddManualPoint )
+                                Package.AddManualPoint)
+    
+    let removeManualPoint ctx =
+        let userId = Claims.getUserIdFromContext ctx    
+        request(executeCommand (RemoveManualPoint.deserialize userId)
+                                Package.RemoveManualPoint)
 
     let updateUser ctx =
         let userId = Claims.getUserIdFromContext ctx    
@@ -125,6 +130,9 @@ let apiRoutes =
     let jsonEndpoints = 
         protectResource (
             choose [             
+                 path "/package/point/manual" >=> 
+                        choose [ POST >=> context(Actions.createManualPoint) ]
+                        choose [ DELETE >=> context(Actions.removeManualPoint) ]
                  pathScan "/package/%s" 
                    (fun id -> 
                       let parsedId = System.Guid.Parse id
@@ -135,9 +143,7 @@ let apiRoutes =
                      choose [ 
                         GET >=> request(Actions.getPackages)
                         POST >=> context (Actions.createPackage) 
-                        PUT >=> context (Actions.updatePackage) ]                  
-                 path "/package/point/manual" >=> 
-                        choose [ POST >=> context(Actions.createManualPoint) ]
+                        PUT >=> context (Actions.updatePackage) ]
                  pathScan "/user/%s" 
                    (fun id -> 
                       let parsedId = System.Guid.Parse id

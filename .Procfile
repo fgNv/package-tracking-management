@@ -1,1 +1,0 @@
-web: fsharpi-heroku App.fsx
