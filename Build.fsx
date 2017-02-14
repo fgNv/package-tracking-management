@@ -70,11 +70,8 @@ Fake.MSBuildHelper.MSBuildLoggers <- []
 let replaceConnString () =
     ReplaceInFile 
         (fun content -> 
-            if not isWindows then
-                content.Replace("User ID=homestead;Password=secret;Host=192.168.36.36;Port=5432;Database=package_tracking_management;",
-                                PgSqlPersistence.GetConnectionString())
-            else
-                content
+            content.Replace("User ID=homestead;Password=secret;Host=192.168.36.36;Port=5432;Database=package_tracking_management;",
+                             PgSqlPersistence.GetConnectionString())
         ) 
         (Path.Combine(__SOURCE_DIRECTORY__, 
                       "PackageTrackingManagement.Persistence", 
@@ -126,7 +123,7 @@ Target "Default" (fun _ ->
   ==> "Clean"
   ==> "BuildApp"
   ==> "CopyDlls"
-  ==> "UndoChanges"
+  //==> "UndoChanges"
   ==> "Default"
 
 RunTargetOrDefault "Default"

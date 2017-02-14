@@ -10,6 +10,10 @@ let internal ConnectionString = @"User ID=homestead;Password=secret;Host=192.168
 let internal GetConnectionString() =
     let connString = Environment.GetEnvironmentVariable("package_tracking_management_conn")
     match String.IsNullOrWhiteSpace connString with
-        | true -> ConnectionString
-        | false -> connString
+        | true -> 
+             Console.WriteLine("NO CONN IN ENV FOUND")
+             ConnectionString
+        | false -> 
+            Console.WriteLine("conn in env was successfully found")
+            connString
                                                
