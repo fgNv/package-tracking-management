@@ -123,7 +123,7 @@ Target "Default" (fun _ ->
   ==> "Clean"
   ==> "BuildApp"
   ==> "CopyDlls"
-  //==> "UndoChanges"
+  ==> "UndoChanges"
   ==> "Default"
 
 RunTargetOrDefault "Default"
