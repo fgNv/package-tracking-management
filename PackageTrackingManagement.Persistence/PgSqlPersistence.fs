@@ -12,7 +12,8 @@ let internal GetConnectionString() =
     match String.IsNullOrWhiteSpace connString with
         | true -> 
              Console.WriteLine("NO CONN IN ENV FOUND")
-             ConnectionString
+             // ConnectionString
+             "User ID=gglwzecvflucps;Password=f4b3f542c0ce03e46ca4b48fe7bc43b8ab5fcb0b3930baa1b58ae7213c3ff887;Host=ec2-50-19-125-201.compute-1.amazonaws.com;Port=5432;Database=d27mor9hjptli4;"
         | false -> 
             Console.WriteLine("conn in env was successfully found")
             connString
