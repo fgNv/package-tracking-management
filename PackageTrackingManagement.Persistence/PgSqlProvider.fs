@@ -13,7 +13,7 @@ type internal PgsqlAccess = SqlDataProvider<Common.DatabaseProviderTypes.POSTGRE
                                                
 let internal getContext() =
     let resolutionPath = Environment.GetEnvironmentVariable("npgsql_resolution_path")
-    System.Console.WriteLine("resolution path -> " + resolutionPath)
+    System.Console.WriteLine("npgsql resolution path -> " + resolutionPath)
     let connString = Environment.GetEnvironmentVariable("package_tracking_management_conn")
     match String.IsNullOrWhiteSpace connString with
         | true ->  System.Console.WriteLine("mano ):")
