@@ -245,3 +245,5 @@ paket.exe
 any
 fake-dist
 !**/package-tracking-management-view/build/
+
+ProjectDlls/
