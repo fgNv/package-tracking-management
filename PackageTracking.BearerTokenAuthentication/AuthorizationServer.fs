@@ -11,14 +11,26 @@ open System.Security.Claims
 open Owin.Security.AesDataProtectorProvider
 open Microsoft.Owin.Security.DataProtection
 open Owin.Security.AesDataProtectorProvider.CrypticProviders
+open Microsoft.Owin.Security
+open System.Collections.Generic
 
 let private hostAppName = "bearerTokenAuthentication"
 
 type private SimpleAuthenticationProvider<'a>(validateUserCredentials, 
-                                              getCustomClaims : 'a -> (string * string) list) =
+                                              getCustomClaims : 'a -> (string * string) list, 
+                                              getClientData : 'a -> IDictionary<string,string>) =
     inherit OAuthAuthorizationServerProvider()
+    
     override this.ValidateClientAuthentication (context : OAuthValidateClientAuthenticationContext) =
         let f: Async<unit> = async { context.Validated() |> ignore }
+        upcast Async.StartAsTask f 
+
+    override this.TokenEndpoint(context : OAuthTokenEndpointContext ) =
+        let f: Async<unit> = async {  
+            context.Properties.Dictionary |> Seq.iter(fun p ->
+               context.AdditionalResponseParameters.Add(p.Key, p.Value)
+            )
+        }
         upcast Async.StartAsTask f 
 
     override this.GrantResourceOwnerCredentials(context: OAuthGrantResourceOwnerCredentialsContext) =        
@@ -33,18 +45,23 @@ type private SimpleAuthenticationProvider<'a>(validateUserCredentials,
                     getCustomClaims user |> List.iter(fun tuple -> Claims.addClaim tuple identity )
                     context.OwinContext.Response.Headers.Add("Access-Control-Allow-Origin", [| "*" |]); 
 
-                    context.Validated(identity) |> ignore
+                    let additionalClientData = getClientData user
+                    let properties = new AuthenticationProperties(additionalClientData)
+                    let ticket = new AuthenticationTicket(identity, properties)
+                    context.Validated(ticket) |> ignore
                 | Error (title, errors) -> 
                     context.SetError("authenticationFailure", "invalidCredentials")
         }
         upcast Async.StartAsTask f 
 
-let authorizationServerMiddleware validateUserCredentials getCustomClaims =
+let authorizationServerMiddleware validateUserCredentials getCustomClaims getClientData =
     let serverOptions = new OAuthAuthorizationServerOptions(
                             AllowInsecureHttp = true,
                             TokenEndpointPath= new PathString("/token"),
                             AccessTokenExpireTimeSpan = TimeSpan.FromDays(1.0),
-                            Provider = new SimpleAuthenticationProvider<'a>(validateUserCredentials, getCustomClaims) )
+                            Provider = new SimpleAuthenticationProvider<'a>(validateUserCredentials, 
+                                                                            getCustomClaims, 
+                                                                            getClientData) )
     
     let builder = new AppBuilder() :> IAppBuilder
 

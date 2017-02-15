@@ -3,6 +3,7 @@
     <h1 class="ui header">
       Gerenciamento de pacotes
       <router-link to="/package/create" tag="button"
+                   v-if="accessType == 'administrator'"
                    class="ui secondary button right floated">
         Cadastrar pacote
       </router-link>
@@ -30,17 +31,20 @@
          <td> {{item.updatedAt | moment}} </td>
          <td>
           <button class="ui secondary button" v-on:click="remove(item.id)"
-                  v-tooltip="'Deletar pacote'">
+                  v-tooltip="'Deletar pacote'"
+                  v-if="accessType == 'administrator'">
             <i class="fa fa-trash"></i>
           </button>
           <router-link tag="button" class="ui secondary button"
                        :to="{name: 'package-edit', params: {id: item.id} }"
-                       v-tooltip="'Editar pacote'">
+                       v-tooltip="'Editar pacote'"
+                       v-if="accessType == 'administrator'">
             <i class="fa fa-edit"></i>
           </router-link>
           <router-link tag="button" class="ui secondary button"
                        :to="{name: 'package-manual-route', params: {id: item.id} }"
-                       v-tooltip="'Atualizar rota manual do pacote'">
+                       v-tooltip="'Atualizar rota manual do pacote'"
+                       v-if="accessType == 'administrator'">
             <i class="fa fa-map"></i>
           </router-link>
          </td>
@@ -53,6 +57,7 @@
 import toasterService from 'services/Toaster.js'
 import PackageService from 'services/Package.js'
 import $ from 'jquery'
+import authenticationService from 'services/Authentication.js'
 
 export default {
   name: 'package-list',
@@ -100,11 +105,13 @@ export default {
     return {
       currentPage: 1,
       items: [],
-      total: 0
+      total: 0,
+      accessType: ''
     }
   },
-  mounted: function () {
+  mounted () {
     this.loadPackages()
+    this.accessType = authenticationService.accessType()
   }
 }
 </script>

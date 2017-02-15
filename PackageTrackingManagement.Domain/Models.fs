@@ -3,7 +3,7 @@
 open Chiron
 
 type PackageStatus = | EnRoute | Received
-
+  
 type AccessType = | Administrator | User
     with
         static member FromJson (_:AccessType) = json {
@@ -18,6 +18,9 @@ type AccessType = | Administrator | User
                 | Administrator -> do! Json.write "accessType" "administrator"
                 | User -> do! Json.write "accessType" "user"
         }
+
+let mapClientRepresentation input =
+    match input with | Administrator -> "administrator" | User -> "user"
 
 module Password =
     open System.Security.Cryptography

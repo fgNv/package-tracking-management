@@ -163,6 +163,7 @@ let apiRoutes =
                                             AuthorizationServer.authorizationServerMiddleware 
                                                User.ChallengeCredentials
                                                Claims.getCustomClaims
+                                               Claims.getClientData
                                     (fun ignore -> middleware(emptyCtx)) )
              Files.browseHome
              jsonEndpoints >=> setCORSHeaders >=> setJsonHeaders   

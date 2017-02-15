@@ -7,6 +7,7 @@ open System
 module ChallengeUserCredentials =
     type Query = { UserName: string
                    Password: string }
+
         with member this.GetPassword() = this.Password
 
     type QueryResult = { UserName: string

@@ -10,10 +10,12 @@
         Gerenciamento <i class="dropdown icon"></i>
         <div class="menu">
           <router-link class="item" to="/package/list">Pacotes</router-link>
-          <a class="item" href="#">Dispositivos</a>
+          <a class="item" href="#" v-if="accessType == 'administrator'">
+            Dispositivos
+          </a>
           <div class="divider"></div>
           <div class="header">Acesso</div>
-          <div class="item">
+          <div class="item" v-if="accessType == 'administrator'">
             <i class="dropdown icon"></i>
             Usuários
             <div class="menu">
@@ -28,3 +30,19 @@
     </div>
   </div>
 </template>
+
+<script>
+import authenticationService from 'services/Authentication.js'
+
+export default {
+  name: 'header-layout',
+  data () {
+    return {
+      accessType: ''
+    }
+  },
+  mounted () {
+    this.accessType = authenticationService.accessType()
+  }
+}
+</script>
