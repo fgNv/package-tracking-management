@@ -55,7 +55,7 @@ module.exports = {
         exclude: /node_modules/
       },
       {
-        test: /main.js$/,
+        test: /SharedData.js$/,
         loader: StringReplacePlugin.replace({
             replacements: [
                 {

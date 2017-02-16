@@ -99,6 +99,21 @@ Target "Watch" (fun _ ->
         RunTargetOrDefault "Default"
     )
 
+    use watcher = !! "PackageTrackingManagement.Persistence/**/*.fs" |> WatchChanges (fun changes -> 
+        tracefn "%A" changes
+        RunTargetOrDefault "Default"
+    )
+
+    use watcher = !! "PackageTrackingManagement.Web/**/*.fs" |> WatchChanges (fun changes -> 
+        tracefn "%A" changes
+        RunTargetOrDefault "Default"
+    )
+
+    use watcher = !! "PackageTracking.BearerTokenAuthentication/**/*.fs" |> WatchChanges (fun changes -> 
+        tracefn "%A" changes
+        RunTargetOrDefault "Default"
+    )
+
     System.Console.ReadLine() |> ignore //Needed to keep FAKE from exiting
 
     watcher.Dispose() // Use to stop the watch from elsewhere, ie another task.

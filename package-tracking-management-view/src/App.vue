@@ -35,7 +35,8 @@
 
 <style>
   .view{
-    margin-bottom: 5em;
+    margin-bottom: 8em;
+    min-height: 14em;
   }
 
   .fade-enter-active, .fade-leave-active {
@@ -62,7 +63,7 @@
   }
   .ui.footer.segment {
     margin: 5em 0em 0em;
-    padding: 5em 0em;
+    padding: 2.5em 0em;
   }
 
   .tooltip {

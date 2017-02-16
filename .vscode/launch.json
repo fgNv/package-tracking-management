@@ -5,7 +5,7 @@
             "name": "Launch",
             "type": "mono",
             "request": "launch",
-            "program": "${workspaceRoot}/program.exe",
+            "program": "C:/Program Files (x86)/Microsoft SDKs/F#/4.0/Framework/v4.0/FsiAnyCPU.exe.exe",
             "args": [],
             "cwd": "${workspaceRoot}",
             "preLaunchTask": "",

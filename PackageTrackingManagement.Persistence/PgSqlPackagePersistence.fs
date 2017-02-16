@@ -15,17 +15,35 @@ let private optionToNullableString input =
     match input with
         | Some v -> v
         | None -> null
-
 let getPackageList =
     handleDatabaseException
-        (fun (query : Queries.Package.List.Query) ->
+        (fun (query' : Queries.Package.List.Query) ->
             let context = getContext()
+
+            let nameFilter = match query'.NameFilter with | Some x -> x + "%" | None -> ""
+
+            let qtyToSkip = (query'.Page - 1) * query'.ItemsPerPage
+
+            let wat = query {
+                for p in context.Public.Package do
+                where (nameFilter = "" || p.Name =% (nameFilter))
+                skip qtyToSkip
+                take (query'.ItemsPerPage)
+                select ({  Name = p.Name
+                           Id = p.Id
+                           Description = Option.ofObj p.Description 
+                           CreatedAt = p.CreatedAt
+                           UpdatedAt = p.UpdatedAt
+                        } : Queries.Package.List.Package)
+            } 
+            let r = wat |> Seq.toList
+
             let packages =  context.Public.Package 
-                            |> Seq.filter(fun p -> match query.NameFilter with 
-                                                    | Some n -> p.Name = n
+                            |> Seq.filter(fun p -> match query'.NameFilter with 
+                                                    | Some n -> p.Name =% (n + "%")
                                                     | None -> true )
-                            |> Seq.skip((query.Page - 1) * query.ItemsPerPage)
-                            |> Seq.truncate(query.ItemsPerPage)
+                            |> Seq.skip((query'.Page - 1) * query'.ItemsPerPage)
+                            |> Seq.truncate(query'.ItemsPerPage)
                             |> Seq.map (fun p -> {  Name = p.Name
                                                     Id = p.Id
                                                     Description = Option.ofObj p.Description 
@@ -34,7 +52,7 @@ let getPackageList =
                                                  } : Queries.Package.List.Package)
                             |> Seq.toList
             let packagesTotalCount = context.Public.Package |> Seq.length
-            { Items = packages; Total = packagesTotalCount} : Queries.Package.List.QueryResult )
+            { Items = r; Total = packagesTotalCount} : Queries.Package.List.QueryResult )
 
 let private mapPackageDetails (package : PgsqlAccess.dataContext.``public.packageEntity``) =
     { Id = package.Id

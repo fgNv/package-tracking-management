@@ -12,9 +12,11 @@ import Dashboard from './components/Dashboard'
 import Login from './components/Login'
 import VueLocalStorage from 'vue-localstorage'
 import authenticationService from 'services/Authentication.js'
+import Permission from './components/User/Permissions'
 import vueDateFilter from 'filters/VueDateFormat.js'
 import VTooltip from 'v-tooltip'
 import * as VueGoogleMaps from 'vue2-google-maps'
+import sharedData from './services/SharedData.js'
 
 import 'toastr/build/toastr.css'
 import 'semantic-ui-css/semantic.css'
@@ -31,7 +33,7 @@ Vue.use(VueGoogleMaps, {
   }
 })
 
-Vue.http.options.root = '--api-base-url--'
+Vue.http.options.root = sharedData.apiBaseUrl
 Vue.http.interceptors.push((request, next) => {
   if (authenticationService.isLoggedIn()) {
     request.headers.set('Authorization', 'bearer ' + authenticationService.getToken())
@@ -63,6 +65,7 @@ const routes = [
   },
   { path: '/user/list', component: UsersList, beforeEnter: requireAuth },
   { path: '/user/create', component: UserForm, beforeEnter: requireAuth },
+  { path: '/user/permission', component: Permission, beforeEnter: requireAuth },
   {
     path: '/user/edit/:id',
     component: UserForm,

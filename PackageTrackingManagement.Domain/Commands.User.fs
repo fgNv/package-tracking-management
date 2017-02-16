@@ -66,13 +66,13 @@ module Update =
             | Success isCreatorAdministrator, Success isEmailAvailable,
               Success isUserNameAvailable, Success userExists ->
                 seq { if String.IsNullOrWhiteSpace parameter.UserName then
-                         yield "Sentences.Validation.UserNameIsRequired"
+                         yield  Sentences.Validation.UserNameIsRequired
                       if not isCreatorAdministrator && parameter.CurrentUserId <> parameter.Id then
                          yield "Sentences.Validation.OnlyAdministratorsMayPerformThisAction"
                       if not isUserNameAvailable then
                          yield "Sentences.Validation.ThisUserNameIsNotAvailable"
                       if not userExists then
-                         yield "Sentences.Validation.IdMustReferToAnExistingUser"
+                         yield Sentences.Validation.IdMustReferToAnExistingUser
                       if not isEmailAvailable then
                          yield "Sentences.Validation.ThisEmailIsNotAvailable" } 
             | Error(_,_), _, _, _ 

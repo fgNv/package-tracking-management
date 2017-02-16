@@ -20,7 +20,7 @@
             Usuários
             <div class="menu">
               <router-link class="item" to="/user/list">Gerenciar usuários</router-link>
-              <a class="item" href="#">Permissões</a>
+              <router-link class="item" to="/user/permission">Permissões</router-link>
             </div>
           </div>
           <a class="item" href="#">Editar perfil</a>
