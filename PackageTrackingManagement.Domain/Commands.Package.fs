@@ -37,7 +37,7 @@ module Update =
                     seq { if String.IsNullOrWhiteSpace parameter.Name then
                              yield "Sentences.Validation.UserNameIsRequired "
                           if not packageExists then
-                             yield "Sentences.Validation.IdMustReferToExistingPackage"
+                             yield Sentences.Validation.IdMustReferToExistingPackage
                           if not isCreatorAdministrator then
                              yield "Sentences.Validation.OnlyAdministratorsMayPerformThisAction" } 
                 | Error(_), _

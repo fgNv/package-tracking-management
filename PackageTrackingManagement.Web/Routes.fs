@@ -95,9 +95,16 @@ module private Actions =
         let page = intFromQueryString 1 request "page" 
         let itemsPerPage = intFromQueryString 20 request "itemsPerPage"
         let nameFilter = optionFromQueryString request "nameFilter" 
+        let accessTypeFilter = optionFromQueryString request "accessTypeFilter" 
+        let mappedAccessType = match accessTypeFilter with | Some x -> match x with 
+                                                                        | v when v = "administrator" -> Some Models.AccessType.Administrator
+                                                                        | v when v = "user" -> Some Models.AccessType.User
+                                                                        | _ -> None
+                                                           | None -> None
         let query = { Page = page 
                       ItemsPerPage = itemsPerPage
-                      NameFilter = nameFilter } : Queries.User.List.Query
+                      NameFilter = nameFilter
+                      AccessTypeFilter = mappedAccessType } : Queries.User.List.Query
         match Application.User.GetList query with
             | Success r -> OK (QueryResult.serializeObj r)
             | Error(e,_) -> INTERNAL_ERROR(e) 
@@ -129,10 +136,20 @@ let apiRoutes =
     
     let jsonEndpoints = 
         protectResource (
-            choose [             
+            choose [
+                 pathScan "/package/%s/permissions" (fun id ->
+                    let query= { PackageId = Guid.Parse id } : Queries.Permissions.ListByPackage.Query
+                    let list = Application.User.GetPermissionsByPackage query
+                    OK (QueryResult.serializeList list)
+                 )
+                 path "/permission" >=> choose [                    
+                    POST >=> 
+                        request(executeCommand JsonParse.GrantPermission.deserialize User.GrantPermission)                 
+                    DELETE >=> 
+                        request(executeCommand JsonParse.RevokePermission.deserialize User.RevokePermission) ]
                  path "/package/point/manual" >=> 
-                        choose [ POST >=> context(Actions.createManualPoint) ]
-                        choose [ DELETE >=> context(Actions.removeManualPoint) ]
+                        choose [ POST >=> context(Actions.createManualPoint) 
+                                 DELETE >=> context(Actions.removeManualPoint) ]
                  pathScan "/package/%s" 
                    (fun id -> 
                       let parsedId = System.Guid.Parse id

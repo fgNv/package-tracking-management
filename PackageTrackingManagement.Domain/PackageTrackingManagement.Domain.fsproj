@@ -51,6 +51,7 @@
     <Compile Include="Commands.Package.fs" />
     <Compile Include="Queries.User.fs" />
     <Compile Include="Queries.Package.fs" />
+    <Compile Include="Queries.Permissions.fs" />
     <Content Include="App.config" />
     <Content Include="paket.references" />
   </ItemGroup>

@@ -42,8 +42,8 @@ module UserExists =
                 match user with
                     | Some u -> true
                     | None -> false
-            | Error(_,_) -> false
-
+            | Error(_) -> false
+        
 open Chiron
 open Chiron.Operators
 
@@ -68,7 +68,8 @@ module Get =
 module List =
     type Query = { ItemsPerPage : int; 
                    Page : int
-                   NameFilter : string option }
+                   NameFilter : string option
+                   AccessTypeFilter : Models.AccessType option }
     
     type User = { Name: string
                   Id : Guid

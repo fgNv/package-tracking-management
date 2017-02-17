@@ -46,6 +46,21 @@ export default {
                 throw err
               })
   },
+  getUsers () {
+    var page = 1
+    var itemsPerPage = 100
+    var accessTypeFilter = 'user'
+    var data = {page, itemsPerPage, accessTypeFilter}
+    return Vue.http
+              .get('user', {params: data})
+              .then((r) => {
+                return r.body
+              })
+              .catch((err) => {
+                window.alert('Erro ao carregar usuários')
+                throw err
+              })
+  },
   query (page, itemsPerPage) {
     var data = {page, itemsPerPage}
     return Vue.http

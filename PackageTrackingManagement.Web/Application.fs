@@ -47,6 +47,22 @@ module User =
             PgSqlUserPersistence.getUserByUserName
             {UserName = username}
 
+    let GrantPermission =
+        Commands.User.GrantPermission.handle
+            PgSqlUserPersistence.userExists
+            PgSqlUserPersistence.isUserObserver
+            PgSqlPackagePersistence.packageExists
+            PgSqlUserPersistence.grantPermission
+
+    let RevokePermission =
+        Commands.User.RevokePermission.handle
+            PgSqlUserPersistence.permissionExists
+            PgSqlUserPersistence.revokePermission
+    
+    let GetPermissionsByPackage =
+        Queries.Permissions.ListByPackage.handle
+            PgSqlUserPersistence.getPermissionsByPackage
+
 module Package =    
     let Create =
         Commands.Package.Create.handle

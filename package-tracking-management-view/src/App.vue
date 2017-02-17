@@ -35,8 +35,8 @@
 
 <style>
   .view{
-    margin-bottom: 8em;
-    min-height: 14em;
+    margin-bottom: 3em;
+    min-height: 30em;
   }
 
   .fade-enter-active, .fade-leave-active {

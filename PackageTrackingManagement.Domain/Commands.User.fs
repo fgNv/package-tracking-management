@@ -34,9 +34,9 @@ module Create =
                              yield "Sentences.Validation.ThisUserNameIsNotAvailable"
                           if not isEmailAvailable  then
                              yield "Sentences.Validation.ThisEmailIsNotAvailable" } 
-                | Error(_,_), _, _ 
-                | _, Error(_,_), _ 
-                | _, _, Error(_,_) -> seq { yield "Sentences.Error.DatabaseFailure" }
+                | Error(_), _, _ 
+                | _, Error(_), _ 
+                | _, _, Error(_) -> seq { yield "Sentences.Error.DatabaseFailure" }
                      
     let private assignEncryptedPassword (input : Command) =
         Success {input with Password = Models.Password.getEncryptedPassword input}
@@ -75,10 +75,10 @@ module Update =
                          yield Sentences.Validation.IdMustReferToAnExistingUser
                       if not isEmailAvailable then
                          yield "Sentences.Validation.ThisEmailIsNotAvailable" } 
-            | Error(_,_), _, _, _ 
-            | _, Error(_,_), _, _ 
-            | _, _, Error(_,_), _ 
-            | _, _, _, Error(_,_) -> seq { yield "Sentences.Error.DatabaseFailure" }
+            | Error(_), _, _, _ 
+            | _, Error(_), _, _ 
+            | _, _, Error(_), _ 
+            | _, _, _, Error(_) -> seq { yield "Sentences.Error.DatabaseFailure" }
                      
     let handle isCreatorAdministrator isEmailAvailable isUserNameAvailable userExists
                updateUser command =        
@@ -99,7 +99,7 @@ module UpdatePassword =
                              yield "Sentences.Validation.IdMustReferToAnExistingUser"
                           if String.IsNullOrWhiteSpace parameter.Password then
                              yield "Sentences.Validation.PasswordIsRequired" } 
-                | Error (_,_) -> 
+                | Error (_) -> 
                     seq { yield "Sentences.Error.DatabaseFailure" }
     
     let private assignEncryptedPassword (input : Command) =
@@ -124,9 +124,47 @@ module Delete =
                          yield Sentences.Validation.OnlyAdministratorsMayPerformThisAction
                       if parameter.Id = parameter.CurrentUserId then
                          yield Sentences.Validation.UserMayNotDeleteHimself } 
-            | Error (_,_), _
-            | _, Error (_,_) -> seq { yield "Sentences.Error.DatabaseFailure" }
+            | Error (_), _
+            | _, Error (_) -> seq { yield "Sentences.Error.DatabaseFailure" }
     
     let handle userExists isCurrentUserAdministrator deleteUser command =        
         command |> Validation.validate (getErrors userExists isCurrentUserAdministrator)
                 >>= deleteUser
+
+module GrantPermission =
+    type Command = { UserId : Guid 
+                     PackageId : Guid }
+
+    let private getErrors userExistsFun isUserObserverFun packageExistsFun command =
+        match userExistsFun command.UserId, isUserObserverFun command.UserId, 
+              packageExistsFun command.PackageId with
+            | Success userExists, Success isUserObserver, Success packageExists ->
+                seq {
+                    if not userExists then 
+                        yield "Sentences.PtBrValidationSentences.IdMustReferToExistingUser"
+                    if not isUserObserver then  
+                        yield "Sentences.PtBrValidationSentences.UserMustBeObserver"
+                    if not packageExists then
+                        yield "Sentences.PtBrValidationSentences.IdMustReferToExistingPackage" }
+            | Error(_), _ ,_ 
+            | _, Error(_) ,_ 
+            | _, _, Error(_) -> seq { yield "Sentences.Error.DatabaseFailure" }
+
+    let handle userExists isUserObserver packageExists grantPermission command =
+        command |> Validation.validate (getErrors userExists isUserObserver packageExists)
+                >>= grantPermission
+
+module RevokePermission =
+    type Command = { UserId : Guid 
+                     PackageId : Guid }
+    let private getErrors permissionExistsFun command =
+        match permissionExistsFun (command.UserId, command.PackageId) with
+            | Success permissionExists ->
+                seq {
+                    if not permissionExists then 
+                        yield "Sentences.PtBrValidationSentences.IdMustReferToAnExistingPermission" }
+            | Error(_) -> seq { yield "Sentences.Error.DatabaseFailure" }
+
+    let handle permissionExists revokePermission command =
+        command |> Validation.validate (getErrors permissionExists)
+                >>= revokePermission

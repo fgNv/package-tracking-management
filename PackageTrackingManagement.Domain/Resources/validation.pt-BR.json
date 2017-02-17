@@ -13,5 +13,7 @@
   "longitudeMustBeBetweenMinusOneHundredEightyAndOneHundredEighty": "Longitude deve estar entre -180 e 180",
   "idMustReferToExistingPoint": "Id deve ser referente a um ponto existente",
   "idMustReferToExistingUser": "Id deve ser referente a um usuário existente",
-  "userMayNotDeleteHimself": "Usuário não pode se deletar"
+  "userMayNotDeleteHimself": "Usuário não pode se deletar",
+  "userMustBeObserver": "Usuário deve ser observador",
+  "idMustReferToAnExistingPermission": "Id deve ser referente a uma permissão existente"
 }

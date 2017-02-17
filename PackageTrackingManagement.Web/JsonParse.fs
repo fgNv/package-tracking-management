@@ -112,3 +112,23 @@ module QueryResult =
     let inline serializeObj (input) =
         input |> Json.serialize
               |> Json.formatWith JsonFormattingOptions.Compact
+
+module GrantPermission =
+    open Commands.User.GrantPermission
+    
+    let deserialize = 
+        deserializeJson <| json { let! packageId = Json.read "packageId"
+                                  let! userId = Json.read "userId"
+                                                                    
+                                  return { PackageId = packageId
+                                           UserId = userId } }
+
+module RevokePermission =
+    open Commands.User.RevokePermission
+    
+    let deserialize = 
+        deserializeJson <| json { let! packageId = Json.read "packageId"
+                                  let! userId = Json.read "userId"
+                                                                    
+                                  return { PackageId = packageId
+                                           UserId = userId } }

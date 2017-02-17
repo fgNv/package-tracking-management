@@ -6,6 +6,9 @@ open Commands
 open System
 open Models
 open Queries.User.ChallengeUserCredentials
+open NpgsqlTypes
+open FSharp.Data
+open FSharp.Data.Sql
 
 let private serializeAccessType input =
     match input with
@@ -18,29 +21,38 @@ let private deserializeAccessType input =
         | "user" -> User
         | _ -> raise (new Exception("Sentences.Error.InvalidAccessType"))
         
-let userExists id =
+let userExists =
     handleDatabaseException ( fun id -> let context = getContext()
-                                        context.Public.User |> Seq.exists (fun g -> g.Id = id) ) id
+                                        context.Public.User |> Seq.exists (fun g -> g.Id = id) ) 
                                         
-let getUserList q' =
+let getUserList =
     handleDatabaseException ( 
         fun (query' : Queries.User.List.Query) ->
             let context = getContext()
-            let users =  context.Public.User
-                            |> Seq.filter(fun p -> match query'.NameFilter with 
-                                                    | Some n -> p.Name = n
-                                                    | None -> true )
-                            |> Seq.skip((query'.Page - 1) * query'.ItemsPerPage)
-                            |> Seq.truncate(query'.ItemsPerPage)
-                            |> Seq.map (fun p -> {  Name = p.Name
-                                                    Id = p.Id
-                                                    Email = p.Email
-                                                    AccessType = deserializeAccessType p.AccessType
-                                                 } : Queries.User.List.User)
-                            |> Seq.toList
+
+            let nameFilter = match query'.NameFilter with | Some x -> x + "%" | None -> ""
+
+            let accessTypeFilter = match query'.AccessTypeFilter with | Some x -> serializeAccessType x
+                                                                      | None -> ""
+            let qtyToSkip = (query'.Page - 1) * query'.ItemsPerPage
+
+            let dbQuery = query {
+                for u in context.Public.User  do
+                where ( (nameFilter = "" || u.Name =% (nameFilter)) &&
+                        (accessTypeFilter = "" || u.AccessType = accessTypeFilter) )
+                skip qtyToSkip
+                take (query'.ItemsPerPage)
+                select ({  Name = u.Name
+                           Id = u.Id
+                           Email = u.Email
+                           AccessType = deserializeAccessType u.AccessType
+                        } : Queries.User.List.User)
+            } 
+            let users = dbQuery |> Seq.toList
+
             let packagesTotalCount = context.Public.Package |> Seq.length
             { Items = users; Total = packagesTotalCount} : Queries.User.List.QueryResult 
-    ) q'
+    ) 
 let getUserById id =
     handleDatabaseException ( fun id -> 
                                 let context = getContext()
@@ -153,3 +165,48 @@ let deleteUser (command : User.Delete.Command) =
                       | None -> raise (new Exception("Sentences.Validation.IdMustReferToAnExistingUser"))
                     context.SubmitUpdates() ) command
 
+let grantPermission =
+    handleDatabaseException
+        ( fun (cmd : User.GrantPermission.Command) -> 
+                     let context = getContext()
+                     let newPermission = context.Public.Permission.Create()
+                     newPermission.UserId <- cmd.UserId
+                     newPermission.PackageId <- cmd.PackageId
+                     context.SubmitUpdates() )
+
+let revokePermission =
+    handleDatabaseException
+        ( fun (cmd : User.RevokePermission.Command) -> 
+                     let context = getContext()
+                     let permission = context.Public.Permission |> 
+                                      Seq.tryFind(fun p -> p.UserId = cmd.UserId &&
+                                                           p.PackageId = cmd.PackageId)
+                     
+                     match permission with | Some p -> p.Delete()
+                                                       context.SubmitUpdates()
+                                           | None -> () )
+
+let permissionExists =
+    handleDatabaseException
+        ( fun args ->
+            let userId = fst args
+            let packageId = snd args
+            let context = getContext()
+            context.Public.Permission |> 
+            Seq.exists (fun p -> p.UserId = userId && p.PackageId = packageId) )
+
+let isUserObserver =
+    handleDatabaseException
+        ( fun userId  ->
+            let context = getContext()
+            context.Public.User |> 
+            Seq.exists (fun u -> u.Id = userId && 
+                                 u.AccessType = (serializeAccessType AccessType.User) ) )
+
+let getPermissionsByPackage (query' : Queries.Permissions.ListByPackage.Query) =
+    let context = getContext()
+    context.Public.Permission |>
+    Seq.filter (fun p -> p.PackageId = query'.PackageId ) |>
+    Seq.map (fun p -> { UserId = p.UserId;  
+                        PackageId = p.PackageId } : Queries.Permissions.ListByPackage.Permission) |>
+    Seq.toList 
