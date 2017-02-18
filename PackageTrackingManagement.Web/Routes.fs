@@ -61,12 +61,16 @@ module private Actions =
         match Package.Delete cmd with | Success _ -> NO_CONTENT
                                       | Error(title, errs) -> INTERNAL_ERROR(title) 
 
-    let getPackages request =
+    let getPackages context =
+        let request = context.request
         let page = intFromQueryString 1 request "page" 
         let itemsPerPage = intFromQueryString 20 request "itemsPerPage"
         let nameFilter = optionFromQueryString request "nameFilter" 
+        let userId = Claims.getUserIdFromContext context  
+
         let query = { Page = page 
                       ItemsPerPage = itemsPerPage
+                      CurrentUserId = userId
                       NameFilter = nameFilter } : Queries.Package.List.Query
         match Application.Package.GetList query with
             | Success r -> OK (QueryResult.serializeObj r)
@@ -142,11 +146,18 @@ let apiRoutes =
                     let list = Application.User.GetPermissionsByPackage query
                     OK (QueryResult.serializeList list)
                  )
-                 path "/permission" >=> choose [                    
+                 DELETE >=> pathScan "/permission/user/%s/package/%s" (fun (userId, packageId) ->
+                    let parsedUserId = Guid.Parse(userId)
+                    let parsedPackageId = Guid.Parse(packageId)
+                    let command = { UserId = parsedUserId
+                                    PackageId = parsedPackageId } : Commands.User.RevokePermission.Command                    
+                    match User.RevokePermission command with
+                        | Success _ -> NO_CONTENT
+                        | Error(_) -> INTERNAL_ERROR("error")
+                 ) 
+                 path "/permission" >=>                     
                     POST >=> 
-                        request(executeCommand JsonParse.GrantPermission.deserialize User.GrantPermission)                 
-                    DELETE >=> 
-                        request(executeCommand JsonParse.RevokePermission.deserialize User.RevokePermission) ]
+                        request(executeCommand JsonParse.GrantPermission.deserialize User.GrantPermission)                    
                  path "/package/point/manual" >=> 
                         choose [ POST >=> context(Actions.createManualPoint) 
                                  DELETE >=> context(Actions.removeManualPoint) ]
@@ -158,7 +169,7 @@ let apiRoutes =
                         DELETE >=> context (Actions.deletePackage parsedId) ])
                  path "/package" >=>
                      choose [ 
-                        GET >=> request(Actions.getPackages)
+                        GET >=> context(Actions.getPackages)
                         POST >=> context (Actions.createPackage) 
                         PUT >=> context (Actions.updatePackage) ]
                  pathScan "/user/%s" 

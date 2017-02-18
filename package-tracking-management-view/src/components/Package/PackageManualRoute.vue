@@ -13,12 +13,17 @@
                     v-for="m in package.manualPoints"
                     :position="m.position"
                     :clickable="false"
-                    :draggable="false"
-                  ></gmap-marker>
-
+                    :draggable="false"></gmap-marker>
+              <gmap-polyline v-for="l in lines"
+                        :path="l.path"
+                        :editable="false"
+                        :draggable="false"
+                        :options="{geodesic:true, strokeColor:'#FF0000'}">
+              </gmap-polyline>
     </gmap-map>
 
     <router-link to='/package/list' tag='button'
+                 style="margin-top: 3em;"
                  class='ui button secondary' tabindex='1'>
       Voltar
     </router-link>
@@ -35,6 +40,7 @@
     data () {
       return {
         package: {},
+        lines: [],
         mapType: 'terrain',
         zoom: 5,
         initialCenter: {lat: -18.8800397, lng: -47.05878999999999}
@@ -51,17 +57,26 @@
           longitude
         }
 
-        $('.dimmer').dimmer('show')
+        // $('.dimmer').dimmer('show')
         manualPointService.create(request)
                           .then(response => {
                             toasterService.success('Ponto manual criado com sucesso')
+                            var destination = {position: {lat: latitude, lng: longitude}}
+                            this.package.manualPoints.push(destination)
+
+                            if (this.package.manualPoints.length <= 1) {
+                              return
+                            }
+
+                            var source = this.package.manualPoints[this.package.manualPoints.length - 2]
+                            this.lines.push({path: [source.position, destination.position]})
                           })
                           .catch((err) => {
                             toasterService.error('Erro ao criar ponto manual')
                             throw err
                           })
                           .finally(() => {
-                            $('.dimmer').dimmer('hide')
+                            // $('.dimmer').dimmer('hide')
                           })
       }
     },
@@ -71,10 +86,13 @@
       packageService.get(this.id)
                     .then(response => {
                       this.package = response
-                      this.package.manualPoints = this.package
-                                                      .manualPoints.map(p => {
-                                                        return p
-                                                      })
+                      this.package.manualPoints = this.package.manualPoints
+                      this.lines = []
+                      for (var i = 1; i < this.package.manualPoints.length; i++) {
+                        var source = this.package.manualPoints[i - 1]
+                        var destination = this.package.manualPoints[i]
+                        this.lines.push({path: [source.position, destination.position]})
+                      }
                     })
                     .finally(() => {
                       $('.dimmer').dimmer('hide')

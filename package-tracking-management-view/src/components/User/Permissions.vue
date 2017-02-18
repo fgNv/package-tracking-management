@@ -10,7 +10,7 @@
           <i class="github icon"></i>
         </div>
       </div>
-      {{permissions}}
+
       <div class="ui card" v-for="user in userOptions" v-if="selectedPackage">
         <div class="content">
           <a class="header">{{user.name}}</a>
@@ -20,7 +20,8 @@
           <div class="description">
             <div class="ui checkbox">
               <input type="checkbox"
-                     v-on:click="grantPermission(user.id)"
+                     v-model="permissions[user.id]"
+                     v-on:click="permissions[user.id] ? grantPermission(user.id) : revokePermission(user.id)"
                      name="example">
               <label>Habilitar visualização de pacote</label>
             </div>
@@ -71,8 +72,14 @@
       loadPermissions () {
         permissionService.getByPackage(this.selectedPackage.id)
                          .then(permissions => {
-                           this.permissions = permissions
+                           this.permissions = {}
+                           permissions.forEach(p => {
+                             this.permissions[p.userId] = true
+                           })
                          })
+      },
+      revokePermission (userId) {
+        permissionService.revoke(userId, this.selectedPackage.id)
       },
       grantPermission (userId) {
         permissionService.grant(userId, this.selectedPackage.id)

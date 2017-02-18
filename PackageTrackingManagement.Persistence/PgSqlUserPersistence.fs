@@ -88,7 +88,10 @@ let isUserAdministrator id =
             match user with
                 | Some u -> AccessType.Administrator = deserializeAccessType u.AccessType 
                 | None -> false ) id
-
+let getUserAccessType id =
+    let context = getContext()
+    let user = context.Public.User |> Seq.find (fun u -> u.Id = id)
+    deserializeAccessType user.AccessType 
 let isUserEmailUnused email =
     handleDatabaseException 
         (fun email -> let context = getContext()
@@ -178,6 +181,7 @@ let revokePermission =
     handleDatabaseException
         ( fun (cmd : User.RevokePermission.Command) -> 
                      let context = getContext()
+
                      let permission = context.Public.Permission |> 
                                       Seq.tryFind(fun p -> p.UserId = cmd.UserId &&
                                                            p.PackageId = cmd.PackageId)

@@ -10,6 +10,7 @@ let UserIdKey = "userId"
 let getClientData (user : QueryResult) =
     let dict = new Dictionary<string, string>()
     dict.Add("accessType", Models.mapClientRepresentation user.AccessType)
+    dict.Add("name", user.Name)
     dict :> IDictionary<string,string>
 
 let inline getCustomClaims (user : QueryResult) =

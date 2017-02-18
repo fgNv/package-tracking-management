@@ -43,8 +43,7 @@
           </router-link>
           <router-link tag="button" class="ui secondary button"
                        :to="{name: 'package-manual-route', params: {id: item.id} }"
-                       v-tooltip="'Atualizar rota manual do pacote'"
-                       v-if="accessType == 'administrator'">
+                       v-tooltip="'Atualizar rota manual do pacote'">
             <i class="fa fa-map"></i>
           </router-link>
          </td>

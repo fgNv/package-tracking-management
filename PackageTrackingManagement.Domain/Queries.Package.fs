@@ -9,7 +9,8 @@ module List =
 
     type Query = { ItemsPerPage : int; 
                    Page : int
-                   NameFilter : string option }
+                   NameFilter : string option
+                   CurrentUserId : Guid }
 
     type Package = { Name: string
                      Id : Guid
@@ -29,8 +30,11 @@ module List =
                Json.write "items" x.Items
             *> Json.write "total" x.Total
 
-    let handle getPackageList (query : Query) : Result<QueryResult> = 
-        getPackageList query
+    let handle getUserAccessType getPackageList getUserPackageList (query : Query) : Result<QueryResult> = 
+        let userAccessType = getUserAccessType query.CurrentUserId
+        match userAccessType with 
+                | Models.AccessType.Administrator -> getPackageList query
+                | Models.AccessType.User -> getUserPackageList query
 
 module Details =
     open Railroad

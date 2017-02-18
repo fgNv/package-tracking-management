@@ -26,7 +26,10 @@
           <a class="item" href="#">Editar perfil</a>
         </div>
       </div>
-      <router-link class="item" to="/logout">Logout</router-link>
+      <div class="right menu">
+        <a class="item">Autenticado como &nbsp; <b>{{name}}</b></a>
+        <router-link class="item" to="/logout">Logout</router-link>
+      </div>
     </div>
   </div>
 </template>
@@ -38,11 +41,13 @@ export default {
   name: 'header-layout',
   data () {
     return {
-      accessType: ''
+      accessType: '',
+      name: ''
     }
   },
   mounted () {
     this.accessType = authenticationService.accessType()
+    this.name = authenticationService.getName()
   }
 }
 </script>

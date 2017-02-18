@@ -23,9 +23,8 @@ export default {
               })
   },
   revoke (userId, packageId) {
-    var request = {userId, packageId}
     return Vue.http
-              .delete('permission', request)
+              .delete('permission/user/' + userId + '/package/' + packageId)
               .then((r) => {
                 return r.body
               })

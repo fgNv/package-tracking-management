@@ -6,6 +6,11 @@ import Moment from 'moment'
 Vue.use(VueResource)
 Vue.use(VueLocalStorage)
 
+function getAccessData () {
+  var accessData = JSON.parse(window.localStorage.getItem('access_data'))
+  return accessData
+}
+
 export default {
   authenticate (data) {
     data['grant_type'] = 'password'
@@ -28,11 +33,13 @@ export default {
     window.localStorage.removeItem('access_data')
   },
   getToken () {
-    var accessData = JSON.parse(window.localStorage.getItem('access_data'))
-    return accessData.access_token
+    return getAccessData().access_token
+  },
+  getName () {
+    return getAccessData().name
   },
   isLoggedIn () {
-    var accessData = JSON.parse(window.localStorage.getItem('access_data'))
+    var accessData = getAccessData()
     if (!accessData) {
       return false
     }
@@ -42,7 +49,7 @@ export default {
     return !expired
   },
   accessType () {
-    var accessData = JSON.parse(window.localStorage.getItem('access_data'))
+    var accessData = getAccessData()
     if (!accessData) {
       return false
     }

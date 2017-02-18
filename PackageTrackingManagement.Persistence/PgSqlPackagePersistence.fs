@@ -41,6 +41,38 @@ let getPackageList =
             let packagesTotalCount = context.Public.Package |> Seq.length
             { Items = packages; Total = packagesTotalCount} : Queries.Package.List.QueryResult )
 
+let getUserPackageList =
+    handleDatabaseException
+        (fun (query' : Queries.Package.List.Query) ->
+            let context = getContext()
+            
+            let nameFilter = match query'.NameFilter with | Some x -> x + "%" | None -> ""
+
+            let qtyToSkip = (query'.Page - 1) * query'.ItemsPerPage
+
+            let allowedPackagesIds = context.Public.Permission |> 
+                                     Seq.filter (fun p -> 
+                                         p.UserId = query'.CurrentUserId
+                                     ) |> 
+                                     Seq.map(fun p -> p.PackageId)
+
+            let dbQuery = query {
+                for p in context.Public.Package do
+                where ((nameFilter = "" || p.Name =% (nameFilter)) && p.Id |=| allowedPackagesIds)
+                skip qtyToSkip
+                take (query'.ItemsPerPage)
+                select ({  Name = p.Name
+                           Id = p.Id
+                           Description = Option.ofObj p.Description 
+                           CreatedAt = p.CreatedAt
+                           UpdatedAt = p.UpdatedAt
+                        } : Queries.Package.List.Package)
+            } 
+            let packages = dbQuery |> Seq.toList
+
+            let packagesTotalCount = context.Public.Package |> Seq.length
+            { Items = packages; Total = packagesTotalCount} : Queries.Package.List.QueryResult )
+
 let private mapPackageDetails (package : PgsqlAccess.dataContext.``public.packageEntity``) =
     { Id = package.Id
       Name = package.Name

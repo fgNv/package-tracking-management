@@ -95,7 +95,9 @@ module Package =
     
     let GetList =
         Queries.Package.List.handle
+            PgSqlUserPersistence.getUserAccessType
             PgSqlPackagePersistence.getPackageList
+            PgSqlPackagePersistence.getUserPackageList
 
     let GetDetails =
         Queries.Package.Details.handle
