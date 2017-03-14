@@ -67,7 +67,7 @@ let buildDir = __SOURCE_DIRECTORY__ + "/fake-dist/"
 
 let projectsSearchPattern = __SOURCE_DIRECTORY__ + "/**/*.fsproj"
 
-Fake.MSBuildHelper.MSBuildLoggers <- []
+Fake.MSBuildHelper.MSBuildLoggers <- [] 
 
 let private replaceConnString' newConnString (originalContent : string)  =
     let originalConnString = "User ID=homestead;Password=secret;Host=192.168.36.36;Port=5432;Database=package_tracking_management;"
