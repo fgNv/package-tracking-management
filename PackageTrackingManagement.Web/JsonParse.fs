@@ -4,16 +4,17 @@ open System.Text
 open Chiron
 open Chiron.Mapping
 open Chiron.Operators
+open Sentences
 
-let inline private deserializeJson builder bytes  =
+let inline private deserializeJson builder bytes =
     try
-        bytes |> Encoding.ASCII.GetString 
-            |> Json.parse
-            |> builder
-            |> function | Value r,_ -> Railroad.Success r 
-                        | Error e,_ -> Railroad.Error("Sentences.Error.InvalidInputContent", [e])
+        bytes |> Encoding.UTF8.GetString
+              |> Json.parse
+              |> builder
+              |> function | Value r,_ -> Railroad.Success r 
+                          | Error e,_ -> Railroad.Error(translate Language.PtBr Sentence.InvalidInputContent, [e])
     with
-        | ex -> Railroad.Error("Sentences.Error.InvalidInputContent", [ex.Message])
+        | ex -> Railroad.Error(translate Language.PtBr Sentence.InvalidInputContent, [ex.Message])
 
 module CreateUserCommand =
     open Commands.User.Create
@@ -132,3 +133,9 @@ module RevokePermission =
                                                                     
                                   return { PackageId = packageId
                                            UserId = userId } }
+
+type InvalidDataResponse = {Title : string 
+                            Errors : string list }
+        with static member ToJson(x : InvalidDataResponse) =
+               Json.write "title" x.Title
+            *> Json.write "errors" x.Errors

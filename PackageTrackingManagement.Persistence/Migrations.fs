@@ -4,6 +4,7 @@ open PgSqlPersistence
 open Npgsql
 open System
 open System.IO
+open Railroad
 
 type private ExecutedMigrationItem = {
     Name : string
@@ -38,24 +39,19 @@ let private getExecutedMigrations conn =
 
 type FolderDiscovery = | Absolute | Relative | Fixed of string
 
-let updateDatabase(migrationsPath) =
-    let connString = GetConnectionString()
-    use conn = new NpgsqlConnection(connString)
-    conn.Open()
-
-    let executedMigrations = getExecutedMigrations conn            
+let private getPendingMigrations conn migrationsPath = 
+    let executedMigrations = getExecutedMigrations conn
 
     let availableMigrations =          
          Directory.GetFiles migrationsPath |>
          Seq.map (fun path -> { Name = Path.GetFileName path
                                 Command = File.ReadAllText path })
 
-    let pendingMigrations = availableMigrations |> 
-                            Seq.filter (fun a -> not (executedMigrations |> 
+    availableMigrations |> Seq.filter (fun a -> not (executedMigrations |> 
                                                       Seq.exists(fun e -> e.Name = a.Name) ))
 
-    pendingMigrations |> 
-    Seq.iter (fun m ->
+let private executePendingMigrations conn pendingMigrations =
+    pendingMigrations |> Seq.iter (fun m ->
                   use insertMigrationCmd = new NpgsqlCommand()
                   insertMigrationCmd.Connection <- conn
                   insertMigrationCmd.CommandText <- """ 
@@ -71,5 +67,16 @@ let updateDatabase(migrationsPath) =
 
                   insertMigrationCmd.CommandText <- m.Command
                   insertMigrationCmd.ExecuteNonQuery() |> ignore )
-    conn.Close()
+
+let updateDatabase(migrationsPath) =
+    let connString = getConnectionString()
+    match connString with
+        | Some connString ->
+            use conn = new NpgsqlConnection(connString)
+            conn.Open()
+            getPendingMigrations conn migrationsPath |> 
+            executePendingMigrations conn 
+            conn.Close()
+            Success() 
+        | None -> Error("failure on database migration", [|"no connection string defined"|])
     

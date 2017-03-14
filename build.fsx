@@ -56,8 +56,10 @@
 open Fake
 open System.IO
 
+#load "PackageTrackingManagement.Domain/Railroad.fs"
 #load "PackageTrackingManagement.Persistence/PgSqlPersistence.fs"
 #load "PackageTrackingManagement.Persistence/Migrations.fs"
+#load "PackageTrackingManagement.Domain/Sentences.fs"
 
 Migrations.updateDatabase(Path.Combine(__SOURCE_DIRECTORY__ ,"Migrations"))
 
@@ -67,15 +69,19 @@ let projectsSearchPattern = __SOURCE_DIRECTORY__ + "/**/*.fsproj"
 
 Fake.MSBuildHelper.MSBuildLoggers <- []
 
+let private replaceConnString' newConnString (originalContent : string)  =
+    let originalConnString = "User ID=homestead;Password=secret;Host=192.168.36.36;Port=5432;Database=package_tracking_management;"
+    originalContent.Replace(originalConnString,
+                            newConnString)
 let replaceConnString () =
-    ReplaceInFile 
-        (fun content -> 
-            content.Replace("User ID=homestead;Password=secret;Host=192.168.36.36;Port=5432;Database=package_tracking_management;",
-                             PgSqlPersistence.GetConnectionString())
-        ) 
-        (Path.Combine(__SOURCE_DIRECTORY__, 
-                      "PackageTrackingManagement.Persistence", 
-                      "PgSqlPersistence.fs"))
+    let connString = PgSqlPersistence.getConnectionString()
+    match connString with 
+        | Some connString ->
+            let filePath = Path.Combine(__SOURCE_DIRECTORY__, "PackageTrackingManagement.Persistence", "PgSqlPersistence.fs")
+            ReplaceInFile (replaceConnString' connString) 
+                           filePath
+        | None -> 
+            System.Console.WriteLine("No conn string found")    
 
 Target "BuildApp" (fun _ ->
    !! projectsSearchPattern
@@ -102,17 +108,22 @@ Target "CopyDlls" (fun _ ->
                                  ( Path.Combine(__SOURCE_DIRECTORY__, buildDir, d) ))
 )
 
+let getModifiedFilePath project fileName =
+    tryFindFileOnPath( Path.Combine(__SOURCE_DIRECTORY__,
+                                    project,
+                                    fileName))
+
 Target "UndoChanges" (fun _ -> 
     let gitCmd  = tryFindFileOnPath "git"
-    let modifiedFile = tryFindFileOnPath(
-                             Path.Combine(__SOURCE_DIRECTORY__,
-                                    "PackageTrackingManagement.Persistence",
-                                    "PgSqlPersistence.fs"))
-    match gitCmd, modifiedFile with 
-        | None, _ 
-        | _, None -> trace ("could not") 
-        | Some f, Some g -> 
-            Shell.Exec(g, "checkout",  f) |> ignore
+    let modifiedFiles = [ getModifiedFilePath "PackageTrackingManagement.Persistence" "PgSqlPersistence.fs"
+                          getModifiedFilePath "PackageTrackingManagement.Domain" "Sentences.fs" ]
+
+    modifiedFiles |> Seq.iter (fun modifiedFile ->
+        match gitCmd, modifiedFile with 
+            | None, _ 
+            | _, None -> trace ("could not") 
+            | Some f, Some g -> 
+                Shell.Exec(g, "checkout",  f) |> ignore)
 )
 
 Target "Default" (fun _ ->

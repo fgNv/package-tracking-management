@@ -6,7 +6,7 @@ open Railroad
 open FSharp.Data.Sql
 open System
 open System.IO
-
+open Sentences
 
 type internal PgsqlAccess = SqlDataProvider<Common.DatabaseProviderTypes.POSTGRESQL,
                                             ConnectionString>
@@ -30,5 +30,5 @@ let internal handleDatabaseException f input =
                 System.Console.WriteLine(ex.StackTrace)
 
                 System.Console.WriteLine(Error.getExceptionMessages(ex))
-                Error ("Sentences.Error.DatabaseFailure", 
+                Error (translate Language.PtBr Sentence.DatabaseFailure, 
                        Error.getExceptionMessages ex)

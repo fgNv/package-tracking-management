@@ -8,7 +8,6 @@ export default {
                 return r.body
               })
               .catch((err) => {
-                window.alert('Erro ao obter pacote')
                 console.log('err getting package -> ', err)
                 throw err
               })
@@ -20,7 +19,6 @@ export default {
                 return r.body
               })
               .catch((err) => {
-                window.alert('Erro ao atualizar pacote')
                 throw err
               })
   },
@@ -31,7 +29,6 @@ export default {
                 return r.body
               })
               .catch((err) => {
-                window.alert('Erro ao criar pacote')
                 throw err
               })
   },
@@ -42,7 +39,6 @@ export default {
                 return r.body
               })
               .catch((err) => {
-                window.alert('Erro ao remover pacote')
                 console.log('err removing package -> ', err)
                 throw err
               })
@@ -55,7 +51,6 @@ export default {
                 return r.body
               })
               .catch((err) => {
-                window.alert('Erro ao carregar pacotes')
                 throw err
               })
   }

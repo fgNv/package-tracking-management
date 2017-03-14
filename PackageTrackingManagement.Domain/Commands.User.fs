@@ -4,6 +4,7 @@ open Models
 open System
 open Railroad
 open Commands.Global
+open Sentences
 
 module Create =
     let machineId = Guid.NewGuid()
@@ -25,18 +26,18 @@ module Create =
                 | Success isEmailAvailable, Success isUserNameAvailable, 
                   Success isCreatorAdministrator ->
                     seq { if String.IsNullOrWhiteSpace parameter.UserName then
-                             yield "Sentences.Validation.UserNameIsRequired" 
+                             yield translate Language.PtBr Sentence.UserNameIsRequired
                           if String.IsNullOrWhiteSpace parameter.Password then
-                             yield "Sentences.Validation.PasswordIsRequired"
+                             yield translate Language.PtBr Sentence.PasswordIsRequired
                           if not isCreatorAdministrator && parameter.CreatorId <> machineId then
-                             yield "Sentences.Validation.OnlyAdministratorsMayPerformThisAction"
+                             yield translate Language.PtBr Sentence.OnlyAdministratorsMayPerformThisAction
                           if not isUserNameAvailable then
-                             yield "Sentences.Validation.ThisUserNameIsNotAvailable"
+                             yield translate Language.PtBr Sentence.ThisUserNameIsNotAvailable
                           if not isEmailAvailable  then
-                             yield "Sentences.Validation.ThisEmailIsNotAvailable" } 
+                             yield translate Language.PtBr Sentence.ThisEmailIsNotAvailable } 
                 | Error(_), _, _ 
                 | _, Error(_), _ 
-                | _, _, Error(_) -> seq { yield "Sentences.Error.DatabaseFailure" }
+                | _, _, Error(_) -> seq { yield translate Language.PtBr Sentence.DatabaseFailure }
                      
     let private assignEncryptedPassword (input : Command) =
         Success {input with Password = Models.Password.getEncryptedPassword input}
@@ -66,19 +67,19 @@ module Update =
             | Success isCreatorAdministrator, Success isEmailAvailable,
               Success isUserNameAvailable, Success userExists ->
                 seq { if String.IsNullOrWhiteSpace parameter.UserName then
-                         yield  Sentences.Validation.UserNameIsRequired
+                         yield translate Language.PtBr Sentence.UserNameIsRequired
                       if not isCreatorAdministrator && parameter.CurrentUserId <> parameter.Id then
-                         yield "Sentences.Validation.OnlyAdministratorsMayPerformThisAction"
+                         yield translate Language.PtBr Sentence.OnlyAdministratorsMayPerformThisAction
                       if not isUserNameAvailable then
-                         yield "Sentences.Validation.ThisUserNameIsNotAvailable"
+                         yield translate Language.PtBr Sentence.ThisUserNameIsNotAvailable
                       if not userExists then
-                         yield Sentences.Validation.IdMustReferToAnExistingUser
+                         yield translate Language.PtBr Sentence.IdMustReferToAnExistingUser
                       if not isEmailAvailable then
-                         yield "Sentences.Validation.ThisEmailIsNotAvailable" } 
+                         yield translate Language.PtBr Sentence.ThisEmailIsNotAvailable } 
             | Error(_), _, _, _ 
             | _, Error(_), _, _ 
             | _, _, Error(_), _ 
-            | _, _, _, Error(_) -> seq { yield "Sentences.Error.DatabaseFailure" }
+            | _, _, _, Error(_) -> seq { yield translate Language.PtBr Sentence.DatabaseFailure }
                      
     let handle isCreatorAdministrator isEmailAvailable isUserNameAvailable userExists
                updateUser command =        
@@ -96,11 +97,11 @@ module UpdatePassword =
             match userExistsFunc parameter.Id with
                 | Success userExists ->    
                     seq { if not userExists then
-                             yield "Sentences.Validation.IdMustReferToAnExistingUser"
+                             yield translate Language.PtBr Sentence.IdMustReferToAnExistingUser
                           if String.IsNullOrWhiteSpace parameter.Password then
-                             yield "Sentences.Validation.PasswordIsRequired" } 
+                             yield translate Language.PtBr Sentence.PasswordIsRequired } 
                 | Error (_) -> 
-                    seq { yield "Sentences.Error.DatabaseFailure" }
+                    seq { yield translate Language.PtBr Sentence.DatabaseFailure }
     
     let private assignEncryptedPassword (input : Command) =
         Success {input with Password = Models.Password.getEncryptedPassword input}
@@ -119,13 +120,13 @@ module Delete =
               isCurrentUserAdministratorFun parameter.CurrentUserId with
             | Success userExists, Success isCurrentUserAdministrator ->
                 seq { if not userExists then
-                         yield "Sentences.Validation.IdMustReferToAnExistingUser"
+                         yield translate Language.PtBr Sentence.IdMustReferToAnExistingUser
                       if not isCurrentUserAdministrator then
-                         yield Sentences.Validation.OnlyAdministratorsMayPerformThisAction
+                         yield translate Language.PtBr Sentence.OnlyAdministratorsMayPerformThisAction
                       if parameter.Id = parameter.CurrentUserId then
-                         yield Sentences.Validation.UserMayNotDeleteHimself } 
+                         yield translate Language.PtBr Sentence.UserMayNotDeleteHimself } 
             | Error (_), _
-            | _, Error (_) -> seq { yield "Sentences.Error.DatabaseFailure" }
+            | _, Error (_) -> seq { yield translate Language.PtBr Sentence.DatabaseFailure }
     
     let handle userExists isCurrentUserAdministrator deleteUser command =        
         command |> Validation.validate (getErrors userExists isCurrentUserAdministrator)
@@ -141,14 +142,14 @@ module GrantPermission =
             | Success userExists, Success isUserObserver, Success packageExists ->
                 seq {
                     if not userExists then 
-                        yield "Sentences.PtBrValidationSentences.IdMustReferToExistingUser"
+                        yield translate Language.PtBr Sentence.IdMustReferToAnExistingUser
                     if not isUserObserver then  
-                        yield "Sentences.PtBrValidationSentences.UserMustBeObserver"
+                        yield translate Language.PtBr Sentence.UserMustBeObserver
                     if not packageExists then
-                        yield "Sentences.PtBrValidationSentences.IdMustReferToExistingPackage" }
+                        yield translate Language.PtBr Sentence.IdMustReferToExistingPackage }
             | Error(_), _ ,_ 
             | _, Error(_) ,_ 
-            | _, _, Error(_) -> seq { yield "Sentences.Error.DatabaseFailure" }
+            | _, _, Error(_) -> seq { yield translate Language.PtBr Sentence.DatabaseFailure }
 
     let handle userExists isUserObserver packageExists grantPermission command =
         command |> Validation.validate (getErrors userExists isUserObserver packageExists)
@@ -162,8 +163,8 @@ module RevokePermission =
             | Success permissionExists ->
                 seq {
                     if not permissionExists then 
-                        yield "Sentences.PtBrValidationSentences.IdMustReferToAnExistingPermission" }
-            | Error(_) -> seq { yield "Sentences.Error.DatabaseFailure" }
+                        yield translate Language.PtBr Sentence.IdMustReferToAnExistingPermission }
+            | Error(_) -> seq { yield translate Language.PtBr Sentence.DatabaseFailure }
 
     let handle permissionExists revokePermission command =
         command |> Validation.validate (getErrors permissionExists)

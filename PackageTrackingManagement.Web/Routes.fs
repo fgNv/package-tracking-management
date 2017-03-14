@@ -5,16 +5,23 @@ open Suave
 open Suave.Successful
 open Suave.RequestErrors
 open Suave.ServerErrors
+open Sentences
 
 let inline private executeCommand deserializeCommand handleCommand (request : HttpRequest) =   
     try 
         let result = request.rawForm |> deserializeCommand >>= handleCommand
         match result with
-              | Success i -> OK "done"
+              | Success i -> NO_CONTENT
               | Error (title, errors) -> 
-                    BAD_REQUEST (title + " - errors: ")
+                    let responseContent = { Title = title
+                                            Errors = errors |> Seq.toList } : JsonParse.InvalidDataResponse
+                    BAD_REQUEST (JsonParse.QueryResult.serializeObj responseContent)
     with
-        | ex -> INTERNAL_ERROR(ex.Message)
+        | ex -> 
+            System.Console.WriteLine()
+            let responseContent = { Title = ex.Message
+                                    Errors = [ex.Message; ex.StackTrace] } : JsonParse.InvalidDataResponse
+            INTERNAL_ERROR(JsonParse.QueryResult.serializeObj responseContent)
 
 open Suave.Operators
 open Suave.Filters
@@ -38,8 +45,8 @@ module private Actions =
             | Success user ->
                 match user with
                     | Some u -> OK (QueryResult.serializeObj u)
-                    | None -> NOT_FOUND(Sentences.Validation.IdMustReferToExistingUser) 
-            | Error(_) -> INTERNAL_ERROR ("Sentences.Error.DatabaseFailure") 
+                    | None -> NOT_FOUND(translate Language.PtBr Sentence.IdMustReferToAnExistingUser) 
+            | Error(_) -> INTERNAL_ERROR (translate Language.PtBr Sentence.DatabaseFailure) 
 
     let getPackageById id =
         let result = Application.Package.GetDetails {PackageId = id}
@@ -48,7 +55,7 @@ module private Actions =
                 match package with 
                     | Some p -> OK (QueryResult.serializeObj p)
                     | None -> 
-                       NOT_FOUND ("Sentences.Validation.IdMustReferToExistingPackage")
+                       NOT_FOUND (translate Language.PtBr Sentence.IdMustReferToExistingPackage)
             | Error (_) -> INTERNAL_ERROR ("Sentences.Error.DatabaseFailure") 
     
     let updatePackage ctx =

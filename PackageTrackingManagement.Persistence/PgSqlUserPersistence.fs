@@ -19,7 +19,7 @@ let private deserializeAccessType input =
     match input with 
         | "admin" -> Administrator
         | "user" -> User
-        | _ -> raise (new Exception("Sentences.Error.InvalidAccessType"))
+        | _ -> raise (Exception("Sentences.Error.InvalidAccessType"))
         
 let userExists =
     handleDatabaseException ( fun id -> let context = getContext()
@@ -92,11 +92,11 @@ let getUserAccessType id =
     let context = getContext()
     let user = context.Public.User |> Seq.find (fun u -> u.Id = id)
     deserializeAccessType user.AccessType 
-let isUserEmailUnused email =
+let isUserEmailUnused =
     handleDatabaseException 
         (fun email -> let context = getContext()
                       not ( context.Public.User |> 
-                                        Seq.exists(fun u -> u.Email = email) ) ) email
+                                        Seq.exists(fun u -> u.Email = email) ) ) 
 
 let isUserNameUnused username =
     handleDatabaseException 

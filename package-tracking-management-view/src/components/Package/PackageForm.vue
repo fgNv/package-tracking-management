@@ -10,7 +10,7 @@
     <form class='ui form' v-on:submit.prevent='save'>
       <h4 class='ui dividing header'>Dados do pacote</h4>
       <div class='field'>
-        <label>Nome</label>
+        <label>* Nome</label>
         <div class='two fields'>
           <div class='field'>
             <input type='text' v-model="request.name" >
@@ -44,7 +44,9 @@
                          })
                          .catch((err) => {
                            console.log('err on create package', err)
-                           toasterService.error('Erro ao criar pacote')
+                           console.log('url', err.url)
+                           var errors = err.body ? err.body.errors : null
+                           toasterService.error('Erro ao criar pacote', errors)
                            throw err
                          })
                          .finally(() => {
