@@ -120,8 +120,9 @@ Target "UndoChanges" (fun _ ->
 
     modifiedFiles |> Seq.iter (fun modifiedFile ->
         match gitCmd, modifiedFile with 
-            | None, _ 
-            | _, None -> trace ("could not") 
+            | None, None -> trace ("could not both") 
+            | None, _ -> trace ("could not git") 
+            | _, None -> trace ("could not file") 
             | Some f, Some g -> 
                 Shell.Exec(g, "checkout",  f) |> ignore)
 )

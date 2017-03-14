@@ -1,5 +1,9 @@
 {
     "files.exclude": {
-        "package-tracking-management-view/dist/**/*": true
+        "package-tracking-management-view/dist/**/*": true,
+        "*/bin/**/*": true,
+        "*/obj/**/*": true,
+        "PackageTrackingManagement.Domain/bin/**/*": true,
+        "PackageTrackingManagement.Domain/obj/**/*": true
     }
 }
