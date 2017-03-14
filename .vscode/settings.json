@@ -1,0 +1,5 @@
+{
+    "files.exclude": {
+        "package-tracking-management-view/dist/**/*": true
+    }
+}
