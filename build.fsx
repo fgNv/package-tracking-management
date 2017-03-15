@@ -77,8 +77,9 @@ let createLiteralFiles () =
                                         "PgSqlLiterals.fs.example")            
             
             let newFilePath = examplefilePath.Replace(".example", "")
+            
+            CreateFile newFilePath
             CopyFile examplefilePath newFilePath
-
             ReplaceInFile (replaceConnString connString) newFilePath
         | None -> 
             System.Console.WriteLine("No conn string found")    
