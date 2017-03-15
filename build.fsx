@@ -72,14 +72,14 @@ let createLiteralFiles () =
     let connString = PgSqlPersistence.getConnectionString()
     match connString with 
         | Some connString ->
-            let examplefilePath = Path.Combine(__SOURCE_DIRECTORY__, 
+            let exampleFilePath = Path.Combine(__SOURCE_DIRECTORY__, 
                                         "PackageTrackingManagement.Persistence", 
                                         "PgSqlLiterals.fs.example")            
             
-            let newFilePath = examplefilePath.Replace(".example", "")
-            
+            let newFilePath = exampleFilePath.Replace(".example", "")
+
             CreateFile newFilePath
-            CopyFile examplefilePath newFilePath
+            CopyFile newFilePath exampleFilePath
             ReplaceInFile (replaceConnString connString) newFilePath
         | None -> 
             System.Console.WriteLine("No conn string found")    
