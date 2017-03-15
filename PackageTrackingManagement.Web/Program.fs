@@ -9,14 +9,16 @@ open System.IO
 [<EntryPoint>]
 let main argv =     
 
+    EnvironmentVariables.loadEnvData()
+
     match Migrations.updateDatabase("..\..\..\Migrations") with
         | Railroad.Success(_) ->
             System.Console.WriteLine("database migrations executed successfully")
         | Railroad.Error(_) ->
             System.Console.WriteLine("error running database migrations - probably no conn string found")
     
-    let frontEndDirectory = "C:\Projects\PackageTrackingManagement\package-tracking-management-view\dist"
-        
+    let frontEndDirectory = "..\package-tracking-management-view\dist"
+       
     if not (Application.User.Exists "master") then
         Application.User.Create { UserName = "master"
                                   Name = "Master"

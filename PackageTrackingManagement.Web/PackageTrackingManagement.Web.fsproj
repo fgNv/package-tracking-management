@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Name>PackageTrackingManagement.Web</Name>
@@ -66,6 +66,7 @@
     <Compile Include="Application.fs" />
     <Compile Include="Claims.fs" />
     <Compile Include="Routes.fs" />
+    <Compile Include="..\Environment.fs" />
     <Compile Include="Program.fs" />
     <None Include="App.config" />
     <None Include="paket.references" />
@@ -119,6 +120,17 @@
       <ItemGroup>
         <Reference Include="Chiron">
           <HintPath>..\packages\Chiron\lib\portable-net45+netcore45+wpa81+wp8+MonoAndroid1+MonoTouch1\Chiron.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
+  <Choose>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And ($(TargetFrameworkVersion) == 'v4.5.2' Or $(TargetFrameworkVersion) == 'v4.5.3' Or $(TargetFrameworkVersion) == 'v4.6' Or $(TargetFrameworkVersion) == 'v4.6.1' Or $(TargetFrameworkVersion) == 'v4.6.2' Or $(TargetFrameworkVersion) == 'v4.6.3')">
+      <ItemGroup>
+        <Reference Include="DotEnvFile">
+          <HintPath>..\packages\DotEnvFile\lib\net452\DotEnvFile.dll</HintPath>
           <Private>True</Private>
           <Paket>True</Paket>
         </Reference>

@@ -247,3 +247,7 @@ fake-dist
 !**/package-tracking-management-view/build/
 
 ProjectDlls/
+
+.env
+PgSqlLiterals.fs
+npm-debug.log.*

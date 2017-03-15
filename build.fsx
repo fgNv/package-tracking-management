@@ -50,6 +50,9 @@
 
 #I "packages/FSharp.Core/lib/net40"
 
+#I "packages/DotEnvFile/lib/net452"
+#r "packages/DotEnvFile/lib/net452/DotEnvFile.dll"
+
 #I "packages/FAKE.Lib/lib/net451"
 #r "packages/FAKE.Lib/lib/net451/FakeLib.dll"
 
@@ -61,6 +64,30 @@ open System.IO
 #load "PackageTrackingManagement.Persistence/Migrations.fs"
 #load "PackageTrackingManagement.Domain/Sentences.fs"
 
+let private replaceConnString connString (originalContent : string)  =
+    let connStringPlaceHolder = "--connectionString--"
+    originalContent.Replace(connStringPlaceHolder,
+                            connString)
+let createLiteralFiles () =
+    let connString = PgSqlPersistence.getConnectionString()
+    match connString with 
+        | Some connString ->
+            let examplefilePath = Path.Combine(__SOURCE_DIRECTORY__, 
+                                        "PackageTrackingManagement.Persistence", 
+                                        "PgSqlLiterals.fs.example")            
+            
+            let newFilePath = examplefilePath.Replace(".example", "")
+            CopyFile examplefilePath newFilePath
+
+            ReplaceInFile (replaceConnString connString) newFilePath
+        | None -> 
+            System.Console.WriteLine("No conn string found")    
+    
+#load "Environment.fs"
+
+EnvironmentVariables.loadEnvData()
+createLiteralFiles()
+
 Migrations.updateDatabase(Path.Combine(__SOURCE_DIRECTORY__ ,"Migrations"))
 
 let buildDir = __SOURCE_DIRECTORY__ + "/fake-dist/"
@@ -69,20 +96,6 @@ let projectsSearchPattern = __SOURCE_DIRECTORY__ + "/**/*.fsproj"
 
 Fake.MSBuildHelper.MSBuildLoggers <- [] 
 
-let private replaceConnString' newConnString (originalContent : string)  =
-    let originalConnString = "User ID=homestead;Password=secret;Host=192.168.36.36;Port=5432;Database=package_tracking_management;"
-    originalContent.Replace(originalConnString,
-                            newConnString)
-let replaceConnString () =
-    let connString = PgSqlPersistence.getConnectionString()
-    match connString with 
-        | Some connString ->
-            let filePath = Path.Combine(__SOURCE_DIRECTORY__, "PackageTrackingManagement.Persistence", "PgSqlPersistence.fs")
-            ReplaceInFile (replaceConnString' connString) 
-                           filePath
-        | None -> 
-            System.Console.WriteLine("No conn string found")    
-
 Target "BuildApp" (fun _ ->
    !! projectsSearchPattern
      |> MSBuildRelease buildDir "Build"
@@ -90,10 +103,6 @@ Target "BuildApp" (fun _ ->
 )
 Target "Clean" (fun _ ->
     CleanDirs [buildDir]
-)
-
-Target "AdaptToEnv" (fun _ ->
-    replaceConnString ()
 )
 
 Target "CopyDlls" (fun _ ->
@@ -114,7 +123,7 @@ let getModifiedFilePath project fileName =
                                     fileName))
 
 Target "UndoChanges" (fun _ -> 
-    let gitCmd  = tryFindFileOnPath "git"
+    let gitCmd = tryFindFileOnPath "git"
     let modifiedFiles = [ getModifiedFilePath "PackageTrackingManagement.Persistence" "PgSqlPersistence.fs"
                           getModifiedFilePath "PackageTrackingManagement.Domain" "Sentences.fs" ]
 
@@ -131,8 +140,7 @@ Target "Default" (fun _ ->
     trace "Building application..."
 )
 
-"AdaptToEnv"
-  ==> "Clean"
+"Clean"
   ==> "BuildApp"
   ==> "CopyDlls"
   ==> "UndoChanges"

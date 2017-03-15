@@ -34,6 +34,9 @@
 #I "packages/Microsoft.Owin.Security.OAuth/lib/net45"
 #r "packages/Microsoft.Owin.Security.OAuth/lib/net45/Microsoft.Owin.Security.OAuth.dll"
 
+#I "packages/DotEnvFile/lib/net452"
+#r "packages/DotEnvFile/lib/net452/DotEnvFile.dll"
+
 #I "packages/Suave/lib/net40"
 #r "packages/Suave/lib/net40/Suave.dll"
 
@@ -61,6 +64,9 @@
 //#load "PackageTrackingManagement.Web/SignalRConfiguration.fs"
 
 #load "PackageTrackingManagement.Web/Routes.fs"
+#load "Environment.fs"
+
+EnvironmentVariables.loadEnvData()
 
 open Suave
 open System

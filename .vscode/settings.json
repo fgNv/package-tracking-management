@@ -4,6 +4,13 @@
         "*/bin/**/*": true,
         "*/obj/**/*": true,
         "PackageTrackingManagement.Domain/bin/**/*": true,
-        "PackageTrackingManagement.Domain/obj/**/*": true
+        "PackageTrackingManagement.Domain/obj/**/*": true,
+        "ProjectDlls/**/*": true,
+        "fake-dist/**/*": true,
+        ".paket/**/*": true,
+        ".vs/**/*": true,
+        "packages/**/*": true,
+        "package-tracking.sublime-project": true,
+        "package-tracking-management-view/node_modules/**/*": true
     }
 }

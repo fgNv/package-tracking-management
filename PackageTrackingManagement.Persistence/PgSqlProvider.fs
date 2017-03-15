@@ -9,14 +9,14 @@ open System.IO
 open Sentences
 
 type internal PgsqlAccess = SqlDataProvider<Common.DatabaseProviderTypes.POSTGRESQL,
-                                            ConnectionString>
+                                            PgSqlLiterals.ConnectionString>
                                                
 let internal getContext() =
     let resolutionPath = Environment.GetEnvironmentVariable("npgsql_resolution_path")
     System.Console.WriteLine("npgsql resolution path -> " + resolutionPath)
     let connString = Environment.GetEnvironmentVariable("package_tracking_management_conn")
     match String.IsNullOrWhiteSpace connString with
-        | true ->  System.Console.WriteLine("mano ):")
+        | true ->  System.Console.WriteLine("not connection string found in environment")
                    PgsqlAccess.GetDataContext()
         | false -> PgsqlAccess.GetDataContext(connString, resolutionPath)
         
