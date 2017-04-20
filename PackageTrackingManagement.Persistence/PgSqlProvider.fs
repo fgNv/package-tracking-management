@@ -19,7 +19,22 @@ let internal getContext() =
         | true ->  System.Console.WriteLine("not connection string found in environment")
                    PgsqlAccess.GetDataContext()
         | false -> PgsqlAccess.GetDataContext(connString, resolutionPath)
-        
+
+let internal handleDatabaseExceptionAsync f input = 
+    async {
+        try
+            let! result = f input
+            return Success result
+        with
+            | ex -> 
+                    System.Console.WriteLine(ex.Message)
+                    System.Console.WriteLine(ex.StackTrace)
+
+                    System.Console.WriteLine(Error.getExceptionMessages(ex))
+                    return Error (translate Language.PtBr Sentence.DatabaseFailure, 
+                                  Error.getExceptionMessages ex)
+    }
+
 let internal handleDatabaseException f input =
     try
         let result = f input

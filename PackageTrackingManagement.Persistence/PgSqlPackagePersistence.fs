@@ -144,7 +144,22 @@ let deletePackage =
                       | Some p -> p.Delete()
                                   context.SubmitUpdates()
                       | None -> 
-                        raise (new Exception("Sentences.Validation.IdMustReferToExistingPackage")) ) 
+                        raise (Exception("Sentences.Validation.IdMustReferToExistingPackage")) ) 
+
+let packageExistsAsync (packageId : Guid) =
+    handleDatabaseExceptionAsync
+        (fun id ->
+            async {
+                let context = getContext()
+                let! packages = 
+                    query {
+                       for package in context.Public.Package do 
+                       where (package.Id = id)
+                       select (package)
+                    } |> Seq.executeQueryAsync
+
+                return not <| (packages |> Seq.isEmpty)
+            }) packageId
 
 let packageExists =
     handleDatabaseException 

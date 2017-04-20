@@ -82,9 +82,14 @@ module Package =
             PgSqlPackagePersistence.deletePackage
     
     let AddManualPoint =
+        let externalValidations = {
+            new Commands.Package.AddManualPoint.IExternalValidations 
+                with member this.IsCreatorAdministrator id = PgSqlUserPersistence.isUserAdministratorAsync id
+                     member this.PackageExists id = PgSqlPackagePersistence.packageExistsAsync id
+        }
+
         Commands.Package.AddManualPoint.handle
-            PgSqlUserPersistence.isUserAdministrator
-            PgSqlPackagePersistence.packageExists
+            externalValidations
             PgSqlPackagePersistence.insertManualPoint
                 
     let RemoveManualPoint =

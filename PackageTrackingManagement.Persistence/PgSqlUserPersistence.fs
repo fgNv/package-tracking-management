@@ -80,6 +80,25 @@ let getUserByUserName userName =
                                                        AccessType = deserializeAccessType u.AccessType  }
                                     | None -> None ) userName
     
+let isUserAdministratorAsync (userId : Guid) =    
+    handleDatabaseExceptionAsync(
+        fun userId -> async {        
+            let context = getContext()
+        
+            let! user = 
+                query {
+                    for user in context.Public.User do
+                    where (user.Id = userId)
+                    select(user)
+                } |> Seq.executeQueryAsync
+
+            match user |> Seq.tryHead with 
+                | Some u -> 
+                    let accessType = deserializeAccessType u.AccessType 
+                    return accessType = AccessType.Administrator
+                | None -> return false         
+    }) userId
+
 let isUserAdministrator id =
     handleDatabaseException (
         fun id ->

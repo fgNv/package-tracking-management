@@ -71,25 +71,42 @@ module AddManualPoint =
                      Latitude : double
                      Longitude : double
                      CreatorId : Guid }
+
+    type IExternalValidations =
+      abstract member IsCreatorAdministrator : Guid -> Async<Result<bool>>
+      abstract member PackageExists : Guid -> Async<Result<bool>>
     
-    let private getErrors isCreatorAdministratorFun packageExistsFun parameter =
-            match isCreatorAdministratorFun parameter.CreatorId,
-                  packageExistsFun parameter.PackageId with
-                | Success isCreatorAdministrator,
-                  Success packageExists ->
-                    seq { if not packageExists then
-                            yield translate Language.PtBr Sentence.IdMustReferToExistingPackage
-                          if parameter.Latitude < -90.0 || parameter.Latitude > 90.0 then
+    let private getErrors (externalValidations: IExternalValidations) parameter =
+            let externalValidationsResultsTask = async {
+              let isCreatorAdministratorTask = externalValidations.IsCreatorAdministrator parameter.CreatorId
+              let packageExistsTask = externalValidations.PackageExists parameter.PackageId
+              let! isCreatorAdministrator = isCreatorAdministratorTask
+              let! packageExists = packageExistsTask
+              
+              return seq { 
+                  match isCreatorAdministrator, packageExists with 
+                    | Success isCreatorAdministrator, Success packageExists ->
+                      if isCreatorAdministrator then
+                        yield translate Language.PtBr Sentence.OnlyAdministratorsMayPerformThisAction
+                      if not packageExists then
+                        yield translate Language.PtBr Sentence.IdMustReferToExistingPackage
+                    | Error(_), _
+                    | _, Error(_) -> yield translate Language.PtBr Sentence.DatabaseFailure
+              }
+            } 
+            
+            let externalValidationsResults = externalValidationsResultsTask |> Async.RunSynchronously
+
+            let internalValidationResults = 
+                    seq { if parameter.Latitude < -90.0 || parameter.Latitude > 90.0 then
                             yield translate Language.PtBr Sentence.LatitudeMustBeBetweenMinusNinetyAndNinety
                           if parameter.Longitude < -180.0 || parameter.Longitude > 180.0 then
-                            yield translate Language.PtBr Sentence.LongitudeMustBeBetweenMinusOneHundredEightyAndOneHundredEighty
-                          if not isCreatorAdministrator then
-                            yield translate Language.PtBr Sentence.OnlyAdministratorsMayPerformThisAction } 
-                | Error(_), _
-                | _, Error(_) -> seq { yield translate Language.PtBr Sentence.DatabaseFailure }
+                            yield translate Language.PtBr Sentence.LongitudeMustBeBetweenMinusOneHundredEightyAndOneHundredEighty}
+            
+            externalValidationsResults |> Seq.append internalValidationResults
 
-    let handle isCreatorAdministrator packageExists insertManualPoint command =        
-        command |> Validation.validate (getErrors isCreatorAdministrator packageExists)
+    let handle externalValidations insertManualPoint command =        
+        command |> Validation.validate (getErrors externalValidations)
                 >>= insertManualPoint
 
 module AddDevicePoint =
