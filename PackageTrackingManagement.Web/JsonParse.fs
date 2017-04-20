@@ -12,9 +12,12 @@ let inline private deserializeJson builder bytes =
               |> Json.parse
               |> builder
               |> function | Value r,_ -> Railroad.Success r 
-                          | Error e,_ -> Railroad.Error(translate Language.PtBr Sentence.InvalidInputContent, [e])
+                          | Error e,_ -> 
+                            Railroad.Error 
+                                (Railroad.TitleSentenceMessagesStr(Sentence.InvalidInputContent, [e]))
     with
-        | ex -> Railroad.Error(translate Language.PtBr Sentence.InvalidInputContent, [ex.Message])
+        | ex -> Railroad.Error 
+                    (Railroad.TitleSentenceMessagesStr(Sentences.InvalidInputContent, [ex.Message]))
 
 module CreateUserCommand =
     open Commands.User.Create

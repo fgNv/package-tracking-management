@@ -63,6 +63,7 @@
 //#load "PackageTrackingManagement.Web/Hubs.fs"
 //#load "PackageTrackingManagement.Web/SignalRConfiguration.fs"
 
+#load "PackageTrackingManagement.Web/Actions.fs"
 #load "PackageTrackingManagement.Web/Routes.fs"
 #load "Environment.fs"
 

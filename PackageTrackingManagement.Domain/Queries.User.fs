@@ -26,12 +26,13 @@ module ChallengeUserCredentials =
                             if matches then
                                 Success (u)
                             else
-                                Error("Sentences.Error.CouldNotAuthenticate", 
-                                      ["Sentences.Error.InvalidCredentials"])
-                | None -> Error("Sentences.Error.CouldNotAuthenticate", ["Sentences.Error.InvalidCredentials"])
-         | Error (title, errors) ->
-            Error ("Sentences.Error.ErrorValidatingCredentials", 
-                  ["Sentences.Error.CouldNotAccessDatabase"])
+                                Error(TitleSentenceMessages(
+                                        Sentences.CouldNotAuthenticate, [Sentences.InvalidCredentials]))
+                | None -> Error(TitleSentenceMessages(
+                                    Sentences.CouldNotAuthenticate, [Sentences.InvalidCredentials]))
+         | Error _ ->
+            Error (TitleSentenceMessages(
+                    Sentences.ErrorValidatingCredentials, [Sentences.CouldNotAccessDatabase]))
 
 module UserExists =
     type Query = {UserName : string}

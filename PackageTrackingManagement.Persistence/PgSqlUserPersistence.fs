@@ -163,7 +163,7 @@ let updateUser =
                             u.UserName <- command'.UserName
                             context.SubmitUpdates()
                 | None -> 
-                    raise (new Exception("Sentences.Validation.IdMustReferToAnExistingUser")) )     
+                    raise (Exception("Sentences.Validation.IdMustReferToAnExistingUser")) )     
 
 let updateUserPassword (command: User.UpdatePassword.Command) =
     handleDatabaseException 
@@ -174,7 +174,7 @@ let updateUserPassword (command: User.UpdatePassword.Command) =
                          match user with
                              | Some u -> u.Password <- command.Password
                                          context.SubmitUpdates()
-                             | None -> raise (new Exception("Sentences.Validation.IdMustReferToAnExistingUser")) ) command
+                             | None -> raise (Exception("Sentences.Validation.IdMustReferToAnExistingUser")) ) command
         
 let deleteUser (command : User.Delete.Command) =
     handleDatabaseException 
@@ -184,7 +184,7 @@ let deleteUser (command : User.Delete.Command) =
                     match user with
                       | Some u -> u.Delete()
                                   context.SubmitUpdates()
-                      | None -> raise (new Exception("Sentences.Validation.IdMustReferToAnExistingUser"))
+                      | None -> raise (Exception("Sentences.Validation.IdMustReferToAnExistingUser"))
                     context.SubmitUpdates() ) command
 
 let grantPermission =

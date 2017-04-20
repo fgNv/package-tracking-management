@@ -132,7 +132,7 @@ let updatePackage =
                                  p.UpdatedAt <- DateTime.Now
                                  context.SubmitUpdates()
                      | None -> 
-                        raise (new Exception("Sentences.Validation.IdMustReferToExistingPackage")) ) 
+                        raise (Exception("Sentences.Validation.IdMustReferToExistingPackage")) ) 
 
 let deletePackage =
     handleDatabaseException 
@@ -178,7 +178,7 @@ let insertManualPoint =
         (fun (cmd : Package.AddManualPoint.Command) ->
             let context = getContext()
             let newPoint = context.Public.ManualPoint.Create()
-            newPoint.Coordinates <- new NpgsqlPoint(cmd.Latitude, cmd.Longitude)
+            newPoint.Coordinates <- NpgsqlPoint(cmd.Latitude, cmd.Longitude)
             newPoint.CreatorId <- cmd.CreatorId
             newPoint.CreatedAt <- DateTime.Now
             newPoint.Id <- Guid.NewGuid()
@@ -194,7 +194,7 @@ let deleteManualPoint =
             match point with 
                 | Some p -> p.Delete()
                             context.SubmitUpdates()
-                | None -> raise (new Exception("Sentences.Validation.IdMustReferToExistingPoint")) )
+                | None -> raise (Exception("Sentences.Validation.IdMustReferToExistingPoint")) )
             
 let insertDevicePoint =
     handleDatabaseException
@@ -202,7 +202,7 @@ let insertDevicePoint =
             let context = getContext()
             let newPoint = context.Public.DevicePoint.Create()
             newPoint.CreatedAt <- DateTime.Now
-            newPoint.Coordinates <- new NpgsqlPoint(cmd.Latitude, cmd.Longitude)
+            newPoint.Coordinates <- NpgsqlPoint(cmd.Latitude, cmd.Longitude)
             newPoint.DeviceId <- cmd.DeviceId
             newPoint.Id <- Guid.NewGuid()
             newPoint.PackageId <- cmd.PackageId
@@ -210,6 +210,6 @@ let insertDevicePoint =
             let package = context.Public.Package |> Seq.tryFind(fun p -> p.Id = cmd.PackageId)
             match package with | Some p -> p.UpdatedAt <- DateTime.Now 
                                | None -> 
-                                  raise (new Exception("Sentences.Validation.IdMustReferToExistingPackage"))
+                                  raise (Exception("Sentences.Validation.IdMustReferToExistingPackage"))
 
             context.SubmitUpdates() )

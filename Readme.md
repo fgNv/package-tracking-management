@@ -8,7 +8,7 @@
 
 ## In order to build the application:
 
-### Paket and fsi must be registered in environment vars, and npm must be installed
+### Paket and fsi must be registered in PATH, and npm must be installed
 
 * paket restore
 

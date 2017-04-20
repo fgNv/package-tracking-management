@@ -65,6 +65,7 @@
     <Compile Include="JsonParse.fs" />
     <Compile Include="Application.fs" />
     <Compile Include="Claims.fs" />
+    <Compile Include="Actions.fs" />
     <Compile Include="Routes.fs" />
     <Compile Include="..\Environment.fs" />
     <Compile Include="Program.fs" />

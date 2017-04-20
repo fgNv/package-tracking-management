@@ -15,23 +15,23 @@ open Owin.Security.AesDataProtectorProvider.CrypticProviders
 let private hostAppName = "bearerTokenAuthentication"
 
 let private buildDefaultBearerOptions ()= 
-    let app = new AppBuilder() :> IAppBuilder        
+    let app = AppBuilder() :> IAppBuilder        
     app.Properties.["host.AppName"] <- hostAppName
 
-    app.SetDataProtectionProvider(new AesDataProtectorProvider(
-                                        new Sha512ManagedFactory(), 
-                                        new Sha256ManagedFactory(), 
-                                        new AesManagedFactory()))
+    app.SetDataProtectionProvider(AesDataProtectorProvider(
+                                        Sha512ManagedFactory(), 
+                                        Sha256ManagedFactory(), 
+                                        AesManagedFactory()))
     app.UseAesDataProtectorProvider() |> ignore      
     
     let typeDef = typedefof<OAuthAuthorizationServerMiddleware>
     let defaultDataProtector = app.CreateDataProtector(typeDef.Namespace, "Access_Token", "v1")
     
-    let defaultAccessTokenFormat = new TicketDataFormat(defaultDataProtector)
-    let defaultOptions = new OAuthBearerAuthenticationOptions(
-                                        AccessTokenProvider = new AuthenticationTokenProvider(),
+    let defaultAccessTokenFormat = TicketDataFormat(defaultDataProtector)
+    let defaultOptions = OAuthBearerAuthenticationOptions(
+                                        AccessTokenProvider = AuthenticationTokenProvider(),
                                         AccessTokenFormat = defaultAccessTokenFormat,
-                                        Provider = new OAuthBearerAuthenticationProvider() )  
+                                        Provider = OAuthBearerAuthenticationProvider() )  
 
     app.UseOAuthBearerAuthentication(defaultOptions) |> ignore
     defaultOptions
@@ -45,16 +45,16 @@ let private validateToken requestToken =
 let private extractToken (content : string) =
     let startLength = "Bearer ".Length
     let requestToken = content.Substring(startLength).Trim()
-    let requestTokenContext = new OAuthRequestTokenContext(null, requestToken);
+    let requestTokenContext = OAuthRequestTokenContext(null, requestToken);
     errorOnEmptyString requestTokenContext.Token
 
 let private verifyTokenExpiration (ticket : AuthenticationTicket) =
     let currentUtc = defaultOptions.SystemClock.UtcNow
     match Option.ofNullable ticket.Properties.ExpiresUtc with
         | None -> 
-            Error("invalidToken", [|"tokenWithoutExpirationDate"|])
+            Error (TitleMessages("invalidToken", [|"tokenWithoutExpirationDate"|]))
         | Some expirationUtc when expirationUtc < currentUtc ->
-            Error("invalidToken", [|"tokenExpired"|])
+            Error (TitleMessages("invalidToken", [|"tokenExpired"|]))
         | Some expirationUtc -> Success ticket
             
 let private executeVerifications authorizationHeaderContent =                         
@@ -66,14 +66,14 @@ let private executeVerifications authorizationHeaderContent =
 let private getAuthorizationHeaderFromContext ctx =        
     match ctx.request.header "Authorization" with
           | Choice1Of2 header -> Success header
-          | Choice2Of2 _ -> Error ("authenticationFailure", 
-                                   [| "noAuthenticationHeaderFound" |])
+          | Choice2Of2 _ -> Error (TitleMessages("authenticationFailure", 
+                                                 [| "noAuthenticationHeaderFound" |]))
 
 let private getClaim (ticket : AuthenticationTicket) (key : string) =
     let claim = ticket.Identity.Claims |> Seq.tryFind(fun c -> c.Type = key)
     match claim with 
         | Some c -> Success c.Value 
-        | None -> Error ("sem claim", [|"CLAIMLESS"|])
+        | None -> Error (TitleMessages("sem claim", [|"CLAIMLESS"|]))
                 
 let private addClaims ticket (ctx : HttpContext) (claimsKeys : string seq) = 
     let claimsRetrieved = claimsKeys |> Seq.map (fun key -> key, (getClaim ticket key))
@@ -88,7 +88,7 @@ let private addClaims ticket (ctx : HttpContext) (claimsKeys : string seq) =
                                                                      | _ -> None)   
                                           |> Array.ofSeq      
             Success { ctx with userState = Map.ofArray choosed }
-        | true -> Error ("rr", ["rr"]) 
+        | true -> Error (TitleMessages("rr", ["rr"]) )
 
 let protectResource (claimsKeys : string seq) (protectedPart : WebPart) (ctx : HttpContext) =
     let result = ctx |> getAuthorizationHeaderFromContext >>= executeVerifications
@@ -98,6 +98,6 @@ let protectResource (claimsKeys : string seq) (protectedPart : WebPart) (ctx : H
         let contextWithClaims = addClaims authTicket ctx claimsKeys
         match contextWithClaims with
             | Success context -> protectedPart context
-            | Error (t1, e1) -> Suave.RequestErrors.challenge ctx
-    | Error(title, messages) -> 
+            | Error _ -> Suave.RequestErrors.challenge ctx
+    | Error _ -> 
         Suave.RequestErrors.challenge ctx

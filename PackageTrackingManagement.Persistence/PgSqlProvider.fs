@@ -31,8 +31,8 @@ let internal handleDatabaseExceptionAsync f input =
                     System.Console.WriteLine(ex.StackTrace)
 
                     System.Console.WriteLine(Error.getExceptionMessages(ex))
-                    return Error (translate Language.PtBr Sentence.DatabaseFailure, 
-                                  Error.getExceptionMessages ex)
+                    return Error (TitleSentenceMessagesStr(
+                                    Sentence.DatabaseFailure, Error.getExceptionMessages ex))
     }
 
 let internal handleDatabaseException f input =
@@ -45,5 +45,5 @@ let internal handleDatabaseException f input =
                 System.Console.WriteLine(ex.StackTrace)
 
                 System.Console.WriteLine(Error.getExceptionMessages(ex))
-                Error (translate Language.PtBr Sentence.DatabaseFailure, 
-                       Error.getExceptionMessages ex)
+                Error (TitleSentenceMessagesStr(
+                        Sentence.DatabaseFailure, Error.getExceptionMessages ex))

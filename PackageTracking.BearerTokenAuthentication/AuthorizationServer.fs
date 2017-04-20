@@ -38,18 +38,18 @@ type private SimpleAuthenticationProvider<'a>(validateUserCredentials,
             let result = validateUserCredentials context.UserName context.Password
             match result with 
                 | Success user -> 
-                    let identity = new ClaimsIdentity(context.Options.AuthenticationType)
-                    identity.AddClaim(new Claim("sub", context.UserName))
-                    identity.AddClaim(new Claim("role", "user"))
+                    let identity = ClaimsIdentity(context.Options.AuthenticationType)
+                    identity.AddClaim(Claim("sub", context.UserName))
+                    identity.AddClaim(Claim("role", "user"))
 
                     getCustomClaims user |> List.iter(fun tuple -> Claims.addClaim tuple identity )
                     context.OwinContext.Response.Headers.Add("Access-Control-Allow-Origin", [| "*" |]); 
 
                     let additionalClientData = getClientData user
-                    let properties = new AuthenticationProperties(additionalClientData)
-                    let ticket = new AuthenticationTicket(identity, properties)
+                    let properties = AuthenticationProperties(additionalClientData)
+                    let ticket = AuthenticationTicket(identity, properties)
                     context.Validated(ticket) |> ignore
-                | Error (title, errors) -> 
+                | Error _ -> 
                     context.SetError("authenticationFailure", "invalidCredentials")
         }
         upcast Async.StartAsTask f 

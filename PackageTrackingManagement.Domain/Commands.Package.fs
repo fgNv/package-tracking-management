@@ -15,10 +15,10 @@ module Create =
             match isCreatorAdministratorFun parameter.CreatorId with
                 | Success isCreatorAdministrator ->
                     seq { if String.IsNullOrWhiteSpace parameter.Name then
-                             yield translate Language.PtBr Sentence.UserNameIsRequired
+                             yield Sentence.UserNameIsRequired
                           if not isCreatorAdministrator then
-                             yield translate Language.PtBr Sentence.OnlyAdministratorsMayPerformThisAction } 
-                | Error(_) -> seq { yield translate Language.PtBr Sentence.DatabaseFailure }
+                             yield Sentence.OnlyAdministratorsMayPerformThisAction } 
+                | Error(_) -> seq { yield Sentence.DatabaseFailure }
 
     let handle isCreatorAdministrator insertPackage command =        
         command |> Validation.validate (getErrors isCreatorAdministrator)
@@ -36,13 +36,13 @@ module Update =
                 | Success isCreatorAdministrator,
                   Success packageExists ->
                     seq { if String.IsNullOrWhiteSpace parameter.Name then
-                             yield translate Language.PtBr Sentence.UserNameIsRequired
+                             yield Sentence.UserNameIsRequired
                           if not packageExists then
-                             yield translate Language.PtBr Sentence.IdMustReferToExistingPackage
+                             yield Sentence.IdMustReferToExistingPackage
                           if not isCreatorAdministrator then
-                             yield translate Language.PtBr Sentence.OnlyAdministratorsMayPerformThisAction } 
+                             yield Sentence.OnlyAdministratorsMayPerformThisAction } 
                 | Error(_), _
-                | _, Error(_) -> seq { yield translate Language.PtBr Sentence.DatabaseFailure }
+                | _, Error(_) -> seq { yield Sentence.DatabaseFailure }
 
     let handle isCreatorAdministrator packageExists updatePackage command =        
         command |> Validation.validate (getErrors isCreatorAdministrator packageExists)
@@ -56,11 +56,11 @@ module Delete =
                   isUserAdministratorFun parameter.UserId with
                 | Success packageExists, Success isUserAdministrator ->
                     seq { if not packageExists then
-                             yield translate Language.PtBr Sentence.IdMustReferToExistingPackage
+                             yield Sentence.IdMustReferToExistingPackage
                           if not isUserAdministrator then
-                             yield translate Language.PtBr Sentence.OnlyAdministratorsMayPerformThisAction } 
+                             yield Sentence.OnlyAdministratorsMayPerformThisAction } 
                 | Error(_), _ 
-                | _, Error(_) -> seq { yield translate Language.PtBr Sentence.DatabaseFailure }
+                | _, Error(_) -> seq { yield Sentence.DatabaseFailure }
 
     let handle packageExists isUserAdministrator deletePackage command =        
         command |> Validation.validate (getErrors packageExists isUserAdministrator)
@@ -87,11 +87,11 @@ module AddManualPoint =
                   match isCreatorAdministrator, packageExists with 
                     | Success isCreatorAdministrator, Success packageExists ->
                       if isCreatorAdministrator then
-                        yield translate Language.PtBr Sentence.OnlyAdministratorsMayPerformThisAction
+                        yield Sentence.OnlyAdministratorsMayPerformThisAction
                       if not packageExists then
-                        yield translate Language.PtBr Sentence.IdMustReferToExistingPackage
+                        yield Sentence.IdMustReferToExistingPackage
                     | Error(_), _
-                    | _, Error(_) -> yield translate Language.PtBr Sentence.DatabaseFailure
+                    | _, Error(_) -> yield Sentence.DatabaseFailure
               }
             } 
             
@@ -99,9 +99,9 @@ module AddManualPoint =
 
             let internalValidationResults = 
                     seq { if parameter.Latitude < -90.0 || parameter.Latitude > 90.0 then
-                            yield translate Language.PtBr Sentence.LatitudeMustBeBetweenMinusNinetyAndNinety
+                            yield Sentence.LatitudeMustBeBetweenMinusNinetyAndNinety
                           if parameter.Longitude < -180.0 || parameter.Longitude > 180.0 then
-                            yield translate Language.PtBr Sentence.LongitudeMustBeBetweenMinusOneHundredEightyAndOneHundredEighty}
+                            yield Sentence.LongitudeMustBeBetweenMinusOneHundredEightyAndOneHundredEighty}
             
             externalValidationsResults |> Seq.append internalValidationResults
 
@@ -121,15 +121,15 @@ module AddDevicePoint =
                 | Success isCreatorAdministrator,
                   Success packageExists ->
                     seq { if not packageExists then
-                             yield translate Language.PtBr Sentence.IdMustReferToExistingPackage
+                             yield Sentence.IdMustReferToExistingPackage
                           if parameter.Latitude < -90.0 || parameter.Latitude > 90.0 then
-                            yield translate Language.PtBr Sentence.LatitudeMustBeBetweenMinusNinetyAndNinety
+                            yield Sentence.LatitudeMustBeBetweenMinusNinetyAndNinety
                           if parameter.Longitude < -180.0 || parameter.Longitude > 180.0 then
-                            yield translate Language.PtBr Sentence.LongitudeMustBeBetweenMinusOneHundredEightyAndOneHundredEighty
+                            yield Sentence.LongitudeMustBeBetweenMinusOneHundredEightyAndOneHundredEighty
                           if not isCreatorAdministrator then
-                             yield translate Language.PtBr Sentence.OnlyAdministratorsMayPerformThisAction } 
+                             yield Sentence.OnlyAdministratorsMayPerformThisAction } 
                 | Error(_), _
-                | _, Error(_) -> seq { yield translate Language.PtBr Sentence.DatabaseFailure }
+                | _, Error(_) -> seq { yield Sentence.DatabaseFailure }
 
     let handle deviceExists packageExists insertDevicePoint command =        
         command |> Validation.validate (getErrors deviceExists packageExists)
@@ -145,11 +145,11 @@ module RemoveManualPoint =
                 | Success manualPointExits,
                   Success isUserAdministrator ->
                     seq { if not manualPointExits then
-                            yield translate Language.PtBr Sentence.IdMustReferToExistingManualPoint
+                            yield Sentence.IdMustReferToExistingManualPoint
                           if not isUserAdministrator then
-                            yield translate Language.PtBr Sentence.OnlyAdministratorsMayPerformThisAction } 
+                            yield Sentence.OnlyAdministratorsMayPerformThisAction } 
                 | Error(_), _
-                | _, Error(_) -> seq { yield translate Language.PtBr Sentence.DatabaseFailure }
+                | _, Error(_) -> seq { yield Sentence.DatabaseFailure }
 
     let handle manualPointExists isUserAdministrator deleteManualPoint command =        
         command |> Validation.validate (getErrors manualPointExists isUserAdministrator)

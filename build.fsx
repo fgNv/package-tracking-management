@@ -59,6 +59,7 @@
 open Fake
 open System.IO
 
+#load "PackageTrackingManagement.Domain/Sentences.fs"
 #load "PackageTrackingManagement.Domain/Railroad.fs"
 #load "PackageTrackingManagement.Persistence/PgSqlPersistence.fs"
 #load "PackageTrackingManagement.Persistence/Migrations.fs"

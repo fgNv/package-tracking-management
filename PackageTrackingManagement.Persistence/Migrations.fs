@@ -78,5 +78,5 @@ let updateDatabase(migrationsPath) =
             executePendingMigrations conn 
             conn.Close()
             Success() 
-        | None -> Error("failure on database migration", [|"no connection string defined"|])
+        | None -> Error (TitleMessages("failure on database migration", [|"no connection string defined"|]))
     
