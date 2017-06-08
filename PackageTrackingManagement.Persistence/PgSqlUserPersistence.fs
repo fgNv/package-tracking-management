@@ -99,6 +99,24 @@ let isUserAdministratorAsync (userId : Guid) =
                 | None -> return false         
     }) userId
 
+let inline getUserId (entity:^a when ^a:(member GetUserId : unit -> Guid)) =
+    (^a : (member GetUserId : unit -> Guid) entity)
+
+let inline isUserAdministrator' command =    
+    let result = getUserId command |> 
+                 handleDatabaseException (
+                    fun id ->
+                        let context = getContext()
+                        let user = context.Public.User |> 
+                                   Seq.tryFind (fun u -> u.Id = id && 
+                                                         u.AccessType = serializeAccessType AccessType.Administrator)
+                        user.IsSome)
+
+    match result with
+        | Railroad.Success r -> match r with | true -> Railroad.Success command
+                                             | false -> Railroad.Error(Railroad.ErrorContent.Title "pels") 
+        | Railroad.Error _ -> Railroad.Error(Railroad.ErrorContent.Title "pels") 
+
 let isUserAdministrator id =
     handleDatabaseException (
         fun id ->

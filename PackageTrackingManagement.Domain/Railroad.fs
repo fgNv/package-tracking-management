@@ -40,6 +40,11 @@ let bind switchFunction input =
 let (>>=) input switchFunction =
     bind switchFunction input
 
+let (>=>) switch1 switch2 x = 
+    match switch1 x with
+    | Success s -> switch2 s
+    | Error content -> Error content
+
 let errorOnEmptySeq seq =
     match seq |> Seq.isEmpty with
         | true -> Error (TitleMessages("failure", [|"emptySequence"|])) | false -> Success seq

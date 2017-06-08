@@ -161,6 +161,22 @@ let packageExistsAsync (packageId : Guid) =
                 return not <| (packages |> Seq.isEmpty)
             }) packageId
 
+let inline getPackageId (entity:^a when ^a:(member GetPackageId : unit -> Guid)) =
+    (^a : (member GetPackageId : unit -> Guid) entity)
+
+let inline packageExists' command =
+    let result = getPackageId command |> handleDatabaseException 
+                                            (fun id ->
+                                                let context = getContext()
+                                                context.Public.Package |> Seq.exists(fun p -> p.Id = id) )
+
+    match result with
+        | Railroad.Success bool -> match bool with | true -> Railroad.Success command
+                                                   | false -> Railroad.Error (Railroad.ErrorContent.Title "qq")
+        | Railroad.Error _ -> Railroad.Error (Railroad.ErrorContent.Title "qq")
+                                     
+
+
 let packageExists =
     handleDatabaseException 
         (fun id ->

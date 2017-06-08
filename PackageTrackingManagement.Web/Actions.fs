@@ -11,7 +11,7 @@ open System
 open JsonParse
 open Application
 
-let private language = Language.EnUs
+let private language = Language.PtBr
 
 let inline private executeCommand deserializeCommand handleCommand (request : HttpRequest) =   
     try 
@@ -34,8 +34,11 @@ let fromQueryString transformation defaultValue (request : HttpRequest) paramNam
     match request.queryParam paramName with
         | Choice1Of2 p -> transformation p
         | choice2of2 -> defaultValue
-let intFromQueryString = fromQueryString Int32.Parse
-let optionFromQueryString = fromQueryString Some None
+let intFromQueryString defaultValue request paramName = 
+    fromQueryString Int32.Parse defaultValue request paramName
+let optionFromQueryString request paramName = 
+    fromQueryString Some None request paramName
+    
 let getUserById id =
     let result = Application.User.GetById {Id = id}
     match result with  
@@ -111,11 +114,12 @@ let getUsers request =
     let itemsPerPage = intFromQueryString 20 request "itemsPerPage"
     let nameFilter = optionFromQueryString request "nameFilter" 
     let accessTypeFilter = optionFromQueryString request "accessTypeFilter" 
-    let mappedAccessType = match accessTypeFilter with | Some x -> match x with 
-                                                                    | v when v = "administrator" -> Some Models.AccessType.Administrator
-                                                                    | v when v = "user" -> Some Models.AccessType.User
-                                                                    | _ -> None
-                                                        | None -> None
+    let mappedAccessType = match accessTypeFilter with 
+                                | Some x -> match x with 
+                                            | v when v = "administrator" -> Some Models.AccessType.Administrator
+                                            | v when v = "user" -> Some Models.AccessType.User
+                                            | _ -> None
+                                | None -> None
     let query = { Page = page 
                   ItemsPerPage = itemsPerPage
                   NameFilter = nameFilter

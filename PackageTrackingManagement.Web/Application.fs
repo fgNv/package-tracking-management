@@ -75,6 +75,14 @@ module Package =
             PgSqlPackagePersistence.packageExists
             PgSqlPackagePersistence.updatePackage
 
+    open Railroad
+
+    let inline Delete' (command: Commands.Package.Delete.Command) =             
+        command |>
+            (PgSqlPackagePersistence.packageExists' >=>
+             PgSqlUserPersistence.isUserAdministrator' >=>
+             PgSqlPackagePersistence.deletePackage)
+
     let Delete =
         Commands.Package.Delete.handle
             PgSqlPackagePersistence.packageExists

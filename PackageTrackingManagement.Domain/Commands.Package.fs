@@ -50,7 +50,9 @@ module Update =
 
 module Delete =
     type Command = {Id : Guid; UserId : Guid}
-    
+      with member x.GetPackageId() = x.Id 
+           member x.GetUserId() = x.UserId
+
     let private getErrors packageExistsFun isUserAdministratorFun parameter =
             match packageExistsFun parameter.Id,
                   isUserAdministratorFun parameter.UserId with
